@@ -1,0 +1,951 @@
+---
+title: "Review of microeconomic theory"
+shortitle: Review of microenonomics
+subtitle: Econ 235
+author: "Sebastien Pouliot"
+date: "Fall 2018"
+output:
+  beamer_presentation:
+    citation_package: natbib
+    includes:
+      in_header: mystyle.sty
+    theme: default
+  ioslides_presentation: default
+  slidy_presentation: default
+institute: Iowa State University
+header-includes: \widowpenalties 1 150
+classoption: dvipsnames
+urlcolor: blue
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+- *Economics* studies the allocation of scarce resources to achieve given ends.
+- *Microenonomics* studies the behavior of individual units, such as a firm or a consumer, in making themselves as well off as possible given the scarcity of resources.
+- In contrast, *macroenonomics* focuses on large aggregates such as the GDP, growth, the interest rate, unemployment and inflation.
+- In this class, we will mostly use microeconomics theory to understand price discovery and what affects prices of agricultural commodities.
+- Macroeconomic variables will however often play a role in understanding markets.
+
+
+# Demand
+\begin{center}
+\Huge
+Consumer demand
+\end{center}
+
+# Utility maximization
+-  Consumer demand derives from preferences and a budget constraint.
+- Consumers seek to maximize their utility, which summarizes their preferences, under a budget constraint.
+- For two goods $x_1$ and $x_2$, the utility maximization program is $$ \max_{x_1,x_2} U(x_1, x_2) \text{ s.t. } Y \ge p_1 x_1 + p_2 x_2, $$ where $p_1$ is the price of good 1, $p_2$ is the price of good 2 and $Y$ is income.
+- The solution gives the demand functions $x_1(p_1,p_2,Y)$ and $x_2(p_1,p_2,Y)$.
+
+# Definition
+- The demand is the quantity of a good or service that consumers or firms are willing to buy in function of the price and other factors such as income and the price of other goods.
+- More generally, we can write the demand function as: $$ Q^d = D(P,P_s,P_c, Y),$$ where
+    - $Q^d$ is the quantity demanded;
+    - $P$ is the price of the good;
+    - $P_s$ is the price of substitute goods;
+    - $P_c$ is the price of complement goods;
+    - $Y$ is income.
+- Many other variables can enter the demand function, e.g. weather, seasonality,...
+
+# Own price effect
+- The demand slopes down with respect to the price of the good: $$ \frac{\p Q^d}{\p P} = \frac{\p D(P,P_s,P_c, Y)}{\p P} \le 0. $$
+- This is the law of demand.
+- A change in the price of a good causes a movement \textcolor[rgb]{1.00,0.00,0.00}{along} the demand curve of that good.
+- Consumers are willing to buy more if the price is low.
+- Economists usually plot the inverse demand.
+
+
+# Graph of inverse demand curve
+\begin{figure}[h]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Utility function
+        \thicklines
+        \qbezier(20, 170)(50, 50)(200, 20)%D^0
+        \end{picture}
+\vspace{0.1in}
+\caption{Inverse demand curve} \label{fig.demand}
+\end{center}
+\end{figure}
+
+# Elasticity
+- Economists use the concept of elasticity to measure the sensitivity of a change in one variable $Z$ with respect to the change in another variable $X$.
+- Algebraically, we can write this as $$ \frac{\p Z}{\p X} \frac{X}{Z} = \frac{\ \Delta Z}{\ \Delta X} = \frac{ \Delta Z/Z }{\Delta X/X},$$ where $\Delta$ denotes a ``large" change and $\p$ denotes a ``small" change.
+- An elasticity expresses the percentage change in a variable $Z$ with respect to a one percent change in another variable $X$.
+- One advantage of elasticity is that it is unitless!
+
+# Own-price elasticity of demand
+- The expression for the own-price elasticity of demand is $$ \eta = \frac{\p D(P,P_s,P_c, Y)}{\p P} \frac{P}{Q^d} = \frac{\ \Delta Q^d}{\ \Delta P} = \frac{ \Delta Q^d/Q^d }{\Delta P/P} .$$
+  \vspace{-\baselineskip}
+- Note that some use $\epsilon$ to denote the elasticity of demand. In this class, we will use $\epsilon$ to denote the elasticity of supply.
+- As the demand slopes down, the elasticity of demand takes a negative value.
+
+# Own-price elasticity of demand
+- We say that
+    - the demand is elastic if $\eta<-1$;
+    - the demand is unit-elastic if $\eta=-1$;
+    - the demand is inelastic if $\eta \in (-1,0)$.
+  \pause
+- Examples of good with elastic demand: pencil, iphone, broccoli.
+  \pause
+- Examples of good with inelastic demand: food, gasoline, transportation.
+
+# Elasticity of demand
+\begin{figure}[h]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        \thicklines
+        \qbezier(40, 170)(70, 70)(200, 40)%D^0
+        \put(180,30){$\eta \in (-\infty,0)$}
+        \pause
+        \color{red}
+        \put(0,90){\line(1,0){200}}
+        \put(170,80){$\eta = -\infty$}
+        \pause
+        \color{blue}
+        \put(92,0){\line(0,1){160}}
+        \put(97,150){$\eta = 0$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Elasticity of demand} \label{fig.elast}
+\end{center}
+\end{figure}
+
+
+# Example 1: own-price elasticity of demand
+- Suppose that you observed last week that the price of dahu meat was \$8 per pound and that the consumption of dahu meat during that week was 10,000 pounds. Now, you observe this week that the price of dahu meat increased to \$10 per pound and that the consumption decreased to 7,000 pounds. What is the elasticity of the demand for dahu meat?
+  \pause
+- The percentage change in consumption is $(7,000-10,000)/10,000 = -0.3$ or $-30\%$.
+- The percentage change in the price is $(10-8)/8 = 0.25$ or $25\%$.
+- The elasticity of demand for dahu meat is $\eta = \frac{-30\%}{25\%} = -1.2$.
+
+# Example 2: own-price elasticity of demand
+- Suppose that you know that the demand function for kumquats in Ames is $$ Q^d = 1000 - 75 P .$$ Last week you observed that the price of kumquats was \$5 per pound. What is the elasticity of demand?
+  \pause
+- The quantity demanded of kumquats is $1000 - 75*5 = 625$ pounds.
+- The partial derivative of the demand function with respect to the price is $\frac{\p Q^d}{\p P} = -75$.
+- The elasticity of demand for kumquats in Ames is thus $$ \eta = \frac{\p Q^d}{\p P} \frac{P}{Q^d} = -75*\frac{5}{625} = -0.60 .$$
+
+# Effect of the price of a substitute good
+- A substitute good can be used in place of another good.
+- The demand shifts up from an increase in the price of substitute good: $$ \frac{\p Q^d}{\p P_s} = \frac{\p D(P,P_s,P_c, Y)}{\p P_s} \ge 0. $$
+  \vspace{-\baselineskip}
+- Examples of substitute goods: pen and pencil, landline phone and cellulaire phone.
+
+# Increase in the price of a substitute good
+\begin{figure}[h]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Utility function
+        \thicklines
+        \qbezier(20, 170)(50, 50)(200, 20)%D^0
+        \color{red}
+        \pause
+        \qbezier(40, 170)(70, 70)(200, 40)%D^1
+        \put(78,78){\vector(1,1){12}}
+    \end{picture}
+\vspace{0.1in}
+\caption{Shift in demand from an increase in the price of a substitute good} \label{fig.sub}
+\end{center}
+\end{figure}
+
+# Effect of the price of a complement good
+- A complement good can be used in pair with another good.
+- The demand shifts down from an increase in the price of a complement good: $$ \frac{\p Q^d}{\p P_c} = \frac{\p D(P,P_s,P_c, Y)}{\p P_c} \le 0. $$
+  \vspace{-\baselineskip}
+- Examples of complement goods: car and gasoline, pingpong balls and plastic cups.
+- Are peanut butter and jelly substitute or complement goods? Depends on the preferences of individual consumers.
+
+# Increase in the price of a complement good
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Utility function
+        \thicklines
+        \qbezier(40, 170)(70, 70)(200, 40)%D^0
+        \color{red}
+        \pause
+        \qbezier(20, 170)(50, 50)(200, 20)%D^1
+        \put(90,90){\vector(-1,-1){12}}
+    \end{picture}
+\vspace{0.1in}
+\caption{Shift in demand from an increase in the price of a complement good} \label{fig.com}
+\end{center}
+\end{figure}
+
+# Cross-price elasticity of demand
+- Consider a change in $P_a$, the price of another good, either a complement or a substitute good.
+- The expression for the cross-price elasticity of demand is $$ \eta_a = \frac{\p D(P,P_a, Y)}{\p P_a} \frac{P_a}{Q^d} = \frac{\ \Delta Q^d}{\ \Delta P_a} = \frac{ \Delta Q^d/Q^d }{\Delta P_a/P_a}.$$
+  \vspace{-\baselineskip}
+- Goods are substitutes if $\eta_a >0$.
+- Goods are complements if $\eta_a <0$.
+
+# Income elasticity
+- Recall that $Y$ is the income.
+- The expression for the income elasticity of demand is $$ \xi = \frac{\p D(P,P_s, P_c,Y)}{\p Y} \frac{Y}{Q^d} = \frac{\ \Delta Q}{\ \Delta Y} = \frac{ \Delta Q^d/Q^d }{\Delta Y/Y}.$$
+  \vspace{-\baselineskip}
+- A goods is normal if $\xi >0$:
+    - \pause it is a necessity good if \pause $\xi \in [0,1]$ (e.g. clothing, food,...);
+    - \pause it is a luxury good if \pause $\xi > 1$ (e.g. designer jeans, caviar, Château Latour wine,...). 
+- \pause A good is inferior if \pause $\xi <0$ (e.g. Ramen soup, Keystone beer,...).
+
+# Increase in income for a normal good
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Utility function
+        \thicklines
+        \qbezier(20, 170)(50, 50)(200, 20)%D^0
+        \color{red}
+        \pause
+        \qbezier(40, 170)(70, 70)(200, 40)%D^1
+        \put(78,78){\vector(1,1){12}}
+    \end{picture}
+\vspace{0.1in}
+\caption{Shift in demand from an increase in income for a normal good} \label{fig.inc1}
+\end{center}
+\end{figure}
+
+# Increase in income for an inferior good
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Utility function
+        \thicklines
+        \qbezier(40, 170)(70, 70)(200, 40) %D^0
+        \color{red}
+        \pause
+        \qbezier(20, 170)(50, 50)(200, 20) %D^1
+        \put(90,90){\vector(-1,-1){12}}
+    \end{picture}
+\vspace{0.1in}
+\caption{Shift in demand from an increase in income for an inferior good} \label{fig.inc2}
+\end{center}
+\end{figure}
+
+# What else shifts the demand?
+- It is not only the price of other goods and income that shift the demand.
+- Other demand shifters include:
+    - Seasonality (e.g. holidays);
+    - Weather;
+    - Information about the quality of a product (e.g. food scare);
+    - Trends (e.g. fashion);
+    - Age.
+- Can compute elasticity with respect to any variable.
+
+# Linear demand
+- Economists often use a simple linear functional form for the demand: $$ Q^d = a - b P, $$ where $a>0$ and $b>0$ are parameters of the demand function.
+- The slope of the demand function is $\frac{\p Q^d}{\p P} = -b$.
+- We can assign values to the demand parameters based on the elasticity of demand (for which it is possible to find an estimate or to guesstimate its value) and the observed values for the price and the quantity.
+- We can write the elasticity of demand as $$\eta = \frac{\p Q^d}{\p P} \frac{P}{Q^d} = -b \frac{P}{Q^d}.$$
+
+# Linear demand
+- We can find values for $a$ and $b$ based on observed price and quantity and an estimate of the elasticity of demand.
+- We can find the values of the parameters of the demand function in two steps:
+    i. Find the value of $b$ as $$b = -\eta \frac{Q^d}{P}.$$
+    \vspace{-\baselineskip}
+    ii. Knowing $b$, we find that the value of $a$ is $$ a = Q^d + b P.$$
+
+# Example: Linear demand
+- Suppose that you observe that the price of dahu meat  was \$8 per pound last week and that the consumption of dahu meat during that week was 10,000. You know from credible estimates of demand that the elasticity for dahu meat is -1.2. Find the values for the parameters in the linear demand function.
+- Let's proceed in two steps:
+    i. Finding the values of $b$: $$b = -\eta \frac{Q^d}{P} = 1.2*\frac{10,000}{8} = 1,500.$$
+    \vspace{-\baselineskip}
+    ii. Finding the value of $a$:  $$ a = 10,000 + 1,500*8 = 22,000.$$
+    \vspace{-\baselineskip}
+- Thus, we can write the demand as $$ Q^d = 22,000 - 1,500 P.$$
+
+# Graphing the inverse demand
+- Economists usually graph the price on the vertical axis and the quantity on the horizontal axis.
+- This means that we must find the inverse of the demand function.
+- The expression for the inverse demand function is: $$ P = \frac{a}{b} - \frac{1}{b} Q^d.$$
+  \vspace{-\baselineskip}
+- For our example with dahu meat, the inverse demand is: $$ P = \frac{22,000}{1,500} - \frac{1}{1,500} Q^d.$$
+  \vspace{-\baselineskip}
+
+# Example: graph of the inverse demand for dahu meat
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Utility function
+        \thicklines
+        \put(0,100){\line(10,-5){200}}
+        %Text
+        \put(-25,100){$\frac{22,000}{1,500}$}
+        \put(190,-10){$22,000$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Inverse demand for dahu meat} \label{fig.dahu}
+\end{center}
+\end{figure}
+
+# Practice problem: linear demand
+- You observe that the consumption of loquat in a week in Ames equals 10 pounds when the price of loquats is \$5 per pound. You have good evidence that the elasticity of demand for loquat is $\eta = -0.8$.
+- Calculate the parameters of a linear demand function and graph the inverse demand function.
+
+#Supply
+\begin{center}
+\Huge
+Supply
+\end{center}
+
+# Production technology
+- For the case with two inputs, we can write the profit of a firm as $$ \Pi = P Q - w L - r K, $$ where $w$ is wage, $r$ is the cost per unit of capital, $L$ is the quantity of labor and $K$ is the quantity of capital.
+- A production function $Q=f(L, K)$ describes how incorporating input quantities $L$ and $K$ yields an output quantity $Q$.
+- Labor is variable both in the short-run and the long-run.
+- Capital is fixed in the short-run but variable in the long-run.
+
+# Cost minimization
+- Firms seek to employ inputs such that it minimizes their cost for a given output quantity.
+- In the short-run, the cost minimization program by a firm is $$ \min_{L} w L + r K \text{ s.t. } Q=f(L, K). $$
+  \vspace{-\baselineskip}
+- In the long-run, the cost minimization program by a firm is $$ \min_{L,K} w L + r K \text{ s.t. } Q=f(L, K).$$
+  \vspace{-\baselineskip}
+- The solution yields the demand for labor and the demand for capital for a given output quantity.
+- We can find from cost minimization the cost function $C(Q)$.
+
+# Cost curves
+- The total cost $C(Q)$ equals the sum of the variable cost $VC(Q)$ and the fixed cost $F$ $$ C(Q) = VC(Q) + F.$$
+  \vspace{-\baselineskip}
+- Denote the average total cost by $ATC = \frac{C(Q)}{Q}$.
+- Denote the average variable cost by $AVC = \frac{VC(Q)}{Q}$.
+- Denote the marginal cost by $MC = \frac{\p C(Q)}{\p Q}$.
+
+# Cost curves
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Lines
+        \thicklines
+        \qbezier(25, 150)(90, 0)(175,150)%Average total cost
+        \put(25,155){$ATC$}
+        \pause
+        \color{blue}
+        \qbezier(15, 120)(90, 0)(175,148)%Average variable cost
+        \put(5,125){$AVC$}
+        \pause
+        \color{red}
+        \qbezier(10, 90)(80, 5)(175, 175)%marginal cost
+        \put(180,175){$MC$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Cost curves} \label{fig.cost}
+\end{center}
+\end{figure}
+
+# Profit maximization
+- Economics assumes that firms maximize their profit: $$ \max_{Q} \Pi = PQ - C(Q). $$
+  \vspace{-\baselineskip}
+- The first order condition shows that a firm maximizes its profit when its marginal cost equals the price: $$ P = MC. $$
+  \vspace{-\baselineskip}
+- This means that a firm will always set its output where its marginal cost equals the price such that the marginal cost curve represents the supply (offer) curve of a firm.
+- But, what part of the marginal cost curve is the supply curve?
+
+# Profit maximization in the short-run
+- In the short-run, the amount of capital cannot be changed.
+- This implies that the cost of capital does not enter into a firm's decision to enter production. A firm does its best given the capital that it has.
+- A firm enters only when its profit, \textcolor[rgb]{1.00,0.00,0.00}{excluding its fixed cost}, is positive.
+- Thus, in the short-run, a firm enters only if the price is above the *average variable cost*.
+
+# Supply curve in the short-run
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Lines
+        \thicklines
+        \qbezier(10, 90)(80, 5)(175, 175)%marginal cost
+        \qbezier(25, 150)(90, 0)(175,150)%Average variable cost
+        \qbezier(15, 120)(90, 0)(175,148)%Average total cost
+        %Line labels
+        \put(5,95){$MC$}
+        \put(25,155){$ATC$}
+        \put(5,125){$AVC$}
+        \pause
+        \multiput(0,66)(10,0){18}{\line(1,0){5}}%Dashed line
+        \put(180,66){\parbox[c]{1.5in}{Minimum price where a firm enters in the short-run}}
+        \pause
+        \color{red}
+        \linethickness{2pt}
+        \qbezier(80, 66)(130, 90)(175, 175)%marginal cost
+        \put(180,175){Short-run supply curve}
+    \end{picture}
+\vspace{0.1in}
+\caption{Supply curve: short-run} \label{fig.cost2}
+\end{center}
+\end{figure}
+
+# Profit maximization in the long-run
+- In the long-run, firms can adjust the amount of capital.
+- This means that all cost are variable in the long-run.
+- Again, a firm enters only when its profit is positive.
+- Thus, in the long-run, a firm enters only if the price is above the *average total cost*.
+
+# Supply curve in the long-run
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Lines
+        \thicklines
+        \qbezier(10, 90)(80, 5)(175, 175)%marginal cost
+        \qbezier(25, 150)(90, 0)(175,150)%Average variable cost
+        \qbezier(15, 120)(90, 0)(175,148)%Average total cost
+        %Line labels
+        \put(5,95){$MC$}
+        \put(25,155){$ATC$}
+        \put(5,125){$AVC$}
+        \pause
+        \multiput(0,75)(10,0){18}{\line(1,0){5}}%Dashed line
+        \put(180,75){\parbox[c]{1.5in}{Minimum price where a firm enters in the long-run}}
+        \pause
+        \color{red}
+        \linethickness{2pt}
+        \qbezier(97, 75)(135, 105)(175, 175)%marginal cost
+        \put(180,175){Long-run supply curve}
+    \end{picture}
+\vspace{0.1in}
+\caption{Supply curve: long-run} \label{fig.cost3}
+\end{center}
+\end{figure}
+
+# When do farms enter or expand production?
+- Check [Ag Decision Maker](http://www.extension.iastate.edu/agdm/info/outlook.html) by ISU extension.
+- Look at the returns for some crops.
+- Check <http://nassgeodata.gmu.edu/CropScape/>.
+
+# Market supply curve
+- The market supply curve is the horizontal sum of the supply by individual firms.
+- That is, the market supply curve is the sum of the quantities supplied by individual firms for a given price.
+- The next graph shows how to horizontally sum the supply of two firms to obtain the total supply.
+
+# Market supply
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Supply curves
+        \thicklines
+        \put(20,20){\line(1,3){45}}
+        \put(40,20){\line(1,1){135}}
+        %Text
+        \put(65,160){$S_1$}
+        \put(175,160){$S_2$}
+        %Summing supplies
+        \pause
+        \multiput(0,75)(10,0){18}{\line(1,0){5}}%Dashed line
+        \put(-7.5,75){\makebox(0,0){$P^\ast$}}
+        \pause
+        \multiput(38,75)(0,-5){15}{\line(0,-1){2.5}}%Dashed line
+        \put(36,-10){$Q_1$}
+        \pause
+        \multiput(95,75)(0,-5){15}{\line(0,-1){2.5}}%Dashed line
+        \put(93,-10){$Q_2$}
+        \pause
+        \multiput(133,75)(0,-5){15}{\line(0,-1){2.5}}%Dashed line
+        \put(130,-10){$Q_M=Q_1+Q_2$}
+        %Market supply
+        \pause
+        \put(60,20){\line(4,3){180}}
+        \put(240,160){$S_M$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Market supply as the sum of the supply from two firms} \label{fig.dahu2}
+\end{center}
+\end{figure}
+
+
+# What shifts the supply?
+- A change in the price of the output is a movement along the supply curve.
+- A change in other variables that affect production costs shifts the supply.
+- An increase in the price of an input will shift the supply to the left, thus decreasing the quantity supplied at a given price.
+- An decrease in the price of an input will shift the supply the right, thus increasing the quantity supplied at a given price.
+- For example, an increase in the price of corn shifts down the supply of corn-ethanol (see for example [CARD's website](http://www.card.iastate.edu/research/biorenewables/tools/hist_eth_gm.aspx) or [Ag Decision Maker](http://www.extension.iastate.edu/agdm/info/outlook.html)).
+
+
+# Decrease in input cost - increase in supply
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Supply curves
+        \thicklines
+        \put(60,20){\line(1,2){70}}
+        \put(130,160){$S_1$}
+        \pause
+        \put(100,20){\line(1,2){70}}
+        \put(170,160){$S_2$}
+        \color{red}
+        \put(80,60){\vector(1,0){40}}
+        \end{picture}
+\vspace{0.1in}
+\caption{Decrease in input cost that cause a shift to the right of the supply curve}
+\end{center}
+\end{figure}
+
+# Increase in input cost - decrease in supply
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Supply curves
+        \thicklines
+        \put(60,20){\line(1,2){70}}
+        \put(130,160){$S_1$}
+        \pause
+        \put(20,20){\line(1,2){70}}
+        \put(90,160){$S_2$}
+        \color{red}
+        \put(80,60){\vector(-1,0){40}}
+        \end{picture}
+\vspace{0.1in}
+\caption{Increase in input cost that cause a shift to the left of the supply curve}
+\end{center}
+\end{figure}
+
+# Elasticity of supply
+- To simplify, we can write the supply function as $$ Q^s = S(P,w,L) \equiv S(P) .$$
+  \vspace{-\baselineskip}
+- The supply depends on the price of output and the prices of inputs. The prices of inputs are often omitted in the expression for the supply.
+- The expression for the elasticity of supply is $$ \epsilon = \frac{\p S(P)}{\p P} \frac{P}{Q^s} = \frac{\ \Delta Q^s}{\ \Delta P} = \frac{ \Delta Q^s/Q^s }{\Delta P/P} \ge 0 .$$
+  \vspace{-\baselineskip}
+- We say that
+    - the supply is elastic if \pause $\epsilon > 1$;
+    - \pause the supply is unit-elastic if \pause $\epsilon=1$;
+    - \pause the supply is inelastic if \pause $\epsilon \in (0,1)$.
+- As firms are able to adjust capital in the long-run, the supply becomes more elastic as the length of run increases.
+
+# Example 1: elasticity of supply
+- Suppose that a government fixes the price of dahu meat to \$8 per pound. A lobby of dahu meat eaters puts pressure on the government who end up lowering the price of dahu meat to \$7 per pound. At a price of \$8 per pound, the weekly production of dahu meat was 10,000 pounds. At a price of \$7 per pound, the production of dahu drops to 9,000 pounds. What is the elasticity of supply for dahu meat?
+\pause
+- The percentage change in production is $(9,000-10,000)/10,000 = -0.1$ or $-10\%$.
+- The percentage change in the price is $(7-8)/8 = -0.125$ or $-12.5\%$.
+- The elasticity of demand for dahu meat is $\epsilon = \frac{-10\%}{-12.5\%} = 0.8$.
+
+# Example 2: elasticity of supply
+- Suppose that you know that the supply function for kumquats is $$ Q^s = 150P^{0.9} .$$ Last week you observed that the price of kumquats was \$5 per pound. What is the elasticity of supply?
+  \pause
+- The quantity supplied of kumquats is $150*5^{0.9} = 639$.
+- The partial derivative of the supply function with respect to the price is $\frac{\p Q^s}{\p P} = 150*0.9*P^{(0.9-1)}=135*P^{-0.1} = 114.9$.
+- The elasticity of supply for kumquats in Ames is thus $$ \epsilon = \frac{\p Q^s}{\p P} \frac{P}{Q^s} = 114.9*\frac{5}{639} = 0.9 .$$
+
+# Linear supply
+- Just like for the demand, economists often like to assume a linear supply: $$ Q^s = e + f P $$ where $f>0$ are parameters of the supply function.
+- The slope of the supply function is $\frac{\p Q^s}{\p P}=f$.
+- The elasticity of supply for a linear supply function is $$ \epsilon = \frac{\p Q^s}{\p P} \frac{P}{Q^s} = f\frac{P}{Q^s}>0 .$$
+
+# Linear supply
+- Again, like for the linear demand, we can use a two-step approach to find values of the parameters of the supply function from an estimate of the elasticity of supply and observed values for the price and the quantity:
+    i. Find the value of $f$ as $$ f = \epsilon \frac{Q^s}{P}.$$
+    \vspace{-\baselineskip}
+    ii. Knowing $f$, the value of $e$ is $$ e = Q^s - f P .$$
+
+# Practice problem: linear supply
+- You know that the elasticity of supply for loquats is $\epsilon = 1$ and you observe that the price of loquat is \$5 per pound and the quantity is 10 pounds.
+- Calculate the parameters of a linear supply function.
+- Graph the inverse supply function.
+
+# Market equilibrium
+\begin{center}
+\Huge
+Market equilibrium
+\end{center}
+
+# Market equilibrium: definition
+- In economics, an equilibrium is a situation in which no participant (consumer or firm) wants to change behavior.
+    - In our case, it is at the intersection of the demand and the supply and it tells us the solution for the price and the quantity.
+- The competitive equilibrium, on which we will focus in this class, occurs at the intersection of the demand and the supply.
+- Assumptions of perfect competition:
+    i. Firms sell an identical product;
+    ii. Full information about prices;
+    iii. The market contains a large number of firms;
+    iv. There is no transaction cost;
+    v. Firms are free to enter and to exit.
+
+# Market equilibrium
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Demand curve
+        \thicklines
+        \put(0,160){\line(1,-1){160}}
+        %Supply curve
+        \put(0,0){\line(1,1){160}}
+        %Text
+        \put(160,10){$D$}
+        \put(160,165){$S$}
+        %Equilibrium
+        \pause
+        \multiput(0,80)(5,0){16}{\line(1,0){2.5}}%Dashed line
+        \multiput(80,80)(0,-5){16}{\line(0,-1){2.5}}%Dashed line
+        \put(-10,80){$P^\ast$}
+        \put(80,-10){$Q^\ast$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Market equilibrium} \label{fig.eq}
+\end{center}
+\end{figure}
+
+# Why is the intersection of demand and supply an equilibrium?
+- Suppose that the price is higher than the equilibrium price $P^\ast$:
+    - There is *excess supply* as consumers are willing to buy less than what firms are willing to supply at that price.
+    - Some firms cannot sell their product and therefore exit.
+    - This reduces the quantity supplied. Moving along the supply curve, the price must decline.
+    - This will occur until the price and the quantity are at equilibrium.
+
+
+# Price above the equilibrium price}
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Demand curve
+        \thicklines
+        \put(0,160){\line(1,-1){160}}
+        %Supply curve
+        \put(0,0){\line(1,1){160}}
+        %Text
+        \put(160,10){$D$}
+        \put(160,165){$S$}
+        %Equilibrium
+        \onslide<2->
+        \color{gray}
+        \multiput(0,120)(5,0){24}{\line(1,0){2.5}}%Dashed line h
+        \multiput(40,120)(0,-5){24}{\line(0,-1){2.5}}%Dashed line v
+        \multiput(120,120)(0,-5){24}{\line(0,-1){2.5}}%Dashed line v
+        \onslide<3,4>
+        \put(38,-10){$Q^d_0$}
+        \put(118,-10){$Q^s_0$}
+        \color{black}
+        \put(140,100){Excess supply  = $Q^s_0 - Q^d_0$}
+        \onslide<4->
+        \color{red}
+        \put(118,120){\vector(-1,-1){20}} %x-axis
+        \onslide<5,6>
+        \put(58,-10){$Q^d_1$}
+        \put(98,-10){$Q^s_1$}
+        \color{black}
+        \put(140,80){Excess supply  = $Q^s_1 - Q^d_1$}
+        \onslide<5->
+        \color{blue}
+        \multiput(0,100)(5,0){20}{\line(1,0){2.5}}%Dashed line
+        \multiput(60,100)(0,-5){20}{\line(0,-1){2.5}}%Dashed line
+        \multiput(100,100)(0,-5){20}{\line(0,-1){2.5}}%Dashed line
+        \pause
+        \onslide<6,7>
+        \color{red}
+        \put(98,100){\vector(-1,-1){19}} %x-axis
+        \onslide<7>
+        \color{black}
+        \multiput(0,80)(5,0){16}{\line(1,0){2.5}}%Dashed line
+        \multiput(80,80)(0,-5){16}{\line(0,-1){2.5}}%Dashed line
+        \put(-10,80){$P^\ast$}
+        \put(80,-10){$Q^\ast$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Price above the equilibrium price} \label{fig.eq2}
+\end{center}
+\end{figure}
+
+
+# Why is the intersection of demand and supply an equilibrium?
+- Suppose that the price is lower than the equilibrium price $P^\ast$:
+    - There is *excess demand* as consumers are willing to more less than what firms are willing to supply at that price.
+    - Some consumers will offer more for the product.
+    - Moving along the demand curve following the increase in price, the quantity demanded must decline.
+    - This will occur until the price and the quantity are at equilibrium.
+
+
+# Price below the equilibrium price
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Demand curve
+        \thicklines
+        \put(0,160){\line(1,-1){160}}
+        %Supply curve
+        \put(0,0){\line(1,1){160}}
+        %Text
+        \put(160,10){$D$}
+        \put(160,165){$S$}
+        %Equilibrium
+        \onslide<2->
+        \color{gray}
+        \multiput(0,40)(5,0){24}{\line(1,0){2.5}}%Dashed line h
+        \multiput(40,40)(0,-5){8}{\line(0,-1){2.5}}%Dashed line v
+        \multiput(120,40)(0,-5){8}{\line(0,-1){2.5}}%Dashed line v
+        \onslide<3,4>
+        \put(118,-10){$Q^d_0$}
+        \put(38,-10){$Q^s_0$}
+        \color{black}
+        \put(140,100){Excess demand  = $Q^d_0 - Q^s_0$}
+        \onslide<4->
+        \color{red}
+        \put(122,40){\vector(-1,1){20}} %x-axis
+        \onslide<5,6>
+        \put(58,-10){$Q^s_1$}
+        \put(98,-10){$Q^d_1$}
+        \color{black}
+        \put(140,80){Excess demand  = $Q^d_1 - Q^s_1$}
+        \onslide<5->
+        \color{blue}
+        \multiput(0,60)(5,0){20}{\line(1,0){2.5}}%Dashed line
+        \multiput(60,60)(0,-5){12}{\line(0,-1){2.5}}%Dashed line
+        \multiput(100,60)(0,-5){12}{\line(0,-1){2.5}}%Dashed line
+        \pause
+        \onslide<6,7>
+        \color{red}
+        \put(102,60){\vector(-1,1){21}} %x-axis
+        \onslide<7>
+        \color{black}
+        \multiput(0,80)(5,0){16}{\line(1,0){2.5}}%Dashed line
+        \multiput(80,80)(0,-5){16}{\line(0,-1){2.5}}%Dashed line
+        \put(-10,80){$P^\ast$}
+        \put(80,-10){$Q^\ast$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Price below the equilibrium price} \label{fig.eq3}
+\end{center}
+\end{figure}
+
+# Shifts in demand and market equilibrium
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Demand curve
+        \thicklines
+        \put(0,140){\line(1,-1){140}}
+        %Supply curve
+        \put(0,0){\line(1,1){160}}
+        %Text
+        \put(135,10){$D$}
+        \put(150,155){$S$}
+        %Equilibrium
+        \color{black}
+        \multiput(0,70)(5,0){14}{\line(1,0){2.5}}%Dashed line
+        \multiput(70,70)(0,-5){14}{\line(0,-1){2.5}}%Dashed line
+        \put(-10,68){$P^\ast$}
+        \put(68,-10){$Q^\ast$}
+        %Positive shift in demand
+        \onslide<2>
+        \color{blue}
+        \put(0,160){\line(1,-1){160}}
+        \put(40,100){\vector(1,0){20}} %x-axis
+        \put(155,10){$D_0$}
+        \multiput(0,80)(5,0){16}{\line(1,0){2.5}}%Dashed line h
+        \multiput(80,80)(0,-5){16}{\line(0,-1){2.5}}%Dashed line v
+        \put(78,-10){$Q_0$}
+        \put(-10,78){$P_0$}
+        %Negative shift in demand
+        \onslide<3>
+        \color{red}
+        \put(0,120){\line(1,-1){120}}
+        \put(40,100){\vector(-1,0){20}} %x-axis
+        \put(115,10){$D_1$}
+        \multiput(0,60)(5,0){12}{\line(1,0){2.5}}%Dashed line h
+        \multiput(60,60)(0,-5){12}{\line(0,-1){2.5}}%Dashed line v
+        \put(58,-10){$Q_1$}
+        \put(-10,58){$P_1$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Shifts in demand} \label{fig.shiftdemand}
+\end{center}
+\end{figure}
+
+# Shifts in supply and market equilibrium
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Demand curve
+        \thicklines
+        \put(0,160){\line(1,-1){160}}
+        %Supply curve
+        \put(0,0){\line(1,1){160}}
+        %Text
+        \put(155,10){$D$}
+        \put(150,155){$S$}
+        %Equilibrium
+        \color{black}
+        \multiput(0,80)(5,0){16}{\line(1,0){2.5}}%Dashed line
+        \multiput(80,80)(0,-5){16}{\line(0,-1){2.5}}%Dashed line
+        \put(-10,78){$P^\ast$}
+        \put(78,-10){$Q^\ast$}
+        %Positive shift in supply
+        \onslide<2>
+        \color{blue}
+        \put(20,0){\line(1,1){140}}
+        \put(40,40){\vector(1,0){20}} %x-axis
+        \put(145,135){$S_0$}
+        \multiput(0,70)(5,0){18}{\line(1,0){2.5}}%Dashed line h
+        \multiput(90,70)(0,-5){14}{\line(0,-1){2.5}}%Dashed line v
+        \put(88,-10){$Q_0$}
+        \put(-10,68){$P_0$}
+        %Negative shift in supply
+        \onslide<3>
+        \color{red}
+        \put(0,20){\line(1,1){140}}
+        \put(40,40){\vector(-1,0){20}} %x-axis
+        \put(125,155){$S_1$}
+        \multiput(0,90)(5,0){14}{\line(1,0){2.5}}%Dashed line h
+        \multiput(70,90)(0,-5){18}{\line(0,-1){2.5}}%Dashed line v
+        \put(65,-10){$Q_1$}
+        \put(-10,88){$P_1$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Shifts in supply} \label{fig.shiftsupply}
+\end{center}
+\end{figure}
+
+# Solving for equilibrium
+- At equilibrium there is no excess supply or no excess demand.
+- This means that $Q^\ast=Q^s=Q^d$ and that price paid by consumers is the same as the price received by suppliers.
+- We can use this to solve for the market equilibrium if we know expressions for the demand function and the supply function.
+
+# Example: solving for equilibrium
+- Suppose that you know that the inverse demand for dahu meat is  $$ P = 100 - 10 Q^d. $$
+  \vspace{-\baselineskip}
+- You also know know that the inverse supply for dahu meat is $$ P = -200 + 50 Q^s.$$
+  \vspace{-\baselineskip}
+
+# Example: solving for equilibrium
+- How to find the market equilibrium?
+    - We know that at equilibrium that there is only one price and that $Q^\ast=Q^s=Q^d$.
+    - From the expressions for the inverse demand and the inverse supply we can write $$100 - 10 Q^\ast = -200 + 50 Q^\ast. $$
+    \vspace{-\baselineskip}
+    - Solving for the quantity, we find that $Q^\ast = 5$.
+    - Using the solution for the quantity in the inverse demand yields $P^\ast = 100- 10*5=50$.
+    - Note that we find the same solution is we instead use the inverse supply: $P^\ast = -200 + 50*5 = 50$.
+- Thus, the market equilibrium is $Q^\ast = 5$ and $P^\ast = 50$.
+
+
+# Problem 1: solving for equilibrium
+- Suppose that you know that the inverse demand for kumquats is $$P = 120 - 2 Q^d.$$
+  \vspace{-\baselineskip}
+- You also know know that the inverse supply for kumquats is $$P = 5 Q^s.$$
+  \vspace{-\baselineskip}
+- Find the market equilibrium.
+
+# Problem 2: solving for equilibrium
+- You observe that the price of maple syrup is \$75 per gallon and that the annual consumption of maple syrup in Ames is 1,000 gallons.
+- From reliable sources, you know that the elasticity of demand for maple syrup is $\eta = -10$ and the elasticity of supply for maple syrup is $\epsilon = 0.1$.
+- Find expressions for the linear inverse demand function and for the linear inverse supply.
+
+# In practice, how does it work? {.allowframebreaks}
+- For the market to work and reach an equilibrium, buyers and sellers must be informed of the price.
+- There exist several mechanisms to relay information about prices:
+    - Marketplaces for *futures* and *options* (e.g. Chicago Mercantile Exchange (CEM) and the Chicago Board of Trade (CBOT)).
+    - Information about prices are available online or in newspapers.
+    - Auctions.
+    - The USDA through several of its agencies (e.g. ERS, NASS, FAS) report prices for agricultural commodities.
+    - The US government requires mandatory price reporting for several commodities (see for example the *Mandatory Price Reporting Act* of 2010). The objective is to improve transparency and favor competition.
+    - Buyers and sellers are free to search for market opportunities.
+- Thus, information about prices allow for arbitrage such that markets for agricultural commodities should work well and converge toward the market equilibrium.
+- It is sometimes impressive to see how fast profit opportunities are exploited thus making the markets converge toward equilibrium very quickly.
+- Some firms specialize in gathering information (e.g. by estimating yields before everyone else) to profit from arbitrage opportunities.

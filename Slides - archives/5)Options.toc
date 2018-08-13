@@ -1,0 +1,6 @@
+\beamer@endinputifotherversion {3.27pt}
+\select@language {english}
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{What is the price of an option?}{8}{0}{2}
+\beamer@sectionintoc {3}{Speculation}{31}{0}{3}
+\beamer@sectionintoc {4}{References}{38}{0}{4}

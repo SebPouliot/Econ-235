@@ -1,0 +1,11 @@
+\beamer@endinputifotherversion {3.27pt}
+\select@language {english}
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{Specifications of futures contracts}{10}{0}{2}
+\beamer@sectionintoc {3}{Who trades futures?}{13}{0}{3}
+\beamer@sectionintoc {4}{Futures account}{19}{0}{4}
+\beamer@sectionintoc {5}{Payoffs diagram}{32}{0}{5}
+\beamer@sectionintoc {6}{Trading hours}{38}{0}{6}
+\beamer@sectionintoc {7}{Broker fees}{39}{0}{7}
+\beamer@sectionintoc {8}{Price limits}{41}{0}{8}
+\beamer@sectionintoc {9}{Terminology: Normal and inverted markets}{43}{0}{9}
