@@ -1,4 +1,4 @@
-# Econ 235: Introduction to Agricultural Markets"
+# Econ 235: Introduction to Agricultural Markets
 Iowa State University
 Sébastien Pouliot
 Fall 2018
