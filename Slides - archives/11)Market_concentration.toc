@@ -1,9 +1,0 @@
-\beamer@endinputifotherversion {3.27pt}
-\select@language {english}
-\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
-\beamer@sectionintoc {2}{Definitions}{3}{0}{2}
-\beamer@sectionintoc {3}{Concentration in agribusinesses}{6}{0}{3}
-\beamer@sectionintoc {4}{Measuring concentration}{12}{0}{4}
-\beamer@sectionintoc {5}{Why more concentration in some sectors?}{22}{0}{5}
-\beamer@sectionintoc {6}{Cartels in agriculture}{23}{0}{6}
-\beamer@sectionintoc {7}{Consequences of Market power}{25}{0}{7}
