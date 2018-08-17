@@ -15,6 +15,7 @@ mytheme <- theme(plot.title = element_text(size = 10, colour = 'black', family =
                   axis.ticks.y = element_line(color='black'), 
                   axis.text.y = element_text(colour = 'black', family = "Times New Roman"), 
                   axis.text.x = element_text(size = 10, colour = 'black', family = "Times New Roman"),
+                  axis.title = element_text(colour = 'black', family = "Times New Roman"),
                   panel.border = element_blank(), 
                   axis.line.x = element_line(color='black'),  
                   axis.line.y = element_line(color='black'),  

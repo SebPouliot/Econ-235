@@ -10,16 +10,29 @@ output:
     includes:
       in_header: mystyle.sty
     theme: default
-  ioslides_presentation: default
   slidy_presentation: default
+  ioslides_presentation: default
 institute: Iowa State University
-header-includes: \widowpenalties 1 150
 classoption: dvipsnames
 urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo=FALSE, fig.keep='high', fig.width=6, fig.height=4, fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
+
+#Load some packages
+library(pacman)
+pacman::p_load(dplyr)
+pacman::p_load(magrittr)
+suppressMessages(pacman::p_load(reshape2))
+pacman::p_load(Quandl)
+suppressMessages(pacman::p_load(lubridate))
+pacman::p_load(viridis)
+pacman::p_load(Cairo)
+
+#Basic setup for figures
+source("Figures/Graph parameters.r")
+
 ```
 
 # Introduction
@@ -81,12 +94,12 @@ Consumer demand
 
 # Elasticity
 - Economists use the concept of elasticity to measure the sensitivity of a change in one variable $Z$ with respect to the change in another variable $X$.
-- Algebraically, we can write this as $$ \frac{\p Z}{\p X} \frac{X}{Z} = \frac{\ \Delta Z}{\ \Delta X} = \frac{ \Delta Z/Z }{\Delta X/X},$$ where $\Delta$ denotes a ``large" change and $\p$ denotes a ``small" change.
+- Algebraically, we can write this as $$ \frac{\p Z}{\p X} \frac{X}{Z} = \frac{\% \Delta Z}{\% \Delta X} = \frac{ \Delta Z/Z }{\Delta X/X},$$ where $\Delta$ denotes a *large* change and $\p$ denotes a *small* change.
 - An elasticity expresses the percentage change in a variable $Z$ with respect to a one percent change in another variable $X$.
 - One advantage of elasticity is that it is unitless!
 
 # Own-price elasticity of demand
-- The expression for the own-price elasticity of demand is $$ \eta = \frac{\p D(P,P_s,P_c, Y)}{\p P} \frac{P}{Q^d} = \frac{\ \Delta Q^d}{\ \Delta P} = \frac{ \Delta Q^d/Q^d }{\Delta P/P} .$$
+- The expression for the own-price elasticity of demand is $$ \eta = \frac{\p D(P,P_s,P_c, Y)}{\p P} \frac{P}{Q^d} = \frac{\% \Delta Q^d}{\% \Delta P} = \frac{ \Delta Q^d/Q^d }{\Delta P/P} .$$
   \vspace{-\baselineskip}
 - Note that some use $\epsilon$ to denote the elasticity of demand. In this class, we will use $\epsilon$ to denote the elasticity of supply.
 - As the demand slopes down, the elasticity of demand takes a negative value.
@@ -204,14 +217,14 @@ Consumer demand
 
 # Cross-price elasticity of demand
 - Consider a change in $P_a$, the price of another good, either a complement or a substitute good.
-- The expression for the cross-price elasticity of demand is $$ \eta_a = \frac{\p D(P,P_a, Y)}{\p P_a} \frac{P_a}{Q^d} = \frac{\ \Delta Q^d}{\ \Delta P_a} = \frac{ \Delta Q^d/Q^d }{\Delta P_a/P_a}.$$
+- The expression for the cross-price elasticity of demand is $$ \eta_a = \frac{\p D(P,P_a, Y)}{\p P_a} \frac{P_a}{Q^d} = \frac{\% \Delta Q^d}{\% \Delta P_a} = \frac{ \Delta Q^d/Q^d }{\Delta P_a/P_a}.$$
   \vspace{-\baselineskip}
 - Goods are substitutes if $\eta_a >0$.
 - Goods are complements if $\eta_a <0$.
 
 # Income elasticity
 - Recall that $Y$ is the income.
-- The expression for the income elasticity of demand is $$ \xi = \frac{\p D(P,P_s, P_c,Y)}{\p Y} \frac{Y}{Q^d} = \frac{\ \Delta Q}{\ \Delta Y} = \frac{ \Delta Q^d/Q^d }{\Delta Y/Y}.$$
+- The expression for the income elasticity of demand is $$ \xi = \frac{\p D(P,P_s, P_c,Y)}{\p Y} \frac{Y}{Q^d} = \frac{\% \Delta Q}{\% \Delta Y} = \frac{ \Delta Q^d/Q^d }{\Delta Y/Y}.$$
   \vspace{-\baselineskip}
 - A goods is normal if $\xi >0$:
     - \pause it is a necessity good if \pause $\xi \in [0,1]$ (e.g. clothing, food,...);
@@ -397,7 +410,7 @@ Supply
 # Profit maximization in the short-run
 - In the short-run, the amount of capital cannot be changed.
 - This implies that the cost of capital does not enter into a firm's decision to enter production. A firm does its best given the capital that it has.
-- A firm enters only when its profit, \textcolor[rgb]{1.00,0.00,0.00}{excluding its fixed cost}, is positive.
+- A firm enters only when its profit, \textcolor{red}{excluding its fixed cost}, is positive.
 - Thus, in the short-run, a firm enters only if the price is above the *average variable cost*.
 
 # Supply curve in the short-run
@@ -474,7 +487,7 @@ Supply
 
 # When do farms enter or expand production?
 - Check [Ag Decision Maker](http://www.extension.iastate.edu/agdm/info/outlook.html) by ISU extension.
-- Look at the returns for some crops.
+    - Look at the returns for some crops.
 - Check <http://nassgeodata.gmu.edu/CropScape/>.
 
 # Market supply curve
@@ -531,7 +544,7 @@ Supply
 - For example, an increase in the price of corn shifts down the supply of corn-ethanol (see for example [CARD's website](http://www.card.iastate.edu/research/biorenewables/tools/hist_eth_gm.aspx) or [Ag Decision Maker](http://www.extension.iastate.edu/agdm/info/outlook.html)).
 
 
-# Decrease in input cost - increase in supply
+# Decrease in input cost $\Rightarrow$ increase in supply
 \begin{figure}[htbp]
 \begin{center}
     \begin{picture}(240,180)
@@ -552,11 +565,11 @@ Supply
         \put(80,60){\vector(1,0){40}}
         \end{picture}
 \vspace{0.1in}
-\caption{Decrease in input cost that cause a shift to the right of the supply curve}
+\caption{Decrease in input cost that causes a shift to the right of the supply curve}
 \end{center}
 \end{figure}
 
-# Increase in input cost - decrease in supply
+# Increase in input cost $\Rightarrow$ decrease in supply
 \begin{figure}[htbp]
 \begin{center}
     \begin{picture}(240,180)
@@ -577,7 +590,7 @@ Supply
         \put(80,60){\vector(-1,0){40}}
         \end{picture}
 \vspace{0.1in}
-\caption{Increase in input cost that cause a shift to the left of the supply curve}
+\caption{Increase in input cost that causes a shift to the left of the supply curve}
 \end{center}
 \end{figure}
 
@@ -585,7 +598,7 @@ Supply
 - To simplify, we can write the supply function as $$ Q^s = S(P,w,L) \equiv S(P) .$$
   \vspace{-\baselineskip}
 - The supply depends on the price of output and the prices of inputs. The prices of inputs are often omitted in the expression for the supply.
-- The expression for the elasticity of supply is $$ \epsilon = \frac{\p S(P)}{\p P} \frac{P}{Q^s} = \frac{\ \Delta Q^s}{\ \Delta P} = \frac{ \Delta Q^s/Q^s }{\Delta P/P} \ge 0 .$$
+- The expression for the elasticity of supply is $$ \epsilon = \frac{\p S(P)}{\p P} \frac{P}{Q^s} = \frac{\% \Delta Q^s}{\% \Delta P} = \frac{ \Delta Q^s/Q^s }{\Delta P/P} \ge 0 .$$
   \vspace{-\baselineskip}
 - We say that
     - the supply is elastic if \pause $\epsilon > 1$;
@@ -608,7 +621,7 @@ Supply
 - The elasticity of supply for kumquats in Ames is thus $$ \epsilon = \frac{\p Q^s}{\p P} \frac{P}{Q^s} = 114.9*\frac{5}{639} = 0.9 .$$
 
 # Linear supply
-- Just like for the demand, economists often like to assume a linear supply: $$ Q^s = e + f P $$ where $f>0$ are parameters of the supply function.
+- Just like for the demand, economists often like to assume a linear supply: $$ Q^s = e + f P $$ where $e>0$ and $f>0$ are parameters of the supply function.
 - The slope of the supply function is $\frac{\p Q^s}{\p P}=f$.
 - The elasticity of supply for a linear supply function is $$ \epsilon = \frac{\p Q^s}{\p P} \frac{P}{Q^s} = f\frac{P}{Q^s}>0 .$$
 

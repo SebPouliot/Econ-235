@@ -19,7 +19,7 @@ urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, fig.keep='high', fig.width=6, fig.height=4, dev='cairo_pdf')
+knitr::opts_chunk$set(echo=FALSE, fig.keep='high', fig.width=6, fig.height=4, fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
 
 #Load some packages
 library(pacman)
@@ -128,6 +128,9 @@ corn_c_plot <- ggplot(data = dta, aes(x = date, y = Settle)) +
   mytheme 
 
 print(corn_plot)
+
+ggsave("canvas_image.png", corn_plot, width = 6, height = 4, units = "in")
+
 ```
 
 
