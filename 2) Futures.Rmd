@@ -19,7 +19,7 @@ urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, fig.keep='high', fig.width=6, fig.height=4, fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(echo=FALSE, fig.keep='high', out.width = '95%', fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
 
 #Load some packages
 library(pacman)
@@ -133,7 +133,6 @@ ggsave("canvas_image.png", corn_plot, width = 6, height = 4, units = "in")
 
 ```
 
-
 # Price of November soybeans from 1990 to 2018
 ```{r figure_soybeans, eval = TRUE}
 
@@ -200,14 +199,14 @@ print(soy_plot)
 -  Trade of futures contracts occurs in privately own exchanges.
 -  Most trades now occur through electronic trading.
 -  Federal (US Commodities Futures Trade Commission) and private regulations define the rules under which futures are traded.
--  Historically, in the United States, futures have been traded at the \emph{Chicago Mercantile Exchange} (CME), the \emph{Chicago Board of Trade} (CBOT) and the New York Mercantile Exchange (NYME).
+-  Historically, in the United States, futures have been traded at the *Chicago Mercantile Exchange* (CME), the *Chicago Board of Trade* (CBOT) and the New York Mercantile Exchange (NYME).
 -  In 2007, CME and CBOT merged to form CME Group Inc.
 -  CME Group Inc. bought NYME in 2008.
 
 
 # What type of goods?
 -  Futures contract were first created for wheat and corn. Other storable agricultural commodities were later added.
--  Futures for onions are illegal since the \emph{Onion Futures Act} of 1955 (price manipulation).
+-  Futures for onions are illegal since the *Onion Futures Act* of 1955 (price manipulation).
 -  Commodity exchanges added nonstorable agricultural commodities in the 1960s.
 -  Nonagricultural commodities (e.g. lumber and metals) were introduced in the 1970s.
 -  Financial futures (e.g. exchange rate, financial indices) were added in the 1980s.
@@ -364,9 +363,9 @@ Table: Maintenance margins for selected agricultural commodities
 | Product | Contract size | Maintenance margin |
 |:------------|:--------------:|:-------:|
 | Corn        | 5,000 bushels  | \$850   |
-| Soybean     | 5,000 bushels  | \$1,900 |
-| Wheat       | 5,000 bushels  | \$1,200 |
-| Live cattle | 40,000 pounds  | \$1,750 |
+| Soybean     | 5,000 bushels  | \$2,350 |
+| Wheat       | 5,000 bushels  | \$1,550 |
+| Live cattle | 40,000 pounds  | \$1,500 |
 | Lean hogs   | 40,000 pounds  | \$1,200 |
 
 \scriptsize
@@ -582,17 +581,19 @@ print(position_plot2)
 ```{r fees, echo=FALSE, fig.cap="An old example of broker fees", out.width = '75%'}
 knitr::include_graphics("Figures/broker_fees.png")
 ```
-Source was http://www.tradestation.com/pricing/futures-pricing/futures-broker-comparison but is no longer available.
+- The page for the example of broker fees is no longer available.
+- You can see examples of broker fees at this page: <https://www.nerdwallet.com/blog/investing/best-online-brokers-futures-trading-commodities/>.
 
 # Price limits
 -  To limit price volatility, exchanges set each day limits between which price for futures contract may vary.
 -  The parameters to set the limits are re-assessed quarterly.
--  You can find details about trading limits here: http://www.cmegroup.com/trading/equity-index/price-limit-guide.html.
+-  You can find details about trading limits here: <http://www.cmegroup.com/trading/equity-index/price-limit-guide.html>.
 
 
 # Price limits: examples
--  Corn:\$0.25 per bushel expandable to \$0.50 when the market closes at limit bid or limit offer. Source: http://www.cmegroup.com/trading/agricultural/grain-and-oilseed/corn_contract_specifications.html.
--  Soybean: \$0.70 per bushel expandable to \$1.40 when the market closes at limit bid or limit offer. Source: http://www.cmegroup.com/trading/agricultural/grain-and-oilseed/soybean_contract_specifications.html.
+- Price limits at the CME for agricultural commodities are available at <https://www.cmegroup.com/trading/Price-Limit-Update.html>.
+- Corn:\$0.25 per bushel expandable to \$0.50 when the market closes at limit bid or limit offer. 
+-  Soybean: \$0.75 per bushel expandable to \$1.50 when the market closes at limit bid or limit offer.
 
 
 # Definition: normal market
@@ -601,14 +602,14 @@ Source was http://www.tradestation.com/pricing/futures-pricing/futures-broker-co
 -  The increase in the price of futures contracts reflects the cost of storage and other costs of holding the commodity.
 
 # Definition: inverted market
--  In an *\emph{*inverted market*, the prices of futures contracts decline with their maturities.
+-  In an *inverted market*, the prices of futures contracts decline with their maturities.
 -  This type of price pattern reflects conditions of the demand and supply for the commodity.
 
 
 # How are current markets?
 -  Futures contract price patterns reflect market's perception of future demand and supply.
 -  For agricultural commodities with seasonal patterns, markets will tend to be normal and inverted at the same time depending on the crop year.
-    -  [Barchart](http://www.barchart.com/commodityfutures/Corn_Futures/ZC);
+    -  [Corn (Barchart)](http://www.barchart.com/commodityfutures/Corn_Futures/ZC);
     -  [Soybeans (Barchart)](http://www.barchart.com/commodityfutures/Soybeans_Futures/ZS?search=ZS*);
     -  [Wheat (Barchart)](http://www.barchart.com/commodityfutures/Wheat_Futures/ZW?search=ZW*).
 -  For commodities with less of a seasonal pattern, then the relationship between a futures contract price and its maturity will tend to be smoother.

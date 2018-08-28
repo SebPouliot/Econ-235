@@ -691,7 +691,7 @@ Market equilibrium
     - This will occur until the price and the quantity are at equilibrium.
 
 
-# Price above the equilibrium price}
+# Price above the equilibrium price
 \begin{figure}[htbp]
 \begin{center}
     \begin{picture}(240,180)

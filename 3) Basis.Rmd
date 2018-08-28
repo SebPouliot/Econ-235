@@ -19,7 +19,7 @@ urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=FALSE, fig.keep='high', fig.width=6, fig.height=4, fig.align = 'center', dev='cairo_pdf')
+knitr::opts_chunk$set(echo=FALSE, fig.keep='high', out.width = '95%', fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
 
 #Load some packages
 library(pacman)
