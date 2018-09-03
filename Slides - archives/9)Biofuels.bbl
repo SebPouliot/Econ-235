@@ -1,0 +1,10 @@
+\begin{thebibliography}{1}
+\newcommand{\bibenquote}[1]{``#1''}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Schnepf and Yacobucci(2013)}]{Schnepf2013}
+Schnepf, R., and B.D. Yacobucci. 2013. \bibenquote{Renewable Fuel Standards
+  ({RFS}): Overview and Issues.} CRS Report for Congress No. R40155,
+  Congressional Research Service.
+
+\end{thebibliography}

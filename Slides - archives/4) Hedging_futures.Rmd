@@ -1,0 +1,794 @@
+---
+title: "Hedging with futures"
+shortitle: Hedging
+subtitle: Econ 235
+author: "Sebastien Pouliot"
+date: "Fall 2018"
+output:
+  beamer_presentation:
+    citation_package: natbib
+    includes:
+      in_header: mystyle.sty
+    theme: default
+  ioslides_presentation: default
+  slidy_presentation: default
+institute: Iowa State University
+header-includes: \widowpenalties 1 150
+classoption: dvipsnames
+urlcolor: blue
+bibliography: References.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, fig.keep='high', fig.width=6, fig.height=4, dev='cairo_pdf')
+
+#Load some packages
+library(pacman)
+pacman::p_load(dplyr)
+pacman::p_load(magrittr)
+suppressMessages(pacman::p_load(reshape2))
+pacman::p_load(Quandl)
+suppressMessages(pacman::p_load(lubridate))
+pacman::p_load(viridis)
+pacman::p_load(Cairo)
+
+#Authentification
+#Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
+
+#Basic setup for figures
+source("Figures/Graph parameters.r")
+
+```
+
+# Definitions
+<!-- -  Hedging is the action of taking a position opposite to an existing one to counterbalance gains or losses. -->
+<!--     -  For example, if long in the cash market, then take a short position in the futures market. -->
+<!--     -  In the opposite case, if short in the cash market, then take a long position in the futures market. -->
+<!-- -  Simple hedging strategies use the fact that prices in the cash and futures markets move in the same directions. More advanced hedging strategies may use price movements in opposite directions in the cash and futures markets or position in other markets. -->
+<!-- -  We will consider hedging with futures in this section. -->
+
+<!-- # To read! -->
+<!-- - (Self-Study Guide to Hedging with Grain and Oilseed Futures and Options.)[http://www.cmegroup.com/trading/agricultural/self-study-guide-to-hedging-with-grain-and-oilseed-futures-and-options.html] -->
+<!-- - (Self-Study Guide to Hedging with Livestock Futures and Options.)[http://www.cmegroup.com/trading/agricultural/self-study-guide-hedging-livestock-futures-options.html] -->
+<!-- - McNew's Marketing Guide available on Blackboard. -->
+<!-- - (Grain Price Hedging Basics from ISU) extension.[http://www.extension.iastate.edu/agdm/crops/html/a2-60.html] -->
+
+
+<!-- # Why hedge? -->
+<!-- -  Arbitrage: -->
+<!--     -  Can earn a risk-free return by taking advantage of predictable changes in the basis; -->
+<!--     -  One example is a firm that can store a commodity at a lower cost than the change in the basis (accounting for transaction costs). -->
+<!-- -  Operational hedging: -->
+<!--     -  Provides flexibility in day-to-day operations and reduces price risk; -->
+<!--     -  Can be used when forward contracting with flexible exchange rate; -->
+<!--     -  Amounts to speculating on the basis. -->
+<!-- -  Anticipation of transaction: -->
+<!--     -  Hedging to reduce price risk in anticipation of a forthcoming transaction in the cash market. -->
+
+
+<!-- # Do farmers hedge? -->
+
+<!-- - From @carter2003:   -->
+<!--     -  A small fraction of farmers hedge to protect against price risk. -->
+<!--     -  Farmers tend to speculate more than hedge. -->
+<!-- - Why so few farmers hedge?  -->
+<!--     -  Government programs; -->
+<!--     -  Production risk; -->
+<!--     -  Lack of knowledge; -->
+<!--     -  Margin calls make it too risky; -->
+<!--     -  Availability of forward contracts; -->
+<!--     -  Production size does not match size of futures contract; -->
+<!--     -  Can manage price risk with forward contract. -->
+<!-- - With less government support, higher commodity prices and greater price volatility, farmers would have more incentives to hedge. -->
+<!-- - @carter2003 is a fairly old book and it seems that more farmers hedge now. -->
+
+
+<!-- # Basic hedging strategy with futures and options -->
+<!-- -  We will begin by covering the basics of hedging with futures. -->
+<!-- -  We will focus on hedging to reduce risk from price variability. -->
+
+
+<!-- # Short hedging -->
+<!-- -  Suppose that you are a corn farmer. -->
+<!-- -  You wish to hedge to protect against price risk. -->
+<!-- -  To simplify, assume for now that the basis is zero. -->
+<!-- -  Suppose that the current price of corn on the December futures market is \$6.00 per bushel. -->
+<!-- -  In hedging, your strategy is to take a position opposite to the one you have on the cash market. -->
+<!-- -  As you are **long in the cash market**, you must take a **short position in the futures market**. -->
+
+
+
+
+
+
+
+
+
+
+<!-- # Example: short hedge -->
+
+<!-- -  Let's consider two cases: -->
+<!--       \begin{enumerate}[label=\arabic*)] -->
+<!--           -  At the time of delivery in December, the price of corn has increased to \$7.00 per bushel. -->
+<!--           -  At the time of delivery in December, the price of corn has declined to \$5.00 per bushel. -->
+
+<!-- -  If the price of corn increases to \$7.00 per bushel, then you: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  Gain \$1 per bushel in the cash market; -->
+<!--           -  Lose \$1 per bushel in the futures market; -->
+<!--           -  In total, you do not gain or lose from your hedging position. -->
+
+<!-- -  If the price of corn declines to \$5.00 per bushel, then you: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  Lose \$1 per bushel in the cash market; -->
+<!--           -  Gain \$1 per bushel in the futures market; -->
+<!--           -  In total, you do not gain or lose from your hedging position. -->
+
+
+
+
+
+
+<!-- # Example: short hedge} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn increases} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash\\ -->
+<!--   \midrule -->
+<!--   May price & \$6.00/bu & \$6.00/bu \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price & \$7.00/bu & \$7.00/bu \\ -->
+<!--   \cmidrule(r){2-3} -->
+<!--   Gain/loss & -\$1.00/bu & \$1.00/bu \\ -->
+<!--   \midrule -->
+<!--   Price of corn at beginning of hedge & & \textbf{\$6.00/bu} \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   Gain/loss from cash position & & \textbf{\$1.00/bu}\\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   Gain/loss from futures position & & \textbf{-\$1.00/bu}\\ -->
+<!--   \cmidrule(r){3-3} -->
+<!--   Net selling price & & \textbf{\$6.00/bu}\\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+
+
+
+<!-- # Example: short hedge} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn declines} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash\\ -->
+<!--   \midrule -->
+<!--   May price & \$6.00/bu & \$6.00/bu \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price & \$5.00/bu & \$5.00/bu \\ -->
+<!--   \cmidrule(r){2-3} -->
+<!--   Gain/loss & \$1.00/bu & -\$1.00/bu \\ -->
+<!--   \midrule -->
+<!--   Price of corn at beginning of hedge & & \textbf{\$6.00/bu} \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   Gain/loss from cash position & & \textbf{-\$1.00/bu}\\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   Gain/loss from futures position & & \textbf{\$1.00/bu}\\ -->
+<!--   \cmidrule(r){3-3} -->
+<!--   Net selling price & & \textbf{\$6.00/bu}\\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+<!--   -  From the two examples, you can see that hedging is equivalent to locking the May price for corn of \$6.00 per bushel. -->
+
+
+
+
+
+
+<!-- # Payoff lines for a short hedge} -->
+<!-- \begin{figure}[htbp] -->
+<!-- \begin{center} -->
+<!--     \begin{picture}(240,180) -->
+<!--         %Axises and labels -->
+<!--         \scriptsize -->
+<!--         \put(0,90){\vector(1,0){240}} %x-axis -->
+<!--         \put(0,0){\line(0,1){180}} %y-axis -->
+<!--         \put(160,80){Futures price at exercise} -->
+<!--         \put(-5,170){\makebox(0,0){$+$}} -->
+<!--         \put(-5,5){\makebox(0,0){$-$}} -->
+<!--         \put(-5,90){\makebox(0,0){$0$}} -->
+<!--         \put(-25,180){Gain} -->
+<!--         \put(-25,-5){Loss} -->
+<!--         % -->
+<!--         \thicklines -->
+<!--         \put(40,20){\vector(1,1){140}} -->
+<!--         \put(132,140){\vector(1,-2){9}} -->
+<!--         \put(115,142){Long cash} -->
+<!--         \color{blue} -->
+<!--         \put(40,160){\vector(1,-1){140}} -->
+<!--         \color{black} -->
+<!--         \put(132,40){\vector(1,2){9}} -->
+<!--         \put(115,33){Short futures} -->
+<!--         \color{red} -->
+<!--         \multiput(110,0)(0,5){38}{\line(0,1){1.5}}%Dashed line -->
+<!--         \put(100,40){\vector(1,2){9}} -->
+<!--         \put(60,33){Locked price} -->
+<!--     \end{picture} -->
+<!-- \vspace{0.1in} -->
+<!-- \caption{Payoff lines for a short hedge} -->
+<!-- \end{center} -->
+<!-- \end{figure} -->
+
+
+
+
+<!-- # Example: short hedge and negative basis} -->
+
+<!-- -  Recall that the basis is the difference between the cash price and the futures price. -->
+<!-- -  Let's consider the same example as above but this time, the basis is negative: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  Suppose that in May, the basis is -\$0.50 per bushel. -->
+<!--           -  Suppose that you are aware that the basis in December is typically -\$0.15 per bushel. Let's assume that this is the basis in December. -->
+<!--           -  That is, the basis increases over time such that the market is in contango. -->
+
+<!-- -  The next slide shows gains and losses. -->
+
+
+
+
+
+<!-- # Example: short hedge with negative basis} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn increases} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash & Basis \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   May price & \$6.00/bu & \$5.50/bu & -\$0.50/bu \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price & \$7.00/bu & \$6.85/bu  & -\$0.15/bu \\ -->
+<!--   \cmidrule(r){2-4} -->
+<!--   Gain/loss & -\$1.00/bu & \$1.35/bu & \$0.35/bu \\ -->
+<!--   \midrule -->
+<!--   \multicolumn{2}{r}{Price of corn at beginning of hedge} & & \textbf{\$5.50/bu} \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from cash position} & & \textbf{\$1.35/bu}\\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from futures position} & & \textbf{-\$1.00/bu}\\ -->
+<!--   \cmidrule(r){4-4} -->
+<!--   \multicolumn{2}{r}{Net selling price} & & \textbf{\$5.85/bu}\\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+<!--   -  In this case, without a hedging strategy, your net selling price would have been \$6.85 per bushel. -->
+<!--   -  Here, hedging costs you -\$1.00 per bushel compared to no hedging. That is because the change in price would have been favorable to you. -->
+
+
+
+
+
+<!-- # Example: short hedge with negative basis} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn declines} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash  & Basis\\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   May price & \$6.00/bu & \$5.50/bu & -\$0.50/bu \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price & \$5.00/bu & \$4.85/bu  & -\$0.15/bu \\ -->
+<!--   \cmidrule(r){2-4} -->
+<!--   Gain/loss & \$1.00 & -\$0.65/bu & \$0.35/bu \\ -->
+<!--   \midrule -->
+<!--   \multicolumn{2}{r}{Price of corn at beginning of hedge} & & \textbf{\$5.50/bu} \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from cash position} & & \textbf{-\$0.65/bu}\\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from futures position} & & \textbf{\$1.00/bu}\\ -->
+<!--   \cmidrule(r){4-4} -->
+<!--   \multicolumn{2}{r}{Net selling price} & & \textbf{\$5.85/bu}\\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+<!--   -  In this case, without a hedging strategy, your net selling price would have been \$4.85 per bushel. -->
+<!--   -  Here, you gain \$1.00 per bushel from hedging. -->
+<!--   -  Again, when hedging the only variation in the price is from a change in the basis. -->
+
+
+
+
+
+<!-- \begin{frame}[allowframebreaks]{Example: short hedge with negative basis} -->
+
+<!-- -  Suppose that the two scenarios above occur with equal probability: -->
+<!--       \begin{enumerate}[label=\arabic*)] -->
+<!--           -  That is, there is a 50\% probability that the price increases to \$7.00 per bushel; -->
+<!--           -  And there is a 50\% probability that the price declines to \$5.00 per bushel. -->
+
+<!-- -  If you do not hedge: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  The average cash market price in December is $0.5*\$6.85+0.5*\$4.85 = \$5.85$ per bushel. -->
+
+<!-- -  If you hedge: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  The average net price you receive in December is $0.5*\$5.85+0.5*\$5.85 = \$5.85$ per bushel. -->
+
+<!--   \framebreak -->
+<!-- -  So, whether you hedge or not, your average price is the same: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  This is true only because there is no transaction cost and because the expected increase in the price equals the expected decline in the price. -->
+<!--           -  With transaction costs, the average net price from hedging would be slightly smaller. -->
+
+
+
+
+
+
+<!-- # Why hedge then?} -->
+
+<!-- -  In the example above, the average price is the same whether you hedge or not. Then, why bother with hedging, especially that in practice that you have to pay broker fees? -->
+<!-- -  Without hedging, in this example, there are large variations in prices (\$4.85/bu or \$6.85/bu). -->
+<!-- -  When hedging, you receive a constant price of \$5.85/bu. -->
+<!-- -  Thus, hedging removes price risk. -->
+<!-- -  A risk-averse farmer will be willing to pay a premium to remove price risk. -->
+<!-- -  That is, a risk-averse farmer is willing to accept a lower price with certainty rather than an uncertain price that is on average higher. -->
+<!-- -  This is paying to avoid risk. -->
+<!-- -  This means that some farmers will hedge, as long as the costs of hedging are not too large. -->
+
+
+
+
+
+
+<!-- # Example: short hedge with positive basis} -->
+
+<!-- -  In the example above the market was in contango. -->
+<!-- -  Fill the tables in the next two slides for the case where the market is in normal backwardation: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  The basis in May is \$0.50 per bushel. -->
+<!--           -  You expect the basis in December to be \$0.15 per bushel. -->
+
+
+
+
+
+
+<!-- # Example: short hedge with positive basis} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn increases} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash & Basis \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   May price & \$6.00/bu & \$6.50/bu & \$0.50/bu \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price & \$7.00/bu & \$7.15/bu  & \$0.15/bu \\ -->
+<!--   \cmidrule(r){2-4} -->
+<!--   Gain/loss &  &  &  \\ -->
+<!--   \midrule -->
+<!--   \multicolumn{2}{r}{Price of corn at beginning of hedge} & &  \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from cash position} & & \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from futures position} & & \\ -->
+<!--   \cmidrule(r){4-4} -->
+<!--   \multicolumn{2}{r}{Net selling price} &  & \\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+
+
+
+<!-- # Example: short hedge with positive basis} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn declines} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash  & Basis\\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   May price & \$6.00/bu & \$6.50/bu & \$0.50/bu \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price & \$5.00/bu & \$5.15/bu  & \$0.15/bu \\ -->
+<!--   \cmidrule(r){2-4} -->
+<!--   Gain/loss &  &  &  \\ -->
+<!--   \midrule -->
+<!--   \multicolumn{2}{r}{Price of corn at beginning of hedge} & &  \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from cash position} & & \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from futures position} & & \\ -->
+<!--   \cmidrule(r){4-4} -->
+<!--   \multicolumn{2}{r}{Net selling price} &  & \\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+
+
+<!-- \subsection{Long hedging with futures} -->
+
+<!-- # Long hedging} -->
+
+<!-- -  Suppose now that you manage a plant that produces ethanol from corn grain. -->
+<!-- -  You are expecting deliveries of corn in the Fall and wish to hedge to protect against price risk. -->
+<!-- -  Suppose that the current price of corn on the December futures market is \$5.50 per bushel. -->
+<!-- -  Just as in the previous example, your strategy is to take a position opposite to the one you have on the cash market. -->
+<!-- -  As you are \textbf{short in the cash market}, you must take a \textbf{long position in the futures market}. -->
+
+
+
+
+<!-- # Example: long hedge with negative basis} -->
+
+<!-- -  Let's consider two cases: -->
+<!--       \begin{enumerate}[label=\arabic*)] -->
+<!--           -  In December, the price of corn has increased to \$8.00 per bushel. -->
+<!--           -  In December, the price of corn has declined to \$5.00 per bushel. -->
+
+<!-- -  Suppose that the basis in May is -\$0.75 and that you expect the basis to be -\$0.25 in December. -->
+
+
+
+
+
+<!-- # Example: long hedge with negative basis} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn increases} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash & Basis \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   May price & \$5.50/bu & \$4.75/bu & -\$0.75/bu \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price & \$8.00/bu & \$7.75/bu  & -\$0.25/bu \\ -->
+<!--   \cmidrule(r){2-4} -->
+<!--   Gain/loss & \$2.50/bu & -\$3.00/bu  & \$0.50/bu \\ -->
+<!--   \midrule -->
+<!--   \multicolumn{2}{r}{Price of corn at beginning of hedge} & & \textbf{\$4.75/bu} \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from cash position} & & \textbf{-\$3.00/bu} \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from futures position} & & \textbf{\$2.50/bu} \\ -->
+<!--   \cmidrule(r){4-4} -->
+<!--   \multicolumn{2}{r}{Net buying price} &  & \textbf{\$5.25/bu} \\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+<!--   -  From your cash and futures position, you have a net loss of \$0.50/bu. -->
+<!--   -  As you are short in the cash market, a loss can be thought as an increase in the price. -->
+<!--   -  In a long hedge, a loss means an increase in the net price while a gain means a decline in the net price. -->
+
+
+
+
+
+<!-- # Example: long hedge with negative basis} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn declines} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash & Basis \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   May price & \$5.50/bu & \$4.75/bu & -\$0.75/bu \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price & \$5.00/bu & \$4.75/bu  & -\$0.25/bu \\ -->
+<!--   \cmidrule(r){2-4} -->
+<!--   Gain/loss & -\$0.50/bu & \$0/bu  & \$0.50/bu \\ -->
+<!--   \midrule -->
+<!--   \multicolumn{2}{r}{Price of corn at beginning of hedge} & & \textbf{\$4.75/bu} \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from cash position} & & \textbf{\$0.00/bu} \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from futures position} & & \textbf{-\$0.50/bu} \\ -->
+<!--   \cmidrule(r){4-4} -->
+<!--   \multicolumn{2}{r}{Net buying price} &  & \textbf{\$5.25/bu} \\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+<!--   -  Again, the hedging strategy effectively locks the price of corn and the only change in the net price is from a change in the basis. -->
+
+
+
+
+
+<!-- # Payoff lines for a long hedge} -->
+<!-- \begin{figure}[htbp] -->
+<!-- \begin{center} -->
+<!--     \begin{picture}(240,180) -->
+<!--         %Axises and labels -->
+<!--         \scriptsize -->
+<!--         \put(0,90){\vector(1,0){240}} %x-axis -->
+<!--         \put(0,0){\line(0,1){180}} %y-axis -->
+<!--         \put(160,80){Futures price at exercise} -->
+<!--         \put(-5,170){\makebox(0,0){$+$}} -->
+<!--         \put(-5,5){\makebox(0,0){$-$}} -->
+<!--         \put(-5,90){\makebox(0,0){$0$}} -->
+<!--         \put(-25,180){Gain} -->
+<!--         \put(-25,-5){Loss} -->
+<!--         % -->
+<!--         \thicklines -->
+<!--         \put(40,20){\vector(1,1){140}} -->
+<!--         \put(132,140){\vector(1,-2){9}} -->
+<!--         \put(115,142){Long futures} -->
+<!--         \color{blue} -->
+<!--         \put(40,160){\vector(1,-1){140}} -->
+<!--         \color{black} -->
+<!--         \put(132,40){\vector(1,2){9}} -->
+<!--         \put(115,33){Short cash} -->
+<!--         \color{red} -->
+<!--         \multiput(110,0)(0,5){38}{\line(0,1){1.5}}%Dashed line -->
+<!--         \put(100,40){\vector(1,2){9}} -->
+<!--         \put(60,33){Locked price} -->
+<!--     \end{picture} -->
+<!-- \vspace{0.1in} -->
+<!-- \caption{Payoff lines for a long hedge} -->
+<!-- \end{center} -->
+<!-- \end{figure} -->
+
+
+
+
+
+<!-- # Example: long hedge with negative basis} -->
+
+<!-- -  Suppose that the two scenarios above occur with equal probability: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  That is, there is a 50\% probability that the futures price increases to \$8.00 per bushel; -->
+<!--           -  And there is a 50\% probability that the futures price declines to \$5.00 per bushel. -->
+
+<!-- -  If you do not hedge: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  The average cash market price in December is $0.5*\$7.75+0.5*\$4.75 = \$6.25$ per bushel. -->
+
+<!-- -  If you hedge: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  The average net price you pay in December is $0.5*\$5.25+0.5*\$5.25 = \$5.25$ per bushel. -->
+
+<!-- -  So, in this case, your average price is not the same when you hedge: -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  This is because the increase in the price is larger than the decline in the price. -->
+
+
+
+
+
+
+<!-- # Why hedging?} -->
+
+<!-- -  In the example above, as a buyer of the commodity, you obviously gain on average from hedging (pay lower price). -->
+<!-- -  This is because the risk of an increase in price is larger than the risk of a decline in price. -->
+
+
+
+
+
+<!-- # Why hedging?} -->
+
+<!-- -  Suppose instead that there is a 90\% chance that the futures price declines to \$5.00 per bushel and a 10\% chance that it increases to \$8.00 per bushel. -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  If you do not hedge, the average price that you pay in December is $0.1*\$7.75+0.9*\$4.75 = \$5.05$ per bushel. -->
+<!--           -  If you hedge, the average net price you pay in December is $0.1*\$5.25+0.9*\$5.25 = \$5.25$ per bushel. -->
+<!--           -  In this case, the hedging strategy yields on average a higher price. -->
+<!--           -  Still, if you are risk averse you may find it beneficial to hedge your price risk. -->
+
+
+
+
+
+<!-- # Example: long hedge with positive basis} -->
+
+<!-- -  Suppose that the futures price for corn is \$5.75/bu -->
+<!-- -  Consider two cases: -->
+<!--       \begin{enumerate}[label=\arabic*)] -->
+<!--           -  In December, the futures price for corn has increased to \$7.50 per bushel. -->
+<!--           -  In December, the futures price for corn has declined to \$4.50 per bushel. -->
+
+<!-- -  Suppose that the basis in May is \$0.50 and that you expect the basis to be \$0.05 in December. -->
+<!-- -  Fill the following two tables. -->
+
+
+
+
+
+<!-- # Example: long hedge with positive basis} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn increases} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash & Basis \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   May price &  &  &  \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price &  &   &  \\ -->
+<!--   \cmidrule(r){2-4} -->
+<!--   Gain/loss &  &   &  \\ -->
+<!--   \midrule -->
+<!--   \multicolumn{2}{r}{Price of corn at beginning of hedge} & &  \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from cash position} & &  \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from futures position} & &  \\ -->
+<!--   \cmidrule(r){4-4} -->
+<!--   \multicolumn{2}{r}{Net buying price} &  & \\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+
+
+
+<!-- # Example: long hedge with positive basis} -->
+<!-- \begin{table} -->
+<!-- \caption{Price of corn declines} -->
+<!-- \scriptsize -->
+<!-- \begin{tabular}{l c c c} -->
+<!--   \toprule -->
+<!--    & Futures & Cash & Basis \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   May price &  &  &  \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   December price &  &   &  \\ -->
+<!--   \cmidrule(r){2-4} -->
+<!--   Gain/loss &  &   &  \\ -->
+<!--   \midrule -->
+<!--   \multicolumn{2}{r}{Price of corn at beginning of hedge} & &  \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from cash position} & &  \\ -->
+<!--   \addlinespace[0.075in] -->
+<!--   \multicolumn{2}{r}{Gain/loss from futures position} & &  \\ -->
+<!--   \cmidrule(r){4-4} -->
+<!--   \multicolumn{2}{r}{Net buying price} &  & \\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+
+
+<!-- # Example: long hedge with positive basis} -->
+
+<!-- -  Calculate the average price if you do not hedge. -->
+<!--   \bigskip \bigskip -->
+<!-- -  Calculate the average price if you decide to hedge. -->
+<!--   \bigskip \bigskip -->
+<!-- -  Which strategy is best based solely on the average price (ignore preferences regarding risk)? -->
+
+
+
+
+<!-- \subsection{Hedging and the basis} -->
+
+<!-- # Information about the basis in Iowa} -->
+
+<!-- -  So far, we have looked at examples where we assumed knowledge of how the basis evolves during the hedge. -->
+<!-- -  In practice, there is no sure way of knowing how the basis changes over time. -->
+<!-- -  There are however seasonal patterns in the basis that it is possible to use in an effort to forecast the basis over time. -->
+<!-- -  This means that there is still some risk from hedging. -->
+<!-- -  In fact, once the position is taken on the futures market, all the risk that remains is from the basis. -->
+<!-- -  From the examples above, notice that the net price from a hedging position equals the sum of the cash price at the moment of taking the position and the change in the basis. -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  That is true both for the short and long position. -->
+
+
+
+
+
+
+<!-- # Information about the basis in Iowa} -->
+
+<!--   -  Recall that we can find information about the average basis over time in Iowa from the Extension service at Iowa State. -->
+<!--   -  The webpage is available \href{http://www.extension.iastate.edu/agdm/crops/html/a2-41.html}{here}. -->
+
+
+
+
+
+<!-- # Effect of basis on hedging} -->
+
+<!--   -  The examples above show you the effect of the basis on hedging. -->
+<!--   -  Let's look at the effect of the basis in more detail. -->
+<!--   -  Suppose that the price of corn is currently \$6.00 per bushel and that the basis is -\$0.25 per bushel such that the current cash price is \$5.75. -->
+
+
+
+
+
+<!-- # Net price from changes in basis} -->
+<!--     \framedgraphic{hedging_basis.png} -->
+
+
+
+
+<!-- # Effect of basis on hedging} -->
+
+<!--   -  You can see from the previous graph: -->
+<!--         \begin{enumerate}[label=-] -->
+<!--           -  If \textbf{the basis strengthens} (e.g. goes from -0.35 to -0.25), then \textbf{the net price increases}. -->
+<!--           -  If \textbf{the basis weakens} (e.g. goes from 0.25 to -0.05), then \textbf{the net price declines}. -->
+
+<!--   -  Intuitively, if the local cash market price increases by more than the futures price, then the net price from the hedging position increases. -->
+
+
+
+
+
+<!-- # Basis risk and hedging} -->
+
+<!--   -  Hedging still presents some risk because of uncertainty in the basis. -->
+<!--   -  However, basis risk should be much smaller than price risk. -->
+<!--   -  After all, the basis should be a relatively small share of the price and should be bounded by transaction costs and arbitrage opportunities. -->
+
+
+
+
+
+<!-- # Summary: the basis and hedging with futures} -->
+<!-- \begin{table} -->
+<!-- \caption{Impact of change in basis on hedger's revenue} -->
+<!-- \begin{tabular}{l c c} -->
+<!--   \toprule -->
+<!--   & \multicolumn{2}{c}{Change in the basis over hedge period}\\ -->
+<!--   \cmidrule(r){2-3} -->
+<!--   Type of hedge & Stronger basis & Weaker basis\\ -->
+<!--   \midrule -->
+<!--    Short hedge & Favorable  & Unfavorable \\ -->
+<!--    Long hedge &  Unfavorable & Favorable \\ -->
+<!--   \bottomrule -->
+<!-- \end{tabular} -->
+<!-- \end{table} -->
+
+
+
+<!-- \subsection{Direction of expected price change and hedging decision} -->
+
+<!-- # Risk direction and decision to hedge} -->
+
+<!-- -  We saw that hedging effectively locks a price, which is not too far from the current futures price depending on how the basis evolves over time. -->
+<!-- -  Based on the current price of a futures contract, when is it best to enter into hedging? -->
+<!--       \begin{enumerate}[label=-] -->
+<!--           -  If you are \textbf{long in the cash market}, it is best for you to hedge when the\textbf{ current futures price is high} and your expectations are that the \textbf{price of a commodity will decline}. -->
+<!--           -  If you are \textbf{short in the cash market}, it is best for you to hedge when the\textbf{ current futures price is low} and your expectations are that the \textbf{price of a commodity will increase}. -->
+
+
+
+
+
+
+<!-- \subsection{Choice of market and futures contract for hedging} -->
+
+<!-- \begin{frame}[allowframebreaks]{Which market and futures contract?} -->
+
+<!-- -  It is easier to trade on exchanges with large volumes, in particular, it is easier to liquidate a position in exchanges that trade large volumes. Prices in thin markets are more volatile. -->
+<!-- -  The futures contract must cover the entire duration of the hedge. A good idea is to choose a futures contract that expires shortly after the hedge such that a single futures contract can be used for the duration of the hedge. -->
+<!-- -  It is possible to hedge by rolling over from one futures contract to another futures contract. That however requires paying more in transaction fees. -->
+<!-- -  Ideally, you want to chose a futures contract for which the basis evolves over time in a way that is predictable and favorable to you. -->
+<!-- -  In a simple hedge, the definition of the commodity in the futures contract should be as closed as possible to the commodity of interest. This assures a strong correlation between the market price and the futures price. -->
+<!-- -  It is possible to hedge with a different commodity. This is called a \emph{cross-hedge}. -->
+<!--             \begin{enumerate}[label=-] -->
+<!--           -  For a cross-hedge, the price on the futures market of the other commodity used for the hedge should have a strong positive correlation with the commodity for which you wish to reduce price risk. -->
+<!--           -  A strong negative correlation is also ok but the hedging position must be the inverse of the hedging strategy that we have covered in this section. -->
+
+
+
+
+
+# References
+
+
+
+

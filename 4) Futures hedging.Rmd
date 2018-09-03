@@ -579,7 +579,7 @@ ggplot(data = dta_graph[dta_graph$position=="Change in basis",], aes(x = gain, y
 -  However, basis risk should be much smaller than price risk.
 -  After all, the basis should be a relatively small share of the price and should be bounded by transaction costs and arbitrage opportunities.
 
-# Summary: the basis and hedging with futures}
+# Summary: the basis and hedging with futures
 
 \centering
 Table: Impact of change in basis on hedger's revenue

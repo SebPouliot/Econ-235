@@ -1,0 +1,9 @@
+\begin{thebibliography}{1}
+\newcommand{\bibenquote}[1]{``#1''}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Carter(2003)}]{Carter2003}
+Carter, C.A. 2003. {\em Futures and Options Markets: An Introduction\/}.
+  Waveland Press, Inc.
+
+\end{thebibliography}

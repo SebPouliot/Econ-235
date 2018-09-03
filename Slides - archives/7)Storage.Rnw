@@ -1,0 +1,420 @@
+%\documentclass[table,xcolor=pdftex,dvipsnames]{beamer}
+
+\documentclass[table,xcolor=pdftex,dvipsnames, handout]{beamer}
+\usepackage{handoutWithNotes}
+\pgfpagesuselayout{4 on 1 with notes}[letterpaper,border shrink=5mm]
+
+\usepackage{beamerthemesplit}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{verbatim}
+\usepackage{graphpap}
+\usepackage{epic}
+\usepackage{pict2e} %To draw line with any slope
+\usepackage{color}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{textcomp}
+%\usepackage{movie15}
+
+\bibliographystyle{ajae}
+
+\newcommand{\p}{\partial}
+
+\newcommand {\framedgraphic}[1] {
+        \begin{center}
+            \includegraphics[width=\textwidth,height=0.7\textheight,keepaspectratio]{#1}
+        \end{center}
+        \vspace{-1\baselineskip}
+}
+
+\usetheme{Boadilla}
+\useoutertheme{shadow}
+\usecolortheme{beaver}%seagull
+\everymath{\color{blue}}
+\everydisplay{\color{blue}}
+
+\usefonttheme{professionalfonts}
+
+\AtBeginDocument{%
+\setlength{\abovecaptionskip}{3pt}
+\setlength{\belowcaptionskip}{3pt}
+\setlength{\floatsep}{0pt}
+\setlength{\textfloatsep}{3pt}
+\setlength{\intextsep}{3pt}
+}
+\usepackage{hyperref}
+\hypersetup{
+   colorlinks = {true},
+   urlcolor = {blue},
+   linkcolor = {black},
+   citecolor = {black},
+   pdfborderstyle={/S/U/W 1},
+   urlbordercolor = 0 0 1,
+   citebordercolor = 1 1 1,
+   filebordercolor = 1 1 1,
+   linkbordercolor = 1 1 1,
+   pdfauthor = {Sebastien Pouliot},
+}
+
+\widowpenalty=10000 % Avoid single line at the end of a page
+\clubpenalty=10000  % Avoid single line at the bottom
+
+\title[Commodity storage]{Commodity storage}
+\author[Pouliot]{S\'{e}bastien Pouliot}
+\institute{Iowa State University}
+\date{Fall 2017}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\titlepage
+\vspace{-0.4in}
+\begin{center}
+Lecture notes for Econ 235\\
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+\begin{frame}{Commodity storage}
+\begin{enumerate}[label=\textbullet]
+  \item Storage plays an important in stabalizing prices through time.
+  \item The law of one price also applies through time.
+      \begin{enumerate}[label=-]
+          \item  Remember that the \emph{law of one price} says that there is one price for a commodity once accounting for transaction costs.
+       \end{enumerate}  
+  \item Storage allows for arbitrage between the market today and the market at a later time
+  \item Examples of transaction costs through time:
+    \begin{enumerate}[label=-]
+      \item Interest rate;
+      \item Storage;
+      \item Spoilage.
+   \end{enumerate}
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Resources to understand the storage}
+\begin{enumerate}[label=\textbullet]
+  \item \href{https://www.extension.iastate.edu/agdm/crops/pdf/a2-33.pdf}{Cost of storing grain} from ISU extension.
+  \item \href{http://mindymallory.github.io/PriceAnalysis/prices-over-space-and-time.html}{Prices over space and time} from Mindy Mallory textbook.
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Storage decision}
+\begin{enumerate}[label=\textbullet]
+  \item To understand the decision to store a commodity, we must compare the price of a commodity today and the expected price for that commodity at a later date.
+  \item Write the price of a commodity today as $P_t$.
+  \item Write today's expectations of the price of the commodity in the next period (e.g. next month) is $E_t P_{t+1}$.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Price expectations}
+\begin{enumerate}[label=\textbullet]
+    \item Nobody knows the exact price in the next period but everybody can have expectations regarding the price in the next period.
+    \item Market participants can form their expectations about prices in the future using different methods:
+    \begin{enumerate}[label=-]
+      \item Price paid in the current period;
+      \item Projections from economists or other market analysts;
+      \item Futures prices;
+      \item Other heuristics.
+    \end{enumerate}
+    \item The futures price represents what the market thinks the price in the next period will be such that we can write $E_t P_{t+1} = F_t$, where $F_t$ is the current price of a futures contract that expires in the next period.
+    \item However, an individual trader might not agree and his/her expectations of the future might not be the same as the market. For such a trader, is it possible that $E_t P_{t+1} >F_t$ or $E_t P_{t+1} < F_t$.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Cost of storage}
+\begin{enumerate}[label=\textbullet]
+    \item Write that the unit-cost of storage per period for a commodity is $s$.
+        \begin{enumerate}[label=-]
+          \item This includes all costs such as the physical cost of storage, spoilage and insurance.
+          \item Assume that it is constant through time (i.e. $s_t = s$).
+          \item \href{https://www.extension.iastate.edu/agdm/crops/pdf/a2-33.pdf}{Cost of storing grain} provides values for the cost of storing grains. You can also use an excel sheet to check on the \href{https://www.extension.iastate.edu/agdm/cdmarkets.html}{profitability} of storing grain.
+       \end{enumerate}
+    \item Write the interest rate for one period as $r$.
+        \begin{enumerate}[label=-]
+          \item The interest rate is the opportunity cost of holding money over time.
+          \item One dollar invested today is worth $1+r$ dollars in the next period.
+          \item Or, one dollar in the next period is worth $\beta = \frac{1}{1+r} < 1$ dollars today.
+       \end{enumerate}
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Convenience yield}
+\begin{enumerate}[label=\textbullet]
+   \item Write that $c_t$ is the \emph{convenience yield} from holding the commodity for one more period.
+       \begin{enumerate}[label=-]
+         \item It represents the gains from the flow of services from holding one unit of the commodity to the next period.
+         \item This is a very broad term that captures all sorts of gains from holding the commodity, including the gains from reducing uncertainty and breeding in the case of livestock.
+         \item As an example of the existence of a convenience yield, we can look at the \href{http://usda.mannlib.cornell.edu/usda/waob/wasde//2010s/2013/wasde-08-12-2013.pdf}{2012-13 crop year}.
+      \end{enumerate}
+   \item There is good evidence that the convenience yield exists. To simplify here, assume that equals zero (i.e. $c_t=0$).
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Return to storage}
+\begin{enumerate}[label=\textbullet]
+    \item The return from selling one unit of the commodity today is $P_t$.
+    \item The expected return from selling one unit of the commodity in the next period is $\beta (E_t P_{t+1} - s)$.
+    \item That is, the expected return is the expected price, minus the cost of storage for one period, all in today's dollars.
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Temporal arbitrage}
+\begin{enumerate}[label=\textbullet]
+    \item For the holder of a storable commodity, the question is ``sell today or sell later?''
+    \item Should sell today if the expected gain is larger then selling in the next period: \[ P_t \ge \beta (E_t P_{t+1} - s). \]
+    \vspace{-1\baselineskip}
+    \item Should sell later if the expected gain is larger then selling today: \[ \beta (E_t P_{t+1} - s) \ge P_t. \]
+    \vspace{-1\baselineskip}
+    \item The two inequalities above are the intertemporal arbitrage conditions.
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Temporal arbitrage - example}
+\begin{enumerate}[label=\textbullet]
+    \item Suppose that you can sell corn today at a price of \$3.25/bu.
+    \item You consider storing a certain quantity of corn. The futures price for corn in March is \$3.90/bu and you expect that the basis in March will be -\$0.25/bu.
+    \item Your cost of storage from the harvest (October) until March is \$0.35/bu.
+    \item The annual interest rate is 6\%.
+    \item Given those expectations, should you store corn?
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Temporal arbitrage - example}
+\begin{enumerate}[label=\textbullet]
+    \item You expect that you'll be able to sell corn at \$3.65/bu = \$3.90/bu -\$0.25/bu.
+    \item The interest rate from October to March (5 months) is $0.06*5/12 = 0.025$.
+    \item A dollar in March is worth $0.9756 = 1/(1+0.025)$.
+    \item Your expected return is $0.9756 *(\$3.65/bu - \$0.35/bu)= \$3.22/bu$.
+    \item Given those expectations, should you store corn?
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Temporal arbitrage - example}
+\begin{enumerate}[label=\textbullet]
+    \item The answer is no, because you can earn \$0.03/bu (\$3.25/bu - \$3.22/bu) more by selling now versus selling in March.
+    \item You can verify that if you storage cost is \$0.25/bu that it would be profitable for you to store corn between October and March.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{No-arbitrage temporal condition}
+\begin{enumerate}[label=\textbullet]
+    \item If intertemporal arbitrage holds, it means that \[  P_t = \beta (E_t P_{t+1} - s). \]
+    \vspace{-1\baselineskip}
+    \item What this expression says is that, because of arbitrage, the market pays the holder of a commodity his cost of carrying the commodity for one period.
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{The basis through time}
+\begin{enumerate}[label=\textbullet]
+    \item Consider the cash price (right now) and the futures price (or the price under a forward contract) for a commodity.
+    \item Remember that the price of a futures contract represents what the market thinks the price of a commodity will be at the expiration of the contract (i.e. $E_t P_{t+1} = F_t$).
+    \item To focus on how the basis changes through time, \textbf{assume for now that the futures contract specifies a delivery location that is the same as the local cash market.} Thus, we assume for now that there are no spatial issues.
+    \item Over time, the price of a futures and the cash price will tend to vary together because of intertemporal arbitrage -  if possible.
+    \item However, will the basis be positive or negative?
+    \item The only thing that we know for sure is that the basis will be zero when the futures contract expires.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{The basis through time for a storable commodity}
+\begin{enumerate}[label=\textbullet]
+    \item For a storable commodity, intertemporal arbitrage is possible.
+    \item This means that the holder of a commodity will make the decision to sell today or wait to sell later.
+    \item This is possible because of storage.
+    \item We can find a relationship in the price over time from the cost of storage and the cost of money (interest rate).
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Prices through time for a storable commodity}
+\begin{enumerate}[label=\textbullet]
+    \item The ability to arbitrage through time for storable commodities creates a relationship between prices over time.
+        \begin{enumerate}[label=-]
+          \item If \[  P_t = \beta (F_t - s),\]
+            \vspace{-1\baselineskip}
+          \item and that \[ E_t P_{t+1} = \beta (F_{t+1} - s), \]
+            \vspace{-1\baselineskip}
+          \item it means that \[ P_t < F_t  < F_{t+1} < ... \]
+            \vspace{-1\baselineskip}
+        \end{enumerate}
+    \item That is, as time goes by, the price of a storable commodity should increase to compensate for the opportunity cost of holding the commodity (cost of storage).
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{The basis through time for a storable commodity}
+\begin{enumerate}[label=\textbullet]
+    \item The further from the expiration of a futures contract, the more negative is the basis.
+    \item The implication is that the basis will narrow over time when approaching the expiration date of a contract.
+    \item The relationship between prices at different periods may not hold all the time:
+        \begin{enumerate}[label=-]
+          \item In particular, the relationship may not appear to hold because of changes in expectations regarding future prices. For example, a sudden shock may affect $F_t$.
+          \item It may not hold because of different crop seasons.
+        \end{enumerate}
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Example of basis for corn through time}\label{Corn_basis}
+    \framedgraphic{Corn_basis.png}
+Source: \href{http://www.keycoop.com/}{Key cooperative}.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Information about the basis in Iowa}
+\begin{enumerate}[label=\textbullet]
+    \item The Extension service here at Iowa State compiled data regarding the basis.
+    \item The webpage is available \href{http://www.extension.iastate.edu/agdm/crops/html/a2-41.html}{here}.
+    \item \href{http://www.ams.usda.gov/mnreports/nw_gr110.txt}{AMS} publishes regional bases for Iowa.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsubsection{Definitions: contango and normal backwardation}
+
+\begin{frame}{Definition: contango}
+\begin{enumerate}[label=\textbullet]
+    \item A market is in \emph{contango} if the price of futures contract is higher than the price on the spot market.
+    \item This is also referred as a \emph{positive carrying charge market}.
+    \item This is a direct consequence of intertemporal arbitrage described earlier.
+    \item See futures prices on \href{http://www.barchart.com/futures/marketoverview}{Barchart} (not all are good examples).
+    \item In the same crop year, the difference between futures price and the spot price reflects the price of storage.
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Definition: backwardation}
+\begin{enumerate}[label=\textbullet]
+    \item The price pattern between cash and futures prices described before may sometimes not hold.
+    \item A situation where the cash price is higher than the price of a futures contract is referred to as \emph{negative carrying charge} or \emph{normal backwardation}.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Backwardation}
+\begin{enumerate}[label=\textbullet]
+    \item Backwardation occurs when  \[ P_t \ge \beta (E_t P_{t+1} - s). \]
+            \vspace{-1\baselineskip}
+    \item Backwardation is considered abnormal: how can it be sustained if commodity traders arbitrage between periods?
+    \item One explanation for backwardation is that there is a small number of transactions. In such case, a risk premium might explain the inversion.%page 91 in Carter
+        \begin{enumerate}[label=-]
+          \item In a thin market, buyers may be willing to pay a premium to secure supply early because they fear that they will only be able to buy the commodity in the months ahead at a much higher price later.
+          \item The market is not paying for the cost of storage.
+        \end{enumerate}
+    \item Another explanation is a short-term shortage of deliverable stocks (i.e. there is no longer any stock available).
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Examples of arbitrage through time: storable commodity}
+\begin{enumerate}[label=\textbullet]
+    \item Hay bales;
+    \item Grain elevators;
+    \item Livestock (storing meat on hooves - possible but not for very long);
+    \item Apples (perishable but storable for about 8 months);
+    \item Canning;
+    \item Beer and cheese are examples of storage.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{What about non-storable commodities?}
+\begin{enumerate}[label=\textbullet]
+    \item For a non-storable commodity, there is no intertemporal arbitrage:
+        \begin{enumerate}[label=-]
+          \item One cannot hold onto a non-storable commodity in hope of selling it a higher price later.
+          \item For examples, fresh fruits can be stored but only for a short period of time.
+       \end{enumerate}
+    \item Thus, for non-storable commodities, the basis depends on the current market conditions and the expected conditions and the time of delivery for the futures contract.
+    \item The markets for the commodity now and in the future are different.
+    \item There is no link between the market today and the market in the future.
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summary}
+
+\begin{frame}{In summary...}
+\begin{enumerate}[label=\textbullet]
+    \item The basis for a futures contract has both a time and spatial component.
+    \item Thinking about the basis through time or through space is the same as it is the transaction cost that determine the basis:
+        \begin{enumerate}[label=-]
+          \item Opportunity cost of holding a commodity through time;
+          \item Cost of transportation from one location to another;
+          \item Time only moves in one direction.
+        \end{enumerate}
+    \item The cash and futures prices may not converge exactly to the same value because:
+        \begin{enumerate}[label=-]
+          \item The local cash market is not a terminal market;
+          \item Difference in quality;
+          \item Shocks for which the market takes time to adjust to.
+        \end{enumerate}
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section[References]{References}
+%\renewcommand\refname{References}
+%\def\newblock{References}
+%\begin{frame}[allowframebreaks]{References}
+%\bibliography{R:/users/pouliot/Papers/References}
+%%\bibliography{D:/Papers/References}
+%\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

@@ -1,0 +1,9 @@
+\beamer@endinputifotherversion {3.27pt}
+\select@language {english}
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{Impact of biofuel on farms}{9}{0}{2}
+\beamer@sectionintoc {3}{Return to ethanol production}{17}{0}{3}
+\beamer@sectionintoc {4}{Enforcing the ethanol mandate: RIN}{33}{0}{4}
+\beamer@sectionintoc {5}{The blend wall}{43}{0}{5}
+\beamer@sectionintoc {6}{Conclusions}{53}{0}{6}
+\beamer@sectionintoc {7}{References}{54}{0}{7}

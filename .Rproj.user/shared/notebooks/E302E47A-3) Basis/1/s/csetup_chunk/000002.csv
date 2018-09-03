@@ -1,4 +1,4 @@
-"0","knitr::opts_chunk$set(echo=FALSE, fig.keep='high', fig.width=6, fig.height=4, dev='cairo_pdf')"
+"0","knitr::opts_chunk$set(echo=FALSE, fig.keep='high', out.width = '95%', fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)"
 "0","#Load some packages"
 "0","library(pacman)"
 "0","pacman::p_load(dplyr)"

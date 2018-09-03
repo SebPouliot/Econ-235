@@ -1,0 +1,648 @@
+\documentclass[table,xcolor=pdftex,dvipsnames]{beamer}
+%\documentclass[table,xcolor=pdftex,dvipsnames, handout]{beamer}
+%\usepackage{handoutWithNotes}
+%\pgfpagesuselayout{4 on 1 with notes}[letterpaper,border shrink=5mm] %must also change the document class.
+
+
+\usepackage{beamerthemesplit}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{verbatim}
+\usepackage{graphpap}
+\usepackage{epic}
+\usepackage{pict2e} %To draw line with any slope
+\usepackage{color}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{textcomp}
+
+\bibliographystyle{ajae}
+
+\newcommand{\p}{\partial}
+
+\newcommand {\framedgraphic}[1] {
+        \begin{center}
+            \includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio]{#1}
+        \end{center}
+        \vspace{-1\baselineskip}
+}
+
+\usetheme{Boadilla}
+\useoutertheme{shadow}
+\usecolortheme{beaver}%seagull
+\everymath{\color{blue}}
+\everydisplay{\color{blue}}
+
+\usefonttheme{professionalfonts}
+
+\usepackage{hyperref}
+\hypersetup{
+   colorlinks = {true},
+   urlcolor = {blue},
+   linkcolor = {black},
+   citecolor = {black},
+   pdfborderstyle={/S/U/W 1},
+   urlbordercolor = 0 0 1,
+   citebordercolor = 1 1 1,
+   filebordercolor = 1 1 1,
+   linkbordercolor = 1 1 1,
+   pdfauthor = {Sebastien Pouliot},
+}
+
+\widowpenalty=10000 % Avoid single line at the end of a page
+\clubpenalty=10000  % Avoid single line at the bottom
+
+\title[Market concentration]{Market concentration in agriculture}
+\author[Pouliot]{S\'{e}bastien Pouliot}
+\institute{Iowa State University}
+\date{Fall 2017}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}
+\titlepage
+\vspace{-0.4in}
+\begin{center}
+Lecture notes for Econ 235\\
+\end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Introduction]{Introduction}
+
+\begin{frame}{Introduction}
+\begin{enumerate}[label=\textbullet]
+  \item Recall that the assumptions of perfect competition are:
+     \begin{enumerate}[label=\roman{*})]
+          \item Firms sell an identical product;
+          \item Full information about prices;
+          \item The market contains a large number of firms;
+          \item There is no transaction cost;
+          \item Firms are free to enter and to exit.
+      \end{enumerate}
+  \item These assumptions do not always hold in agriculture.
+  \item In this section, we will look at the consequences of a market with a few buyers and/or a few sellers.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Definitions]{Definitions}
+
+\begin{frame}{Definitions}
+\begin{enumerate}[label=\textbullet]
+  \item The strength of the assumptions for perfect competition depends greatly on how a market is defined.
+  \item When defining a market, one must be careful of geography and product definition.
+  \item For example, what is the relevant market when studying concentration of beef packing plants?
+       \begin{enumerate}[label=-]
+          \item Is it the domestic market for US beef only?
+          \item Should it include beef imported from Canada and US exports of beef?
+          \item Beef competes with chicken and pork. Thus, should the market be defined with respect to all types of meat?
+          \item What about other food products?
+      \end{enumerate}
+  \item There is no ``correct" way of defining a market.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Definitions}
+\begin{table}
+\scriptsize
+\caption{Models of competition}
+\begin{tabular}{l l l l l}
+  \toprule
+  \parbox[b]{0.75in}{\raggedright Characteristics} & \parbox[b]{0.75in}{\raggedright Perfect competition} & \parbox[b]{0.75in}{\raggedright Monopolistic competition} & \parbox[b]{0.75in}{\raggedright Oligopoly (seller) Oligopsony (buyer)} & \parbox[b]{0.75in}{\raggedright Monopoly (seller) Monopsony (buyer)}\\
+  \midrule
+  \parbox[c]{0.75in}{\raggedright Nature of product} & \parbox[c]{0.75in}{\raggedright Homogeneous} & \parbox[c]{0.75in}{\raggedright Differentiated} & \parbox[c]{0.75in}{\raggedright Homogeneous/ differentiated} & \parbox[c]{0.75in}{\raggedright Differentiated} \\
+  \addlinespace[0.075in]
+  %\rowcolor{gray!40}
+  \parbox[c]{0.75in}{\raggedright Number of firms} & Many & Many & Few & One \\
+  \addlinespace[0.075in]
+  \rowcolor{white}
+  \parbox[c]{0.75in}{\raggedright Ease of entry for new firms} & Easy & Fairly easy & Difficult & \parbox[c]{0.75in}{\raggedright Very difficult to impossible} \\
+  \addlinespace[0.075in]
+  %\rowcolor{gray!40}
+  \parbox[c]{0.75in}{\raggedright Market strategies} & \parbox[c]{0.75in}{\raggedright Timing of sales} & \parbox[c]{0.75in}{\raggedright Set price, brand, names, promotion, product design and packing} & \parbox[c]{0.75in}{\raggedright Set price; if differentiated, then establish brand name, promotion, product design and packaging} & \parbox[c]{0.75in}{\raggedright Set price based on marginal cost equal to marginal revenue}\\
+  \bottomrule
+\end{tabular}
+\end{table}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Definitions}
+\begin{enumerate}[label=\textbullet]
+  \item Monopoly: there is one seller of a product.
+  \item Oligopoly: there are a few sellers of a product.
+  \item Monopsony: there is one buyer of a product.
+  \item Oligopsony: there are a few buyers of a product.
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Concentration in agribusinesses}
+
+\begin{frame}{What are agribusiness?}
+\begin{enumerate}[label=\textbullet]
+  \item Any firm involved in the production, transportation, transformation or sale of food and fiber (e.g. cotton).
+  \item Firms that produce inputs for farms are also agribusiness (e.g. production of seeds, fertilizer or machinery).
+  \item We can find all types of competitive conduct in agribusiness.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Large agribusiness firms}
+\begin{enumerate}[label=\textbullet]
+  \item The tables below are from Fortune 500 for 2016 available at \url{http://beta.fortune.com/fortune500}.
+  \item You can use the filter at the top right corner of the page to select rankings by industries.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Large agribusiness firms (2016)}
+\begin{table}
+\caption{Category: food production}
+\begin{tabular}{l c r r}
+  \toprule
+  Company & \parbox[c]{0.75in}{Fortune 500 rank} & \parbox[c]{0.65in}{\centering Revenues (\$ b)} & \parbox[c]{0.60in}{\centering Profits (\$ M)}\\
+  \midrule
+  Archer Daniels Midland (ADM) & 45 & 62.3 & 1,279 \\
+  Tyson Foods & 82 & 36.9 & 1,768 \\
+  CHS & 93 & 30.3 & 424 \\
+  Ingredion & 456 & 5.7 & 485 \\
+  Seaboard & 486 & 5.4 & 312 \\
+  \bottomrule
+\end{tabular}
+\end{table}
+Source: \href{http://fortune.com/fortune500/}{Fortune 500}.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Large agribusiness firms (2016)}
+\begin{table}
+\caption{Category: food services}
+\begin{tabular}{l c r r}
+  \toprule
+  Company & \parbox[c]{0.75in}{Fortune 500 rank} & \parbox[c]{0.65in}{\centering Revenues (\$ b)} & \parbox[c]{0.60in}{\centering Profits (\$ M)}\\
+  \midrule
+  McDonald's & 112 & 24.6 & 4,687 \\
+  Starbucks & 131 & 21.3 & 2,818 \\
+  Darden Restaurants & 385 & 6.9 & 375 \\
+  Yum China Holdings & 399 & 6.4 & 502 \\
+  \bottomrule
+\end{tabular}
+\end{table}
+Source: \href{http://fortune.com/fortune500/}{Fortune 500}.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Large agribusiness firms (2016)}
+\begin{table}
+\caption{Category: beverages}
+\begin{tabular}{l c r r}
+  \toprule
+  Company & \parbox[c]{0.75in}{Fortune 500 rank} & \parbox[c]{0.65in}{\centering Revenues (\$ b)} & \parbox[c]{0.60in}{\centering Profits (\$ M)}\\
+  \midrule
+  Coca-Cola & 64 & 41.9 & 6,527 \\
+  Constellation Brands & 408 & 6.5 & 1,055 \\
+  Dr Pepper Snapple Group & 416 & 6.4 & 847 \\
+  Molson Coors Brewing & 522 & 4.9 & 1,976 \\
+  Coca-Cola Bottling & 701 & 3.1 & 50 \\
+  \bottomrule
+\end{tabular}
+\end{table}
+Where is PepsiCo? In the food consumer products category.\\
+Source: \href{http://fortune.com/fortune500/}{Fortune 500}.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Large agribusiness firms (2016)}
+\begin{table}
+\caption{Category: food consumer products}
+\begin{tabular}{l c r r}
+  \toprule
+  Company & \parbox[c]{0.75in}{Fortune 500 rank} & \parbox[c]{0.65in}{\centering Revenues (\$ b)} & \parbox[c]{0.60in}{\centering Profits (\$ M)}\\
+  \midrule
+  PepsiCo & 44 & 62.8 & 6,329 \\
+  Kraft Heinz & 106 & 26.5 & 3,632 \\
+  Mondel\={e}z International & 109 & 25.9 & 1,659 \\
+  General Mills & 165 & 16.6 & 1,697 \\
+  ConAgra Brands & 197 & 14.1 & -677 \\
+  Land O'Lakes & 209 & 13.2 & 245 \\
+  \bottomrule
+\end{tabular}
+\end{table}
+Source: \href{http://fortune.com/fortune500/}{Fortune 500}.
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Measuring concentration}
+
+\begin{frame}[allowframebreaks]{Measuring concentration:  concentration ratio}
+\begin{enumerate}[label=\textbullet]
+  \item Once a market is defined, we may want to measure concentration.
+  \item Measure the total revenue of a firm $i$ as $R_i = p q_i$.
+  \item The market share of a firm $i$ is equal to its revenue divided by the total revenue of all the firms within a market:\[ s_i = \frac{R_i}{\sum_i^N R_i} \]
+  where $N$ is the total number of firms within a market.
+  \item Possibly the most common method of measuring concentration in market is to use concentration ratio.
+  \item Concentration ratios are the sum of market shares of the $m$ largest firms \[ Cm = \sum_{i=1}^{m} s_i,\].
+  \vspace{-\baselineskip}
+  \item Often denoted by $C$ or $CR$ followed by the number of firms $m$.
+  \item For example, $C4$ is the sum of the market share for the four largest firms in a market.
+  \item A small value indicates a low level of concentration.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Measuring concentration: Herfindahl index}
+\begin{enumerate}[label=\textbullet]
+  \item Another measure of concentration is the Herfindahl-Hirschman index (HHI or simply Herfindahl index).
+  \item The Herfindahl index is the sum of the square of market shares of all firms \[ HHI = 10,000\sum_{i=1}^{N} s_i^2,\]
+  where $N$ is the number of firms.
+  \item It is standard practice to multiply by $10,000$ because shares are reported in percentage.
+  \item A small value indicates a low level of concentration.
+  \item The Herfindahl index adjusts for dispersion in firms' size.
+  \item If there are many small firms, then the smallest firms can be ignored without much effect on HHI.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Measuring concentration: example (1)}
+\begin{enumerate}[label=\textbullet]
+  \item Consider the following revenues and market shares:
+\end{enumerate}
+\begin{table}
+\scriptsize
+\begin{tabular}{l c c c c c c c c c}
+  \toprule
+Firm & $A$ & $B$ & $C$ & $D$ & $E$ & $F$ & $G$ & $H$ & Total\\
+    \midrule
+Revenue & 11,250 & 750 & 750 & 450 & 450 & 450 & 450 & 450 & 15,000\\
+\parbox[b][][b]{0.25in}{Market\\share} & 0.75 & 0.05 & 0.05 & 0.03 & 0.03 & 0.03 & 0.03 & 0.03 & 1\\
+\parbox[b][][b]{0.25in}{Market\\share$^2$}  & 0.5625 & 0.0025 & 25e-4 & 9e-4 & 9e-4 & 9e-4 & 9e-4 & 9e-4 & 0.5720\\
+  \bottomrule
+\end{tabular}
+\end{table}
+\vspace{-0.75\baselineskip}
+where 1e-4 = 0.0001.
+\begin{enumerate}[label=\textbullet]
+  \item Calculate $C4$, $C8$ and the Herfindahl index.
+  \pause
+  \item $C4=0.88$, $C8=1.00$ and $HHI=5,720$
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Measuring concentration: example (2)}
+\begin{enumerate}[label=\textbullet]
+  \item Consider the following revenues and market shares:
+\end{enumerate}
+\begin{table}
+\scriptsize
+\begin{tabular}{l c c c c c c c c c}
+  \toprule
+Firm & $A$ & $B$ & $C$ & $D$ & $E$ & $F$ & $G$ & $H$ & Total\\
+    \midrule
+Revenue & 3,750 & 3,750 & 3,750 & 1,950 & 450 & 450 & 450 & 450 & 15,000\\
+\parbox[b][][b]{0.25in}{Market\\share} & 0.25 & 0.25 & 0.25 & 0.13 & 0.03 & 0.03 & 0.03 & 0.03 & 1\\
+\parbox[b][][b]{0.25in}{Market\\share$^2$}  & 0.0625 & 0.0625 & 0.0625 & 0.0169 & 9e-4 & 9e-4 & 9e-4 & 9e-4 & 0.208 \\
+  \bottomrule
+\end{tabular}
+\end{table}
+\begin{enumerate}[label=\textbullet]
+  \item Calculate $C4$, $C8$ and the Herfindahl index.
+  \pause
+  \item $C4=0.88$, $C8=1.00$ and $HHI=2,080$
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Food manufacturing}
+\begin{center}
+\begin{table}
+    \caption{Concentration in food manufacturing (NAICS 311)}
+    \begin{tabular}{ l  c  c }%{0.75\textwidth}
+      \toprule
+       & Concentration ratio & Herfinfal index \\
+      \cmidrule(r){2-3}
+      4 largest & 16.3 & NA \\
+      8 largest & 24.2 & NA \\
+      20 largest & 38.4 & NA \\
+      50 largest & 50.9 & 110.7 \\
+      \bottomrule
+    \end{tabular}
+\end{table}
+\end{center}
+Source: \href{http://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ECN_2012_US_31SR2&prodType=table}{2012 Economic Census of Manufactures}.
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Concentration in US grocery}
+\begin{center}
+\begin{table}
+    \caption{Concentration in supermarkets and other grocery (NAICS 445110)}
+    \begin{tabular}{ l  c  c }%{0.75\textwidth}
+      \toprule
+       & Concentration ratio & Herfinfal index \\
+      \cmidrule(r){2-3}
+      4 largest & 31.1 & NA \\
+      8 largest & 44.4 & NA \\
+      20 largest & 58.6 & NA \\
+      50 largest & 70.6 & NA \\
+      \bottomrule
+    \end{tabular}
+\end{table}
+\end{center}
+Source: \href{http://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ECN_2012_US_44SSSZ6&prodType=table}{2012 Economic Census of Manufactures}.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Concentration in meat processed from carcass}
+\begin{center}
+\begin{table}
+    \caption{Concentration in meat processing (NAICS 311612)}
+    \begin{tabular}{ l  c  c }%{0.75\textwidth}
+      \toprule
+       & Concentration ratio & Herfinfal index \\
+      \cmidrule(r){2-3}
+      4 largest & 32.8 & NA \\
+      8 largest & 42.3 & NA \\
+      20 largest & 55.4 & NA \\
+      50 largest & 71.2 & 332.1 \\
+      \bottomrule
+    \end{tabular}
+\end{table}
+\end{center}
+Source: \href{http://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ECN_2012_US_31SR2&prodType=table}{2012 Economic Census of Manufactures}.
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Why more concentration in some sectors?}
+
+\begin{frame}{Why more concentration in some sectors?}
+\begin{enumerate}[label=\textbullet]
+  \item There is concentration in sectors where there are barriers to entry.
+  \item These barriers prevent entry by competing firms, effectively protecting incumbents from new competition.
+  \item What are barriers to entry?
+      \begin{enumerate}[label=-]
+          \item Regulatory (e.g. government controls the number of firms);
+          \item Legal (e.g. patent);
+          \item Fixed cost (e.g. capital investments such as buildings and land).
+      \end{enumerate}
+  \item In most sectors, it is the fixed cost that constitutes the largest barrier to entry.
+  \item Should observe more concentration in sectors with large fixed costs.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Cartels in agriculture}
+
+\begin{frame}{Cooperatives in agriculture}
+\begin{enumerate}[label=\textbullet]
+  \item In the United States, the \emph{Sherman Antitrust Act of 1890} (Sherman Act) makes illegal business practices that reduce competition.
+  \item Monopolies and cartels are illegal in the United States.
+  \item For example, see the recent antitrust case with eggs (\url{http://www.eggproductssettlement.com/}).
+  \item Another example is recent case about canned tuna (e.g. \href{http://talkbusiness.net/2016/11/wal-mart-the-latest-in-a-growing-number-to-file-an-antitrust-suit-against-canned-tuna-suppliers/}{Wal-Mart joins lawsuit}).
+  \item The \emph{Capper-Volstead Act of 1922} provides agricultural producers certain exemption from antitrust laws.
+  \item Capper-Volstead allows for the formation of cooperatives under specific rules (e.g. one vote per member).
+  \item Cooperatives provide a way for farmers to join their force to increase their market power.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Federal marketing orders}
+\begin{enumerate}[label=\textbullet]
+  \item Marketing orders and marketing agreements are designed to stabilize market conditions for certain agricultural commodities. (Consider this a claim rather than an actual fact.)
+  \item A marketing order covers all firms within an industry (e.g. Milk marketing order - Got milk?).
+  \item A marketing agreements cover participating firms within an industry (e.g. California Leafy-Green Marketing Agreement).
+  \item A few marketing orders limit production quantity, effectively giving market power to producers through the creation of a cartel (milk, fruits, vegetables and nuts).
+  \item In Canada, production quotas in dairy, chicken, eggs and maple syrup (Quebec only) effectively give producers market power.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Consequences of Market power}
+
+\begin{frame}{Concentration and market power}
+\begin{enumerate}[label=\textbullet]
+  \item Concentration is a signal that firms may be exercising market power.
+  \item Concentration is however not a sufficient condition for market power.
+  \item Threats of entry and regulation may prevent firms from excising market power.
+  \item That is, a firm might be in a position to exercise market power but chooses not to by keeping its prices low to prevent entry by competing firms.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{What are the consequences of market power by sellers?}
+\begin{enumerate}[label=\textbullet]
+  \item For competitive sellers, the price equals the marginal cost ($p=mc$).
+  \item Sellers with market power choose output quantities such that marginal revenue equals marginal cost ($mr=mc$) and the price is given along the demand curve. This yields an output price that is greater than the marginal cost ($p>mc$).
+  \item Market power by sellers causes a decline in the quantity and an increase in the prices compared to the case with competitive firms.
+  \item Market power causes a welfare loss compare to the case with perfect competition.
+  \item Transfer of surplus from buyers to the sellers.
+  \item The deadweight loss triangle (dwl) is a loss of surplus (welfare) to society.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Market power by a seller}
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$Q$}
+        \put(-5,170){\makebox(0,0){$P$}}
+        %Demand curve
+        \thicklines
+        \put(0,160){\line(1,-1){160}}
+        %Supply curve
+        \put(0,0){\line(1,1){160}}
+        %Text
+        \put(155,10){$D$}
+        \put(140,155){$mc$}
+        %Equilibrium
+        \color{black}
+        \multiput(0,80)(5,0){16}{\line(1,0){2.5}}%Dashed line
+        \multiput(80,80)(0,-5){16}{\line(0,-1){2.5}}%Dashed line
+        \put(-10,78){$P^\ast$}
+        \put(78,-10){$Q^\ast$}
+        %Market power by seller
+        \onslide<2->
+        \color{blue}
+        %Demand curve
+        \thicklines
+        \put(0,160){\line(1,-2){80}}
+        \put(65,30){$mr$}
+        \onslide<3->
+        \multiput(0,106.67)(5,0){11}{\line(1,0){2.5}}%Dashed line h
+        \multiput(53.33,106.67)(0,-5){22}{\line(0,-1){2.5}}%Dashed line v
+        \put(47,-10){$Q_M$}
+        \put(-15,105){$P_M$}
+        \onslide<4>
+        \put(55,85){$dwl$}
+        \put(55,70){$dwl$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Market power by a seller} \label{fig.seller}
+\end{center}
+\end{figure}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{What are the consequences of market power by buyers?}
+\begin{enumerate}[label=\textbullet]
+  \item The consequences are very similar to the case with market power by sellers
+  \item For competitive buyers, the price of an input $w$ equals the marginal marginal revenue product ($w=mrp$), which is the demand for that input.
+  \item The marginal revenue product is how much an additional unit of product increases revenue.
+  \item A buyer with market power chooses input quantities such that its marginal expenditure equals its marginal revenue product ($me=mrp$) and the price is given along the supply curve. This yields an input price that is smaller than the marginal value product ($w<mrp$).
+  \item Market power by buyers causes a decline in the quantity and a decline in the prices of input compared to the case with competitive firms.
+  \item Transfer of surplus from sellers to buyers.
+  \item Welfare deadweight loss triangle (dwl).
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Market power by a buyer}
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){$X$}
+        \put(-5,170){\makebox(0,0){$W$}}
+        %Demand curve
+        \thicklines
+        \put(0,160){\line(1,-1){160}}
+        %Supply curve
+        \put(0,0){\line(1,1){160}}
+        %Text
+        \put(155,10){$mrp$}
+        \put(150,155){$S$}
+        %Equilibrium
+        \color{black}
+        \multiput(0,80)(5,0){16}{\line(1,0){2.5}}%Dashed line
+        \multiput(80,80)(0,-5){16}{\line(0,-1){2.5}}%Dashed line
+        \put(-12,78){$W^\ast$}
+        \put(78,-10){$X^\ast$}
+        %Market power by seller
+        \onslide<2->
+        \color{blue}
+        %Demand curve
+        \thicklines
+        \put(0,0){\line(1,2){80}}
+        \put(65,155){$me$}
+        \onslide<3->
+        \multiput(0,53.33)(5,0){11}{\line(1,0){2.5}}%Dashed line h
+        \multiput(53.33,106.67)(0,-5){22}{\line(0,-1){2.5}}%Dashed line v
+        \put(47,-10){$X_M$}
+        \put(-15,50){$W_M$}
+        \onslide<4>
+        \put(55,85){$dwl$}
+        \put(55,70){$dwl$}
+    \end{picture}
+\vspace{0.1in}
+\caption{Market power by a buyer} \label{fig.buyer}
+\end{center}
+\end{figure}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Economies of scales and scopes}
+\begin{enumerate}[label=\textbullet]
+  \item Large fixed costs are associated with economies of scales.
+  \item \emph{Economies of scales} mean that the average cost of a product declines as the quantity of product increases.
+  \item This means that when there are economies of scales, larger firms can sell a product at a lower price.
+  \item \emph{Economies of scopes} arise when a firm can produce many products at a lower cost than many firms.
+  \item For example, a grocery store can sell thousand of different products at a lower cost than thousand stores each selling one product.
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Are concentration and market power by agribusiness firms big problems?}
+\begin{enumerate}[label=\textbullet]
+  \item Farm sector sometimes complain about market power by buyers:
+      \begin{enumerate}[label=-]
+          \item Vertical integration in poultry - see NPR stories \href{http://www.npr.org/blogs/thesalt/2014/02/20/279040721/the-system-that-supplies-our-chickens-pits-farmer-against-farmer}{here} and \href{http://www.npr.org/blogs/thesalt/2014/02/19/276981085/is-tyson-foods-chicken-empire-a-meat-racket}{here};
+          \item Vertical integration is also more and more common in hogs;
+          \item Several litigation cases in cattle.
+      \end{enumerate}
+      \item At retail, concerns about increased concentration with the growth of large surface stores:
+      \begin{enumerate}[label=-]
+          \item Fear that Walmart would increase prices after driving out the small stores never materialized;
+          \item Large retailers tend to exercise market power more as buyers than sellers.
+      \end{enumerate}
+\end{enumerate}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}{Are concentration and market power by agribusiness firms big problems?}
+\begin{enumerate}[label=\textbullet]
+  \item By itself, concentration is not a problem.
+  \item The problem is firms exercising market power because it causes a loss in welfare.
+  \item If market power is associated with economies of scales or scopes, then market power might yield a larger total welfare than perfect competition.
+  \item Most agribusiness firms are unable to exercise significant market power:
+      \begin{enumerate}[label=-]
+          \item Threat of entry by competing firms;
+          \item Threat of antitrust litigation.
+      \end{enumerate}
+  \item Thus, concentration and market power are not such a big deal in agribusiness.
+\end{enumerate}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{frame}[allowframebreaks]{Market power: what to do?}
+\begin{enumerate}[label=\textbullet]
+  \item  In the United States, the Sherman Antitrust Act of 1890 has been quite effective at protecting consumers against ``abusive" exercise of market power.
+  \item Other steps to favor competitions include mechanisms to relay information about prices, which facilitates arbitrage between market and thus contribute to limit the exercise of market power:
+    \begin{enumerate}[label=-]
+        \item The USDA through several of its agencies (e.g. ERS, NASS, FAS) report prices for agricultural commodities.
+        \item The US government requires mandatory price reporting for several commodities (see for example the \emph{Mandatory Price Reporting Act} of 2010). The objective is to improve transparency and favor competition.
+  \end{enumerate}
+  \item International trade increases competitions within a market.
+  \item However, the Trump administration recently removed an interim \href{http://www.beefmagazine.com/ranching/usda-dumps-controversial-gipsa-rule}{GIPSA} rule about fair pricing in the livestock industry. 
+\end{enumerate}
+\end{frame}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
+
