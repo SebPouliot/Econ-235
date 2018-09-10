@@ -9,7 +9,6 @@ output:
     citation_package: natbib
     includes:
       in_header: mystyle.sty
-      #in_header: preamble.tex
     theme: default
   ioslides_presentation: default
   slidy_presentation: default
@@ -84,27 +83,7 @@ Table: Difference between futures contracts and options on futures
 | Call option buyer | Buy futures contract at strike price |   | No |
 | Call option seller |   |Sell futures contract at strike price | Yes|
 
-Source: \cite{Carter2003}
-
-<!-- # Difference between futures contracts and options on futures -->
-
-<!-- ```{r hedging_basis, echo=FALSE, out.width = '75%'} -->
-<!-- dta = data.frame(array(NA, c(6,4))) -->
-<!-- colnames(dta) <- c("Positions", "Trader's right", "Trader's obligation", "Margin required?") -->
-
-<!-- dta[,1] <- c("Futures contract buyer (long)", "Futures contract seller (short)", "Put option buyer", "Put option seller", "Call option buyer", "Call option seller") -->
-
-<!-- dta[,2] <- c("", "", "Sell futures at contract price", "", "Buy futures at contract price", "") -->
-
-<!-- dta[,3] <- c("Accept commodity or financial asset at contract price or cash settle", "Deliver commodity or financial asset at contract price or cash settle", "", "Buy futures contract at strike price", "", "Sell futures contract at strike price") -->
-
-<!-- dta[,4] <- c("Yes", "Yes", "No", "Yes", "No", "Yes") -->
-
-<!-- kable(dta, format = "latex", caption = "Difference between futures contracts and options on futures", booktabs = T) %>%  -->
-<!--   kable_styling(font_size = 7, full_width = F) #latex_options = "striped" -->
-<!-- #%>% column_spec(1:4, width = "10em") -->
-
-<!-- ``` -->
+Source: @Carter2003
 
 # What determines the value of an option?
 -  The price of options is determined by the intersection of the demand and the supply.

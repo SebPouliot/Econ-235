@@ -1,6 +1,6 @@
 ---
-title: "Futures"
-shortitle: Futures
+title: "Basis"
+shortitle: Basis
 subtitle: Econ 235
 author: "Sebastien Pouliot"
 date: "Fall 2018"
@@ -13,7 +13,8 @@ output:
   ioslides_presentation: default
   slidy_presentation: default
 institute: Iowa State University
-header-includes: \widowpenalties 1 150
+header-includes: 
+  - \widowpenalties 1 150
 classoption: dvipsnames
 urlcolor: blue
 ---
