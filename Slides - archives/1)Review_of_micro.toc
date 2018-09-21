@@ -1,6 +1,0 @@
-\beamer@endinputifotherversion {3.27pt}
-\select@language {english}
-\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
-\beamer@sectionintoc {2}{Demand}{3}{0}{2}
-\beamer@sectionintoc {3}{Supply}{29}{0}{3}
-\beamer@sectionintoc {4}{Market equilibrium}{51}{0}{4}
