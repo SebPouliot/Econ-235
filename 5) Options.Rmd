@@ -16,6 +16,7 @@ institute: Iowa State University
 classoption: dvipsnames
 urlcolor: blue
 bibliography: References.bib
+biblio-style: apalike
 ---
 
 ```{r setup, include=FALSE}
@@ -282,7 +283,7 @@ Table: In and out of the money
 
 ```{r, echo = FALSE, results="hide"} 
 library(pacman)
-suppressMessages(source("5) Option graphs.R"))
+suppressMessages(source("R code/5) Option graphs.R"))
 ```
 
 # Price of corn in fall 2017
@@ -333,7 +334,7 @@ print(put_plot_time)
 -  This means that the time values calculated in the previous do not always reflect the value of time alone.
 -  The corn price used for the calculations is the closing price. The last transaction for some options might have occurred quite some time before at a different corn price.
 -  This means that the time values, in the two previous graphs, are calculated with less precision.
--  You expect the time value to decline over time.
+-  You expect the time value to decline over time, and this is what the previous graphs show.
 
 
 # Price limits for options: call

@@ -1,0 +1,274 @@
+---
+title: "Livestock - cattle"
+shortitle: Cattle
+subtitle: Econ 235
+author: "Sebastien Pouliot"
+date: "Fall 2018"
+output:
+  beamer_presentation:
+    citation_package: natbib
+    includes:
+      in_header: mystyle.sty
+    theme: default
+  ioslides_presentation: default
+  slidy_presentation: default
+institute: Iowa State University
+header-includes: 
+  - \widowpenalties 1 150
+classoption: dvipsnames
+urlcolor: blue
+bibliography: References.bib
+biblio-style: apalike
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, fig.keep='high', out.width = '95%', fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
+
+#Load some packages
+library(pacman)
+pacman::p_load(tidyverse)
+pacman::p_load(Quandl)
+pacman::p_load(viridis)
+pacman::p_load(Cairo)
+options(kableExtra.latex.load_packages = TRUE)
+pacman::p_load(kableExtra)
+pacman::p_load(ggmap)
+pacman::p_load(sp)
+pacman::p_load(usmap)
+pacman::p_load(maps)
+
+#Authentification
+#Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
+
+#Basic setup for figures
+source("Figures/Graph parameters.r")
+
+```
+
+# Introduction
+
+-  
+- Dynamics is different...
+- We will begin with the cattle industry
+
+# Resources
+
+- https://www.ers.usda.gov/topics/animal-products/cattle-beef/
+
+
+<!-- {.allowframebreaks} -->
+# Definitions 
+
+- Cow: a mature female able of producing calves;
+- Bull: uncastrated male;
+- Calf: a young cattle before weaning;
+- Weaned calf: calf after being removed from a cow;
+- Steer: a young male cattle castrated;
+- Heiffer: young female, before having a first calf;
+- Feeder cattle: cattleready to be placed on feed in a feedlot;
+- Fed/slaughter cattle: cattle ready for *harvest*;
+- Boxed beef - beef ready to be sold at retail.
+
+# Supply chain
+
+- Cow-calf operations:
+    - Sell weaned calves.
+- Stocker - backgrounding:
+    - Buy weaned calves;
+    - Sell feeder cattle.
+- Feedlots - finishing:
+    - Buy feeder cattle;
+    - sell fed/slaughter cattle.
+- Packing/slaughter plant:
+    - Buy fed cattle;
+    - Sell boxed beef.
+- Retail/food service:
+    - Buy boxed beef;
+    - Sell beef to consumers.
+
+# US january cattle inventory (including calves)
+
+```{r, echo = FALSE, results='hide', warning = FALSE, message = FALSE, dev='CairoPDF', out.width = '75%'}
+
+#Data are from NASS QuickStats
+
+dta = read_csv("Data/7) Cattle inventory.csv")
+dta <- dta %>% 
+  dplyr::filter(Period == "FIRST OF JAN") %>% 
+  dplyr::select(Year, Value) %>% 
+  mutate(Value = Value / 1000000)
+
+plot_inventory <- ggplot(dta, aes(x = Year, y = Value)) +
+  geom_line(color = "blue", size = 1) +
+  ylab("January inventory (million head)") +
+  scale_x_continuous(breaks = seq(1870, 2020, by = 10)) +
+  theme_bw() + mytheme +
+  theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
+
+plot_inventory
+
+```
+Source @NASS.
+
+# Commercial cattle slaughter (500lb and more)
+
+```{r slaughter, echo = FALSE, results='hide', warning = FALSE, message = FALSE, dev='CairoPDF', out.width = '75%'}
+
+#Data are from NASS QuickStats
+
+dta <- read_csv("Data/7) Cattle slaughter.csv")
+dta <- dta %>% 
+  mutate(fed = Value / 1000000) %>%
+  dplyr::select(Year, fed)
+
+dta1 <- read_csv("Data/7) Calf slaughter.csv")
+dta1 <- dta1 %>% 
+  mutate(calf = Value / 1000000) %>%
+  dplyr::select(Year, calf)
+
+dta <- left_join(dta, dta1) %>%
+  mutate(Value = fed + calf)
+
+plot_slaughter <- ggplot(dta, aes(x = Year, y = Value)) +
+  geom_line(color = "blue", size = 1) +
+  ylab("Cattle slaughter (million head)") +
+  scale_x_continuous(breaks = seq(1973, 2020, by = 10)) +
+  theme_bw() + mytheme +
+  theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
+
+plot_slaughter
+
+```
+Source @NASS.
+
+
+# Beef production
+
+```{r beef, echo = FALSE, results='hide', warning = FALSE, message = FALSE, dev='CairoPDF', out.width = '75%'}
+
+#Data are from NASS QuickStats
+
+beef = read_csv("Data/7) Beef production.csv")
+beef <- beef %>%
+  mutate(beef = str_replace_all(Value, ",", ""), beef = as.numeric(beef)/ 1000000) %>%
+  dplyr::select(Year, beef) %>%
+  dplyr::filter(Year > 1929)
+
+plot_beef <- ggplot(beef, aes(x = Year, y = beef)) +
+  geom_line(color = "blue", size = 1) +
+  ylab("Beef production (million pound)") +
+  scale_x_continuous(breaks = seq(1930, 2020, by = 10)) +
+  theme_bw() + mytheme +
+  theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
+
+plot_beef
+
+```
+Source @NASS.
+
+# Beef per cattle head, including calf
+
+
+```{r weight, echo = FALSE, results='hide', warning = FALSE, message = FALSE, dev='CairoPDF', out.width = '75%'}
+
+#Data are from NASS QuickStats
+
+weight <- left_join(dta ,beef) %>%
+  mutate(weight = beef/Value)
+
+plot_weight <- ggplot(weight, aes(x = Year, y = weight)) +
+  geom_line(color = "blue", size = 1) +
+  ylab("Beef per cattle, including calf (pound)") +
+  scale_x_continuous(breaks = seq(1973, 2020, by = 10)) +
+  theme_bw() + mytheme +
+  theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
+
+plot_weight
+
+```
+Source @NASS.
+
+
+# Cattle inventory by state
+
+```{r, echo = FALSE, results='hide', warning = FALSE, message = FALSE, dev='CairoPDF', out.width = '75%'}
+
+# Read data
+dta <- read_csv("Data/7) Cattle inventory by state.csv")
+dta <- dta %>%
+  dplyr::select(State, Value) %>%
+  mutate(Value = round(Value/1000)) %>%
+  dplyr::filter(State != "ALASKA" & State != "HAWAII")
+
+# Get state boundaries
+stateShapes <- map("state", plot = FALSE, fill = TRUE)
+stateShapes <- fortify(stateShapes)
+
+# Get random number of point per state
+
+for (i in 1:nrow(dta)){
+  stateShapeFrame <- stateShapes[stateShapes$region == tolower(dta$State[i]), ]
+
+  statePoly <- Polygons(lapply(split(stateShapeFrame[, c("long", "lat")], stateShapeFrame$group), Polygon), ID = "b")
+
+  p_dta0 <- spsample(statePoly, n = dta$Value[i], "random") %>%
+    as.data.frame() %>%
+    rename(longitude = x, latitude = y) %>%
+    mutate(state = tolower(dta$State[i]))
+
+  if(!exists("p_dta")){p_dta <- p_dta0}
+  if(exists("p_dta")){p_dta <- rbind(p_dta,p_dta0)}
+
+}
+
+us_state_map <- map_data('state')
+
+d_inv <- ggplot() +
+  geom_polygon(data=us_state_map, aes(x=long, y=lat, group = group), fill = NA, color = "black") +
+  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, size = 0.25, alpha = 0.5, color = "blue") +
+  coord_map( "polyconic" ) +
+  theme_bw() +
+  mytheme +
+  theme(axis.line = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.grid = element_blank(),
+        strip.background = element_blank(),
+        panel.spacing.x=unit(-2, "lines"),
+        panel.spacing.y=unit(0,"lines"),
+        plot.margin=unit(c(0,-1,0,-1),"lines"),
+        legend.text=element_text(size=8),
+        legend.key.width = unit(0.4, "cm"),
+        legend.key.height = unit(0.4, "cm"))
+
+
+d_inv
+
+```
+
+
+
+
+
+
+
+<!-- # Trade -->
+
+
+
+
+
+# Links
+
+- <https://www.ers.usda.gov/topics/animal-products/cattle-beef/>
+- <https://www.ers.usda.gov/data-products/livestock-meat-domestic-data.aspx>
+
+<!-- download.file("https://www.raboag.com/mm/images/Corn-Basis-Map-800xNAug29.png", "Figures/Basis_corn.png", method = "curl") -->
+
+
+
+
+
+
+
