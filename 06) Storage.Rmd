@@ -13,9 +13,12 @@ output:
   ioslides_presentation: default
   slidy_presentation: default
 institute: Iowa State University
+header-includes: 
+  - \widowpenalties 1 150
 classoption: dvipsnames
 urlcolor: blue
 #bibliography: References.bib
+#biblio-style: apalike
 ---
 
 ```{r setup, include=FALSE}
@@ -64,7 +67,7 @@ source("Figures/Graph parameters.r")
 
 # Price expectations
 
--  Nobody knows the exact price in the next period but everybody can have expectations regarding the price in the next period.
+-  Nobody knows the exact price in the next period but anybody can form expectations regarding that price.
 -  Market participants can form their expectations about prices in the future using different methods:
     -  Price paid in the current period;
     -  Projections from economists or other market analysts;
@@ -90,7 +93,7 @@ source("Figures/Graph parameters.r")
 
 -  Write that $c_t$ is the \emph{convenience yield} from holding the commodity for one more period.
     -  It represents the gains from the flow of services from holding one unit of the commodity to the next period.
-    -  This is a very broad term that captures all sorts of gains from holding the commodity, including the gains from reducing uncertainty and breeding in the case of livestock.
+    -  This is a very broadly defined term that captures all sorts of gains from holding the commodity, including the gains from reducing uncertainty and breeding in the case of livestock.
     -  As an example of the existence of a convenience yield, we can look at the [2012-13 crop year](http://usda.mannlib.cornell.edu/usda/waob/wasde//2010s/2013/wasde-08-12-2013.pdf).
 -  There is good evidence that the convenience yield exists. To simplify here, assume that equals zero (i.e. $c_t=0$).
 
@@ -121,7 +124,7 @@ source("Figures/Graph parameters.r")
 
 -  You expect that you'll be able to sell corn at \$3.65/bu = \$3.90/bu -\$0.25/bu.
 -  The interest rate from October to March (5 months) is $0.06*5/12 = 0.025$.
--  A dollar in March is worth $0.9756 = 1/(1+0.025)$.
+-  A dollar in March is worth $0.9756 = 1/(1+0.025)$ today.
 -  Your expected return is $0.9756 *(\$3.65/bu - \$0.35/bu)= \$3.22/bu$.
 -  Given those expectations, should you store corn?
 
@@ -133,24 +136,24 @@ source("Figures/Graph parameters.r")
 # No-arbitrage temporal condition
 
 -  If intertemporal arbitrage holds, it means that $$P_t = \beta (E_t P_{t+1} - s).$$
--  What this expression says is that, because of arbitrage, the market pays the holder of a commodity his cost of carrying the commodity for one period.
+-  What this expression says is that, because of arbitrage, the market pays the holder of a commodity for the cost of carrying the commodity through the next period.
 
 
 # The basis through time
 
 -  Consider the cash price (right now) and the futures price (or the price under a forward contract) for a commodity.
 -  Remember that the price of a futures contract represents what the market thinks the price of a commodity will be at the expiration of the contract (i.e. $E_t P_{t+1} = F_t$).
--  To focus on how the basis changes through time, **assume for now that the futures contract specifies a delivery location that is the same as the local cash market.** Thus, we assume for now that there are no spatial issues.
+-  **Assume that the futures contract specifies a delivery location that is the same as the local cash market.** 
+    - That is, we assume that there is no cost for moving the commodity through space.
 -  Over time, the price of a futures and the cash price will tend to vary together because of intertemporal arbitrage -  if possible.
 -  However, will the basis be positive or negative?
--  The only thing that we know for sure is that the basis will be zero when the futures contract expires.
+-  The only thing we know for sure is that the basis will be zero when the futures contract expires.
 
 
 # The basis through time for a storable commodity
 
 -  For a storable commodity, intertemporal arbitrage is possible.
 -  This means that the holder of a commodity will make the decision to sell today or wait to sell later.
--  This is possible because of storage.
 -  We can find a relationship in the price over time from the cost of storage and the cost of money (interest rate).
 
 
@@ -158,33 +161,22 @@ source("Figures/Graph parameters.r")
 
 -  The ability to arbitrage through time for storable commodities creates a relationship between prices over time.
     -  If $$P_t = \beta (F_t - s),$$
-    -  and that $$E_t P_{t+1} = \beta (F_{t+1} - s),$$
+    -  and $$E_t P_{t+1} = \beta (F_{t+1} - s),$$ and
+    $$E_t P_{t+1} = F_t,$$
     -  it means that $$P_t < F_t  < F_{t+1} < ...$$
 -  That is, as time goes by, the price of a storable commodity should increase to compensate for the opportunity cost of holding the commodity (cost of storage).
 
 
 # The basis through time for a storable commodity
 
--  The further from the expiration of a futures contract, the more negative is the basis.
--  The implication is that the basis will narrow over time when approaching the expiration date of a contract.
--  The relationship between prices at different periods may not hold all the time:
-    -  In particular, the relationship may not appear to hold because of changes in expectations regarding future prices. For example, a sudden shock may affect $F_t$.
-    -  It may not hold because of different crop seasons.
+-  The further from the expiration of a futures contract, i.e. the larger is $k$, the more negative is the difference $P_t - F_{t+k}$.
+-  This also implies that the basis will narrow when approaching the expiration date of a futures contract.
+-  The relationship between prices at different periods may not hold all the time. Certain events may break the intertemporal arbitrage relationship.
+    -  The relationship may not appear to hold because of changes in expectations regarding future prices. 
+    - For example, it could be the expectation of a certain event or a sudden shock that affects $F_t$.
+    - In livestock it could be because of a large new crop coming up (cycles which we will see later).
+    - It may not hold because of different crop seasons.
         
-
-# Example of basis for corn through time \label{Corn_basis}
-
-```{r bull, echo=FALSE, out.width = '55%'}
-knitr::include_graphics("Figures/Corn_basis.png")
-```
-Source: [Key cooperative](http://www.keycoop.com/).
-
-# Information about the basis in Iowa
-
--  The Extension service here at Iowa State compiled data regarding the basis.
--  The webpage is available [here](http://www.extension.iastate.edu/agdm/crops/html/a2-41.html).
--  [AMS](http://www.ams.usda.gov/mnreports/nw_gr110.txt) publishes regional bases for Iowa.
-
 # Definition: contango
 
 -  A market is in *contango* if the price of futures contract is higher than the price on the spot market.
@@ -215,20 +207,22 @@ Source: [Key cooperative](http://www.keycoop.com/).
 -  Livestock (storing meat on hooves - possible but not for very long);
 -  Apples (perishable but storable for about 8 months);
 -  Canning;
--  Beer and cheese are examples of storage.
+-  Beer (grain) and cheese (milk) are examples of storage.
+    - See government cheese at [Planet Money](https://www.npr.org/sections/money/2018/08/31/643486297/episode-862-big-government-cheese).
 
 # What about non-storable commodities?
 
 -  For a non-storable commodity, there is no intertemporal arbitrage:
+    - Technically, almost any product is storable but costs for certains products are prohibitive or the storage process reduces the value of the product and make storage not economically feasible.
     -  One cannot hold onto a non-storable commodity in hope of selling it a higher price later.
-    -  For examples, fresh fruits can be stored but only for a short period of time.
+    -  For examples, *fresh* fruits can be stored but only for a short period of time.
+    - Dry fruits, canned fruits and frozen fruits are different than fresh fruits.
 -  Thus, for non-storable commodities, the basis depends on the current market conditions and the expected conditions and the time of delivery for the futures contract.
 -  The markets for the commodity now and in the future are different.
 -  There is no link between the market today and the market in the future.
 
-# In summary...
+# In summary
 
--  The basis for a futures contract has both a time and spatial component.
 -  Thinking about the basis through time or through space is the same as it is the transaction cost that determine the basis:
     -  Opportunity cost of holding a commodity through time;
     -  Cost of transportation from one location to another;

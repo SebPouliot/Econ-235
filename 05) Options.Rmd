@@ -13,10 +13,12 @@ output:
   ioslides_presentation: default
   slidy_presentation: default
 institute: Iowa State University
+header-includes: 
+  - \widowpenalties 1 150
 classoption: dvipsnames
 urlcolor: blue
-bibliography: References.bib
-biblio-style: apalike
+#bibliography: References.bib
+#biblio-style: apalike
 ---
 
 ```{r setup, include=FALSE}
