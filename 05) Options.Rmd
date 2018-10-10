@@ -15,10 +15,12 @@ output:
 institute: Iowa State University
 header-includes: 
   - \widowpenalties 1 150
-classoption: dvipsnames
+classoption:
+  - dvipsnames
+  - table
 urlcolor: blue
-#bibliography: References.bib
-#biblio-style: apalike
+bibliography: References.bib
+biblio-style: apalike
 ---
 
 ```{r setup, include=FALSE}
@@ -288,7 +290,7 @@ library(pacman)
 suppressMessages(source("R code/5) Option graphs.R"))
 ```
 
-# Price of corn in fall 2017
+# Price of corn in fall 2015
 ```{r figure_corn_futures, fig.keep='high', echo=FALSE, fig.width=6, fig.height=4, dev="cairo_pdf"}
 print(price_plot)
 ```

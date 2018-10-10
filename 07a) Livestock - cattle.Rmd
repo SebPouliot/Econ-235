@@ -53,7 +53,7 @@ source("Figures/Graph parameters.r")
 - The supply chain for cattle and beef is more complicated than for grains.
 - Production dynamics is also different than grains and has an important impact on the markets.
 - Characteristics of cattle are also more difficult to observe than for grains, a more uniform product.
-- I will begin with definitions, the review some market data and finally turn to the economics of cattle marketing.
+- I will begin with definitions, review some market data and finally turn to the economics of cattle marketing.
 
 # Resources
 
@@ -87,6 +87,7 @@ source("Figures/Graph parameters.r")
 - Feedlots - finishing:
     - Buy feeder cattle;
     - Sell fed/slaughter cattle (18 to 24 months old).
+    - Can be very large (over 100,000 heads).
 - Packing/slaughter plant:
     - Buy fed cattle;
     - Sell boxed beef.
@@ -94,7 +95,7 @@ source("Figures/Graph parameters.r")
     - Buy boxed beef;
     - Sell beef to consumers.
 
-# Commercial steer and heiffer slaughter
+# Annual commercial steer and heiffer slaughter
 
 ```{r slaughter, out.width = '75%'}
 
@@ -124,7 +125,7 @@ plot_slaughter
 Source: @USDA_dom.
 
 
-# Beef production
+# Annual beef production
 
 ```{r beef, out.width = '75%'}
 
@@ -140,7 +141,7 @@ dta <- read_excel("Data/7) Beef.xlsx", sheet = "Data sheet (machine readable)") 
 
 plot_beef <- ggplot(dta, aes(x = Year, y = Value)) +
   geom_line(color = "blue", size = 1) +
-  ylab("Beef production (million pound)") +
+  ylab("Beef production (million pounds)") +
   scale_x_continuous(breaks = seq(1970, 2020, by = 5)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
@@ -704,7 +705,7 @@ plot_stock
 CWE means Carcass Weight Equivalent. Source: @USDA_dom.
 
 # Cattle cycles 
-- Cattle cycles are expansion and contraction of cattle inventories at regular intervals (see cattle inventory figure above).
+- Cattle cycles are expansion and contraction of cattle inventories at regular intervals (see cattle inventory figure below).
 - A cycle lasts on average about ten years. 
 - Cycles occur because of biological nature of cattle production:
     - A heiffer can be bred for the first time at about 15 months.
@@ -714,9 +715,9 @@ CWE means Carcass Weight Equivalent. Source: @USDA_dom.
 # Cattle cycles
 
 - Biological lags cause a delayed response between an increase in the price and an increase in production.
-    - If the price of feeder cattle increase, cow-calf producers increase the size of their breeding herd.
+    - For example, if the price of feeder cattle increase, cow-calf producers increase the size of their breeding herd.
     - During the time it takes to increase the breeding herd, the price continues to increase because fewer cattle are sent to slaughter.
-    - It takes at least three and a half years from the time a cow-calf operation decides to expand and the time its production actually expands.
+    - It takes at least three and a half years from the time a cow-calf operation decides to expand and the time its production actually increases.
     - Expansion continues until the prices for feeder cattle, fed cattle and beef begins declining from the increased production.
     - Cows are productive for about 10 years and producers usually do not cull cows that are still productive.
     - Cow-calf producers reduce the size of their herd by not replacing all of their old cows.
@@ -726,7 +727,7 @@ CWE means Carcass Weight Equivalent. Source: @USDA_dom.
 # Cattle cycles
 
 - Cycles contribute to periods of prosperity followed by periods of losses to cattle farmers.
--  See for example historial returns in the cattle sector at <https://agmanager.info/livestock-meat/cattle-finishing-historical-and-projected-returns> or at 
+-  See for example historial returns in the cattle sector at <http://www2.econ.iastate.edu/estimated-returns/> or at 
 <https://www.ers.usda.gov/data-products/commodity-costs-and-returns/commodity-costs-and-returns/>
 
 
@@ -762,7 +763,7 @@ if(Sys.time() - file.info("Data/7) Cow-calf return.xls")$mtime > months(1, abbre
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/47913/RHLCowc.xls", "Data/7) Cow-calf return.xls", method = "curl")
 }
 
-dta1 <- read_excel("Data/7) Cow-calf return.xls", sheet = "Heartland 1996-2007", skip = 1)
+dta1 <- read_excel("Data/7) Cow-calf return.xls", sheet = 1, skip = 1)
 
 dta1 <- dta1[43,] %>%
   gather(date, value, -Item) %>%
@@ -935,7 +936,7 @@ Source: @USDAreturn.
 
 # 5 area markets - live versus dressed weight
 
-- The 5 markets are 1) Texas & Oklahoma, 2) Kansas, 3) Nebraska, 4) Colorado and 5) Iowa & Minnesota.
+- The 5 markets are 1) Texas, Oklahoma & New Mexico, 2) Kansas, 3) Nebraska, 4) Colorado and 5) Iowa & Minnesota.
 
 ```{r, out.width = '75%'}
 #You might need a password to download this file

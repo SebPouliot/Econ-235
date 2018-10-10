@@ -13,7 +13,9 @@ output:
   ioslides_presentation: default
   slidy_presentation: default
 institute: Iowa State University
-classoption: 
+header-includes: 
+  - \widowpenalties 1 150
+classoption:
   - dvipsnames
   - table
 urlcolor: blue
@@ -25,7 +27,7 @@ biblio-style: apalike
 knitr::opts_chunk$set(echo=FALSE, fig.keep='high', out.width = '95%', fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
 
 #Load some packages
-library(pacman)
+if (!require("pacman")) install.packages("pacman")
 pacman::p_load(tidyverse)
 pacman::p_load(lubridate)
 pacman::p_load(readxl)
@@ -38,6 +40,7 @@ pacman::p_load(ggmap)
 pacman::p_load(sp)
 pacman::p_load(usmap)
 pacman::p_load(maps)
+pacman::p_load(magick)
 
 #Authentification
 #Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
@@ -51,9 +54,9 @@ source("Figures/Graph parameters.r")
 
 - The United States is the third largest producer of hogs in the world, behind China and the EU.
 - The supply chain for hogs and pork operates differently than the supply chain for cattle and beef.
-- Production cycles in hogs are shorter than in cattle but nonetheless matter.
-- Like cattle, the characteristics of hogs are difficult to observe on a live animal and the market has come up with solutions.
-- I will begin with definitions, the review some market data and finally turn to the economics of cattle marketing.
+- Production cycles in hogs are shorter than in cattle but nonetheless important.
+- Like cattle, the characteristics of hogs are difficult to observe on a live animal and the market has come up with solutions for the moral hazard problem it can create.
+- I will begin with definitions, review some market data and finally turn to the economics of cattle marketing.
 
 # Resources
 
@@ -63,7 +66,7 @@ source("Figures/Graph parameters.r")
 
 # Definitions 
 
-- Hog: Live animal;
+- Hog: Live animal, domesticated pig;
 - Pork: Meat from hogs;
 - Barrow: Neutered male hog;
 - Boar: Uneutered male hog, usually kept for breeding;
@@ -126,7 +129,7 @@ plot_slaughter
 
 ```
 \scriptsize
-I suspect that the jump in the early 1940s is because of data recording. Source: @USDA_dom.
+Note: I suspect that the jump in the early 1940s is because of modification in the data recording method. Source: @USDA_dom.
 
 
 # Pork production
@@ -153,6 +156,7 @@ plot_pork <- ggplot(dta, aes(x = Year, y = Value)) +
 plot_pork
 
 ```
+\scriptsize
 Source: @USDA_dom.
 
 # Average live and dressed cattle weight in federally inspected facility
@@ -186,7 +190,7 @@ plot_weight
 
 ```
 \scriptsize
-I suspect that the drop in carcass weight at the end of the 1970s is because of modifcation in the way to measure carcass weight. Source: @USDA_dom.
+Note: I suspect that the drop in carcass weight at the end of the 1970s is because of modifcation in the way to measure carcass weight. Source: @USDA_dom.
 
 # Average carcass yield (live weight/dressed weight)
 
@@ -209,7 +213,7 @@ plot_yield
 
 ```
 \scriptsize
-I suspect that the drop in yield at the end of the 1970s is because of modifcation in the way to measure carcass weight. Source: @USDA_dom.
+Note: I suspect that the drop in yield at the end of the 1970s is because of modifcation in the way to measure carcass weight. Source: @USDA_dom.
 
 # Hog inventory by state (March 1, 2018)
 
@@ -392,7 +396,7 @@ dta <- dta %>%
   mutate(Value = round(Value/1000000, 1)) %>%
   rename(`Market hogs` = Value)
 
-kable(dta) %>%
+kable(dta, booktabs = T) %>%
   kable_styling(latex_options = c("striped")) %>%
   footnote(general = "The number of market hogs is measured in million heads")
 
@@ -486,9 +490,9 @@ dta <- dta %>%
   group_by(State) %>%
   summarize(Value = sum(Value)) %>%
   mutate(Value = round(Value/1000000, 1)) %>%
-  rename(`Market hogs` = Value)
+  rename(`Hog slaughter` = Value)
 
-kable(dta) %>%
+kable(dta, booktabs = T) %>%
   kable_styling(latex_options = "striped") %>%
   footnote(general = "Hog slaughter is measured in million heads")
 
@@ -542,7 +546,8 @@ Source: @usda_trade.
 
 - Virtually all hog imports are from Canada. 
 - Most of the piglets (less than 7kg) come from Manitoba.
-- Farrowing is more efficient (larger litter) in Canada presumable because of colder climate.
+- Farrowing is more efficient (larger litter) in Canada presumably because of colder climate.
+- The exchange rate also plays a role.
 
 # Annual exports of hogs (all weights)
 
@@ -620,12 +625,12 @@ dta <- dta %>%
   dplyr::filter(year >= 2003)
 
 
-beef_import <- ggplot(dta, aes(x = year, y = value, color = Country, fill = Country)) +
+pork_import <- ggplot(dta, aes(x = year, y = value, color = Country, fill = Country)) +
   geom_area(position = "stack", size = 1) +
   geom_line(position = "stack", size = 0.5, color = "black") +
   scale_color_viridis(discrete = TRUE) + 
   scale_fill_viridis(discrete = TRUE) +
-  ylab("Imports of beef and veal (carcass weight, 1,000 pounds)") +
+  ylab("Imports of pork (carcass weight, million pounds)") +
   scale_x_continuous(breaks = seq(1990, 2015, by = 5), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
@@ -635,7 +640,7 @@ beef_import <- ggplot(dta, aes(x = year, y = value, color = Country, fill = Coun
         legend.direction = "horizontal",
         legend.text=element_text(size=10))
 
-beef_import
+pork_import
 
 ```
 \scriptsize
@@ -676,7 +681,7 @@ pork_export <- ggplot(dta, aes(x = year, y = value, color = Country, fill = Coun
   geom_line(position = "stack", size = 0.5, color = "black") +
   scale_color_viridis(discrete = TRUE) +
   scale_fill_viridis(discrete = TRUE) +
-  ylab("Imports of beef and veal (carcass weight, 1,000 pounds)") +
+  ylab("Exports of pork (carcass weight, million pounds)") +
   scale_x_continuous(breaks = seq(1990, 2015, by = 5), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
@@ -693,7 +698,7 @@ pork_export
 \scriptsize
 Source: @USDA_dom.
 
-# Live cattle price and boxed beef prices
+# Live hog price and pork cutout prices
 
 ```{r, out.width = '75%'}
 
@@ -766,45 +771,46 @@ plot_stock
 
 ```
 \scriptsize
-CWE means Carcass Weight Equivalent. Source: @USDA_dom.
+Note: CWE means Carcass Weight Equivalent. Source: @USDA_dom.
 
-# Cattle cycles 
-<!-- {.allowframebreaks} -->
-- Cattle cycles are expansion and contraction of cattle inventories at regular intervals (see cattle inventory figure above).
-- A cycle lasts on average about ten years. 
+# Hog cycles 
+
+- Hog cycles are just like cattle cycles but they occur at a shorter interval because of a faster production dynamics in hogs.
+- Hog cycles are expansion and contraction of hog inventories at regular intervals (see hog inventory figure below).
+- A cycle lasts from three to five years. 
 - Cycles occur because of biological nature of cattle production:
-    - A heiffer can be bred for the first time at about 15 months.
-    - A heiffer will have its first calf about nine months later.
-    - It takes between 18 and 24 months between birth and slaughter.
+    - A sow can be bred for the first time at around 5 to 6 months old.
+    - A sow will have its first litter about 113 days later (3 months, 3 weeks and 3 days).
+    - It takes between 24 to 29 weeks to attain a target slaughter weight.
 
-# Cattle cycles
+# Hog cycles
 
 - Biological lags cause a delayed response between an increase in the price and an increase in production.
-    - If the price of feeder cattle increase, cow-calf producers increase the size of their breeding herd.
-    - During the time it takes to increase the breeding herd, the price continues to increase because fewer cattle are sent to slaughter.
-    - It takes at least three and a half years from the time a cow-calf operation decides to expand and the time its production actually expands.
-    - Expansion continues until the prices for feeder cattle, fed cattle and beef begins declining from the increased production.
-    - Cows are productive for about 10 years and producers usually do not cull cows that are still productive.
-    - Cow-calf producers reduce the size of their herd by not replacing all of their old cows.
-    - Beef cattle then declines and prices start increasing once again, re-starting the cycle.
-- Cycles last about ten years because it is the age that most cows are culled.
+    - For example, if the price of feeder hogs increase, farrowing operations increase the size of their breeding herd.
+    - During the time it takes to increase the breeding herd, the price continues to increase.
+    - It takes about a year and a quarter from the time a farrowing operation decides to expand and the time its production actually increases.
+    - Expansion continues until the prices for piglets, feeder pigs, market hogs and pork begins declining from the increased production.
+    - Average parity per sow is about 5.5 litters. This means that a sow is culled at about 2.5 years old.
+    - Producers reduce the size of their herd by not replacing all of their sows.
+    - Hog production then declines and prices start increasing once again, re-starting the cycle.
+- Cycles last 3 to 5 years.
 
-# Cattle cycles
+# Hog cycles
 
-- Cycles contribute to periods of prosperity followed by periods of losses to cattle farmers.
--  See for example historial returns in the cattle sector at <https://agmanager.info/livestock-meat/cattle-finishing-historical-and-projected-returns> or at 
+- Cycles contribute to periods of prosperity followed by periods of losses to hog farmers.
+-  See for example historial returns in the hog sector at <http://www2.econ.iastate.edu/estimated-returns/> or at 
 <https://www.ers.usda.gov/data-products/commodity-costs-and-returns/commodity-costs-and-returns/>
 
 
-# US January cattle inventory (including calves)
+# US December hog inventory
 
 ```{r, out.width = '75%'}
 
 #Data are from NASS QuickStats
 
-dta = read_csv("Data/7) Cattle inventory.csv")
+dta = read_csv("Data/7) Hog inventory.csv")
 dta <- dta %>% 
-  dplyr::filter(Period == "FIRST OF JAN") %>% 
+  dplyr::filter(Period == "FIRST OF DEC") %>% 
   dplyr::select(Year, Value) %>% 
   mutate(Value = Value / 1000000)
 
@@ -818,219 +824,175 @@ plot_inventory <- ggplot(dta, aes(x = Year, y = Value)) +
 plot_inventory
 
 ```
-Source: @NASS.
+\scriptsize
+Note: I suspect that the shocks in the 1930s and 1940s have to do with how the data were collected. Source: @NASS.
 
-# Return to a cow-calf operation in the Heartland
+# Return to a farrow-to-finish operation in Iowa ($/head)
 
-```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Cow-calf return.xls")$mtime > months(1, abbreviate = FALSE)){
-  download.file("https://www.ers.usda.gov/webdocs/DataFiles/47913/RHLCowc.xls", "Data/7) Cow-calf return.xls", method = "curl")
+```{r, echo=FALSE, out.width = '75%'}
+
+if(Sys.time() - file.info("Figures/7) Return farrow to finish.png")$mtime > months(1, abbreviate = FALSE)){
+  fig <- image_read("https://www.extension.iastate.edu/agdm/livestock/html/images/b1-31tbl1.gif")
+  image_write(fig, path = "Figures/7) Return farrow to finish.png", format = "png")
 }
 
-dta1 <- read_excel("Data/7) Cow-calf return.xls", sheet = "Heartland 1996-2007", skip = 1)
-
-dta1 <- dta1[43,] %>%
-  gather(date, value, -Item) %>%
-  dplyr::select(-Item) %>%
-  mutate(value = as.numeric(value)) %>%
-  dplyr::filter(!is.na(value))
-  
-
-dta2 <- read_excel("Data/7) Cow-calf return.xls", sheet = 2, skip = 1)
-
-dta2 <- dta2[38,] %>%
-  gather(date, value, -Item) %>%
-  dplyr::select(-Item) %>%
-  mutate(value = as.numeric(value)) %>%
-  dplyr::filter(!is.na(value))
-
-dta <- rbind(dta1, dta2) %>%
-  mutate(sign = ifelse(value <= 0, "Negative", "Positive"))
-
-plot_return <- ggplot(dta, aes(x = date, y = value, fill = sign)) +
-  geom_bar(stat = "identity", color = "white") +
-  scale_fill_manual(values = viridis(3)[c(1,2)]) +
-  ylab("Value of production less operating costs ($/cow)") +
-  scale_x_discrete(breaks = seq(1996, 2020, by = 2)) +
-  theme_bw() + mytheme +
-  theme(axis.title.x=element_blank(), 
-        axis.text.x=element_text(size = 10),
-        axis.line = element_line(color='black'),
-        legend.position="none")
-
-plot_return
-
-
+knitr::include_graphics("Figures/7) Return farrow to finish.png")
 ```
-Source: @USDAreturn.
+\scriptsize
+Note: If considering value of production less total costs the returns are negative for several years. Source: @USDAreturn.
 
-# Selling methods
+# Marketing methods for hogs
 
-- It is possible to use different methods to sell feeder cattle and fed cattle.
-- Quality must be observed or controlled for in the pricing method through contract arrangement.
-- Each method has its advantages and disadvantages.
-- Underneath all selling method, the futures market helps with price discovery.
+- The same marketing methods for cattle are used in the hog industry.
+- However, an important difference is that in addition to the traditional marketing methods, a major part of hog production is under contracts.
+- Vertical integration means that *integrators*, or *contractors*, contract production for their hogs to independent growers or are directly involved in upstream production stages.
+- Integrators are packing plants.
+- *Full integration* means that a packing plants own facilities for growing hogs and thus control the entire supply chain.
+- It is not possible to tell how much of the hog production is under vertical control.
+- It is also very difficult to tell whether there is a trend toward more vertical integration and more full integration.
+- See some explanations at this link: <http://porkgateway.org/resource/producing-and-marketing-hogs-under-contract/>.
 
-# Selling methods: public markets
+# Why are there contracts in the hog industry?
 
-- Public markets include terminal markets and auction markets.
-- Both fed and feeder cattle are sold in public markets.
-- Terminal markets:
-    - Almost no longer existent;
-    - Terminals were located near railways;
-    - Cattle are brought into stockyards;
-    - Sale occurs through a commission agent;
-    - Seller receives the sale price minus charges for the stockyard and the agent.
+- There are contracts in the grain and cattle industry.
+    - The objective of these contracts is usually to manage price risk.
+    - The contracts are typically for a relatively short period of time (a few months).
+- Contracts in hog and poultry, as well as for specialty crops, are different:
+    - They address issues regarding price risk.
+    - They also include provisions regarding the characteristics of a product and farming methods.
+    - The contracts cover longer time period (years).
+- The extent of vertical integration depends on transaction costs and asset specificity.
 
-# Selling methods: public markets
+# Transaction costs and asset specificity
 
-- Auction markets:
-    - Common sale method with many auction facilities;
-    - Cattle are brought to an auction facility;
-    - Cattle sold by public/competitive bidding;
-    - No commission agent is involvedl;
-    - Auction can occur live or electronically (video);
-    - Buyer receives the price minus a fixed or percentage charge.
+- Some characteristics of a product are difficult (i.e. costly) to observe.
+    - For example, a packer could do extensive tests for antibiotics or other meat quality traits on every carcass but this would be very costly.
+    - Observing/testing the quality of a product is an example of transaction cost that firms might have to incur.
+    - Contract can specify practices that insure the presence or absence of certain characteristics, hence eliminating certain transaction costs.
+- A farm would not invest into assets specific to meet the need of a packer unless it is guaranteed that it can have a return on that asset.
+    - A contract can provide a long term incentive to invest in some specific assets.
 
-# Selling methods: direct sales
+# Transaction costs and asset specificity {.allowframebreaks}
 
-- In direct sales producers sell directly to downstream buyers.
-- Both fed and feeder cattle are sold in direct sales.
-- Seller is more involved in the sale of cattle.
-- No need to move cattle to an intermediate location.
-- Can build long run relationship.
-- Predetermined pricing method (see below).
+- The figure below shows the relationship between vertical integration, transaction costs and asset specificity.
+    - The horizontal axis is the degree of asset specificity.
+    - The vertical axis is the transaction costs for a product, which may include testing.
+- The three cost curves show three types of transactions:
+    1. Spot market;
+    2. Contract;
+    3. Firm, i.e. full integration.
+- If transaction costs are low and assets are not specific, the spot market minimizes costs.
+    - This is the example for corn.
+- As transaction costs increase and assets are more specific, then contracts minimize costs.
+    - This is the example for a major part of the hog production.
+- In the case where transaction costs are high and assets are very specific, then full integration becomes the cost minimizing method.
+    - This is the example of the poultry industry where some packers control the supply chain from feeds up to packing.
 
-# Selling methods: hybrid markets
+# Transaction costs and asset specificity
 
-- Growing marketing method.
-- Cattle are videod at the farm.
-- Bidding and sales occur through electronic auctions.
-- No need to move cattle to an intermediate location.
-- More difficult to observe quality.
+```{r, echo=FALSE, out.width = '75%'}
+knitr::include_graphics("Figures/Contract_cost.png")
+```
+Note: On the horizontal axis is the degree of asset specificity. Source: @CrespiSaitone2018.
 
-# Price of feeder cattle
+# Vertical integration in the hog industry
 
-- The price of feeder cattle is determined at the intersection of demand and supply.
-- Costs of cow-calf and stocker operations affect the supply of feeder cattle.
-- Many factors affect the demand for feeder cattle:
-    - Feeding costs at feedlots (e.g. cost and other feeds);
+- The hog industry uses the spot market, contracts and full integration:
+    - Spot market is not very common anymore.
+    - Most of the production of hogs is under contract.
+    - There is a good share of the production that is under full integration but that is difficult to evaluate how much. 
+- That is, most of the hog production is under some form of vertical integration (contracts are full integration).
+
+# Advantages to vertical integration in the hog industry
+
+- Vertical integration minimizes transaction costs and incentivizes investments in specific assets.
+- Some related advantages to vertical integration in the hog industry.
+    - Smooths out production cycles, especially seasonal production cycles;
+    - This allows to maintain a more uniform production volume throughout the year, reducing packing costs;
+    - Reduces price risks;
+    - Better control of genetics;
+    - Allows for a better control of hog characteristics (e.g. size), reducing packing costs;
+    - Facilitates widespread adoption of latest practices and technologies, hence reducing production costs.
+
+# Disadvantages to vertical integration in the hog industry
+
+- There are some disadvantages to vertical integration in the hog industry.
+    - Growers partly loose control of their operation;
+    - Growers may have limited ability to negotiate the terms of production contracts;
+    - Growers retains production risk.
+    - There might be a hold up problem where growers invest in specific assets and at the end of a contract they do not have any other option than to contract again with the same integrator.
+    
+# Vertical integration
+
+- For vertical integration to work, it requires that both the integrators and the growers gain from it.
+- Intergators must offer contracts such that some growers will be willing to accept.
+- Price for hogs under contract are either negotiated (fixed base price) or determined by formula.
+    - Some contracts will also specify premia for grade and yields.
+- Contracts are incomplete, meaning that they cannot account for every possible contingency.
+    - This became evident with the outbreak of PEDv recently.
+    - Producers who received sick pig could not meet production targets.
+    - This became an important legal issue.
+
+# Price of weaned and feeder hogs
+
+- Prices for hogs are determined at the intersection of demand and supply.
+- An increase in the costs to farrow-to-wean or farrow-to-feeder reduces the supply of weaned pig and feeder pigs.
+    - For example, the outbreak of Porcine Epidemic Diarrhea Virus (PEDV) in 2014 reduced yields in farrowing effectively increasing production costs.
+    - This shifted the supply of weaned pigs and feeder pigs to the left.
+- Many factors affect the demand for weaned pigs and feeder pigs:
+    - Feeding costs (e.g. cost and other feeds);
     - Costs at packing plants (e.g. labor costs);
-    - Domestic consumer demand (e.g. income, price of substitute products);
+    - Domestic consumer demand (e.g. income, price of substitute products, irrational fear);
     - International consumer demand (e.g. trade agreements, competition from other countries, exchange rate, tariffs).
-- Characteristics of a feeder cattle (e.g. breed, weight, color) explain difference in prices across cattle.
 
+# Price of slaughter hogs
 
-# Price of fed cattle
-
-- The price of fed cattle is determined at the intersection of demand and supply.
-- Costs of feedlots affect the supply of fed cattle:
-    - Includes the cost of feeder cattle;
+- The price of slaughter hogs is determined at the intersection of demand and supply.
+- Costs of finishing hogs affect the supply of slaughter hogs:
+    - Includes the cost of younger pigs (weanlings, feeders);
     - Cost of feed (e.g. corn);
-- Many factors affect the demand for fed cattle:
+    - Because PEDV shifted the supply of weanlings and feeders, it also shifted to the left the supply of market hogs.
+- Many factors affect the demand for market hogs:
     - Costs at packing plants (e.g. labor costs);
     - Domestic consumer demand (e.g. income, price of substitute products);
     - International consumer demand (e.g. trade agreements, competition from other countries, exchange rate, tariffs).
-- Characteristics of a feeder cattle (e.g. breed, weight, color) explain difference in prices across cattle.
+- Characteristics of a pigs (e.g. breed, weight, color) explain difference in prices across pigs.
 
-# Cattle prices
+# Hogs prices
 
-- Throughout the supply chain, the characteristics of cattle will affect their prices.
-- Quality is difficult to observe for cattle but plays a big role in pricing cattle.
-- Charactersitics of cattle matter because the quality of the beef output depends on those characteristics.
-- Some characteristics that affect beef quality include
-    - Breed;
-    - Sex;
-    - Age;
-    - Weight.
+- Throughout the supply chain, the characteristics of hogs affect their prices.
+- Quality is difficult to observe but hogs tend to be more homogenous than cattle.
+    - There are more breed variety in cattle (southern versus northern breeds, dairy).
+- The methods to price hogs in direct sales or contracts are very similar to those for direct sales for cattle.
+    - For that reason they are not covered here.
+- The number of hogs sold live is small.
+- There are hogs that are sold between packers:
+    - A packer might have more hog produced in an area than it can processed nearby;
+    - Temporary slow down in packing operations.
 
-# Pricing fed cattle in direct sales
-
-- Visual inspection of a live cattle can give an idea of meat quality but is not always accurate.
-- Direct sales can include provisions to take into account the quality of the beef output.
-- The final price is not determined at the sale of live cattle but rather after grading of the carcass.
-- Three options possible:
-    1. Live weight pricing;
-    2. Carcass or dressed weight pricing considers carcass weight;
-    3. Dressed weight and grade or grade and yield pricing considers both the yield and quality of the meat.
-- Sales other than direct sales are live weight.
-
-# Pricing fed cattle in direct sales
-
-1. Live weight:
-   - Only considers live weight (on the hoof);
-   - Price negotiated before delivery;
-   - Weighing conditions matter;
-   - Potential yield and quality are estimated by observing live cattle;
-   - Seller does not have to wait for grading before knowing the final price;
-   - Buyer (packer) assumes yield and quality risk (discount compared to other selling methods?).
-
-# Pricing fed cattle in direct sales
-
-2. Carcass weight
-   - The price is based on carcass weight;
-   - Price negotiated before delivery;
-   - Seller assumes yield risk;
-   - Buyer (packer) assumes quality risk.
-
-# Pricing fed cattle in direct sales
-   
-3. Dressed weight and grade
-   - The price is based on carcass weight and quality;
-   - Each carcass is evaluated and priced individually;
-   - Premia and discounts are negotiated before delivery;
-   - Base price is either negotiated or based on a formula;
-      - Formula pricing can set the base price considering the average cattle price in the prior week, market reports, boxed beef cutout value, futures market prices or negotiated prices.
-   - Seller assumes yield and quality risk;
-   - Buyer (packer) assumes quality risk.
-
-# 5 area markets - live versus dressed weight
-
-- The 5 markets are 1) Texas & Oklahoma, 2) Kansas, 3) Nebraska, 4) Colorado and 5) Iowa & Minnesota.
+# Negotiated versus formula - producer sold, carcass basis
 
 ```{r, out.width = '75%'}
 #You might need a password to download this file
 
-if(Sys.time() - file.info("Data/7) Live versus dressed.xls")$mtime > months(1, abbreviate = FALSE)){
-  download.file("http://lmic.info/sites/default/files/lmic_private_fs/memberonlyfiles/spreadsheets/catle/Annual170-5MktAvgFats.xls", "Data/7) Live versus dressed.xls", method = "curl")
+if(Sys.time() - file.info("Data/7) Prior day hog slaughter.xls")$mtime > months(1, abbreviate = FALSE)){
+  download.file("http://lmic.info/sites/default/files/lmic_private_fs/memberonlyfiles/spreadsheets/hogs/PriorDaySlaughterNational.xls", "Data/7) Prior day hog slaughter.xls", method = "curl")
 }
 
-dta1 <- read_excel("Data/7) Live versus dressed.xls", sheet = "LV STRS", skip = 6) %>%
-  dplyr::select(DATE, TOTAL) %>%
-  mutate(TOTAL = as.numeric(TOTAL), var = "Live") %>%
-  dplyr::filter(!is.na(DATE)) %>%
-  rename(year = DATE, value = TOTAL)
+dta <- read_excel("Data/7) Prior day hog slaughter.xls", sheet = "Monthly", skip = 5, col_names = FALSE) %>%
+  dplyr::select(X__1, X__2, X__14, X__26, X__38) %>%
+  rename(date = X__1, Negotiated = X__2, Other = X__14, Market = X__26, `Other agreement` = X__38) %>%
+  mutate(Formula = Other + Market, date = as.Date(date)) %>%
+  dplyr::select(date, Negotiated, Formula, `Other agreement`) %>%
+  gather(var, value, -date)
 
-dta2 <- read_excel("Data/7) Live versus dressed.xls", sheet = "LV HFRS", skip = 6) %>%
-  dplyr::select(DATE, TOTAL) %>%
-  mutate(TOTAL = as.numeric(TOTAL), var = "Live") %>%
-  dplyr::filter(!is.na(DATE)) %>%
-  rename(year = DATE, value = TOTAL)
-
-dta3 <- read_excel("Data/7) Live versus dressed.xls", sheet = "DR STRS", skip = 6) %>%
-  dplyr::select(DATE, TOTAL) %>% 
-  mutate(TOTAL = as.numeric(TOTAL), var = "Dressed") %>%
-  dplyr::filter(!is.na(DATE)) %>%
-  rename(year = DATE, value = TOTAL)
-
-dta4 <- read_excel("Data/7) Live versus dressed.xls", sheet = "DR HFRS", skip = 6) %>%
-  dplyr::select(DATE, TOTAL) %>%
-  mutate(TOTAL = as.numeric(TOTAL), var = "Dressed") %>%
-  dplyr::filter(!is.na(DATE)) %>%
-  rename(year = DATE, value = TOTAL)
-
-dta <- rbind(dta1, dta2, dta3, dta4) %>%
-  group_by(year, var) %>%
-  summarise(value = sum(value)) %>%
-  dplyr::filter(year > 2001) %>%
-  mutate(value = value/1000)
-
-plot_cat <- ggplot(dta, aes(x = year, y = value, fill = var)) +
+plot_cat <- ggplot(dta, aes(x = date, y = value, fill = var)) +
   geom_area(position='fill', alpha = 0.75) +
   ylab("Share") +
-  scale_x_continuous(breaks = seq(2000, 2020, by = 2)) +
-  scale_fill_manual(values = viridis(5)[c(1,4)]) + 
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y", expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  scale_fill_manual(values = viridis(4)[c(1,2,3)]) + 
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
         axis.text.x=element_text(size = 10),
@@ -1040,91 +1002,56 @@ plot_cat
 
 ```
 
-# 5 area markets - direct sales - negotiated versus formula
+# Carcass grading
+
+- Packers use different matrices to reward the characteristics that they find desirable.
+    - Packers offer different pork products to consumers and hence they look into different quality attributes into hog carcasses.
+- The characteristics considered include:
+    - Backfat thickness;
+    - Loineye area;
+    - Loin depth.
+- The net price is calculated from a base price to which are added discounts and premia depending on the characteristics of a carcass.
+
+# What are the discounts and premia
+
+- The USDA reports price ranges based on measured backfat thickness, loineye area and loin depth.
+- This information is available in report `lm_hg200`: <https://www.ams.usda.gov/mnreports/lm_hg200.txt>.
+
+# Example matrix from USDA report `lm_hg200` 
+
+- Below is an example of the range of prices paid for negotiate hog prices for given backfat thickness, loineye area and loin depth.
+
+\verbfilenobox[\tiny]{"Data/7) lm_hg200.txt"}
+
+# Base price and net price - producer sold
 
 ```{r, out.width = '75%'}
-#You might need a password to download these files
 
-if(Sys.time() - file.info("Data/7) Cattle - formula.xls")$mtime > months(1, abbreviate = FALSE)){
-  download.file("http://lmic.info/sites/default/files/lmic_private_fs/memberonlyfiles/spreadsheets/cattle/wkly145-5AreaFormulatedSlaCat.xls", "Data/7) Cattle - formula.xls", method = "curl")
-}
+dta <- read_excel("Data/7) Prior day hog slaughter.xls", sheet = "Producer", skip = 5, col_names = FALSE, col_type = c("date",rep("numeric", 72))) %>%
+  dplyr::select(X__1, X__63, X__64) %>%
+  rename(date = X__1, `Base price` = X__63, `Net price` = X__64) %>%
+  mutate(date = as.Date(date)) %>%
+  gather(var, value, - date)
 
-if(Sys.time() - file.info("Data/7) Cattle - negotiated.xls")$mtime > months(1, abbreviate = FALSE)){
-  download.file("http://lmic.info/sites/default/files/lmic_private_fs/memberonlyfiles/spreadsheets//wkly145-5AreaNegotiatedGridSlaCat.xls", "Data/7) Cattle - negotiated.xls", method = "curl")
-}
-
-dta_form <- read_excel("Data/7) Cattle - formula.xls", sheet = "head count", skip = 8) %>%
-  dplyr::select(DATE, X__1, X__5) %>%
-  rename(date = DATE, Dressed = X__1, Live = X__5) %>%
-  mutate(date = as.Date(date), var = "Formula") %>%
-  dplyr::filter(!is.na(Dressed), Dressed != 0, Live != 0)
-
-dta_nego <- read_excel("Data/7) Cattle - negotiated.xls", sheet = "head count", skip = 8) %>%
-  dplyr::select(DATE, X__1, X__5) %>%
-  rename(date = DATE, Dressed = X__1, Live = X__5) %>%
-  mutate(date = as.Date(date), var = "Negotiated") %>%
-  dplyr::filter(!is.na(Dressed), Dressed != 0, Live != 0)
-
-dta <- rbind(dta_form, dta_nego) %>%
-  gather(cat, value, -c(var, date))
-
-plot_cat <- ggplot(dta, aes(x = date, y = value, fill = var)) +
-  geom_area(position='fill', alpha = 0.75) +
-  facet_wrap(~cat) + 
-  ylab("Share") +
-  scale_fill_manual(values = viridis(5)[c(1,4)]) + 
+plot_price <- ggplot(dta, aes(x = date, y = value, color = var)) +
+  geom_line() +
+  ylab("Price ($/lb)") +
+  scale_x_date(date_breaks = "2 years", date_labels = "%Y", expand = c(0,0)) +
+  scale_color_manual(values = viridis(3)[c(1,2)]) + 
   theme_bw() + mytheme +
-  theme(axis.title.x=element_blank(),
+  theme(axis.title.x=element_blank(), 
+        axis.text.x=element_text(size = 10),
         axis.line = element_line(color='black'),
-        strip.background = element_blank(),
-        strip.text = element_text(size = 12, face = "bold"), 
-        axis.text.x=element_text(size = 10))
+        legend.position = c(0.15, 0.75))
 
-plot_cat
-
+plot_price
 
 ```
 
-# Carcass grading
-
-- Carcass are graded based on the expected quality of beef and meat yield.
-- This is a voluntary service offered by the USDA for which processors pay. 
-- It is different than inspection for wholesomeness which is mandatory and paid from public fund.
-    - If a plant does not follow the proper mandated food safety practices an inspector can shut down a plant until it demonstrates compliance.
-- See definitions of yield and grades at this link: <https://www.ams.usda.gov/grades-standards/carcass-beef-grades-and-standards>.
-
-# Yield grades
-
-- A higher yield carcass produces more meat to sell at retail.
-
-1. YG 1: carcass has the highest expected yield of retail cuts.
-2. YG 2:
-3. YG 3:
-4. YG 4:
-4. YG 5: carcass has the lowest expected yield of retail cuts.
-
-# Quality grades
-
-- Higher quality means tastier beef.
-
-1. Prime: highest quality, has the most marbling.
-2. Choice: 
-3. Select:
-4. Standard: Lowest quality, least amount of marbling. 
-5. Commercial: Older cattle.
-6. Utility:
-7. Cutter:
-8. Canner: My dog would still love it.
 
 # Mandatory price reporting (MPR)
 
-- Negotiated prices have become much less common.
-- Congress passed a law in 1999 to adress concern about lack of public disclosure of transaction prices.
-- Price discovery becomes difficult if there is no public data about prices.
-- Secrecy also favors abuse of market power, which is a real concern in a concentrated market such as beef packing.
-- See rulemaking for MPR at @mpr.
-- @Mathews2015 shows the impact of MPR on markets.
-- MPR data are available at <https://mpr.datamart.ams.usda.gov/>.
+- MPR also applies to the hog industry.
 
 
 # References

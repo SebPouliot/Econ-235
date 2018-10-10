@@ -1,0 +1,105 @@
+% Encoding: windows-1252
+
+
+@Book{Carter2003,
+  Title                    = {Futures and Options Markets: An Introduction},
+  Author                   = {Colin A. Carter},
+  Publisher                = {Waveland Press, Inc.},
+  Year                     = {2003},
+
+  Owner                    = {Seb},
+  Timestamp                = {2012.10.30}
+}
+
+@Article{CrespiSaitone2018,
+  author =   {Crespi, John M. and Saitone, Tina L.},
+  title =    {Are Cattle Markets the Last Frontier? Vertical Coordination in Animal-Based Procurement Markets},
+  journal =  {Annual Review of Resource Economics},
+  year =     {2018},
+  volume =   {10},
+  number =   {1},
+  pages =    {null},
+  abstract = { Vertical integration and contracting have been documented as important developments in enhancing the efficiency of supply chains in agriculture. Despite the efficiency gains, movement toward greater integration remains controversial. Meanwhile, the diffusion of these alternative procurement mechanisms has been heterogeneous over time and across commodities. In this review we compare and contrast the livestock and poultry industries in the United States to provide insights into the future of integration and coordination throughout the beef cattle supply chain. While similarities exist across livestock and poultry industries, there are significant differences that placed the beef industry on a different trajectory, with a variety of structural and biological factors that have limited the industry’s progression toward greater integration. Expected final online publication date for the Annual Review of Resource Economics Volume 10 is October 5, 2018. Please see http://www.annualreviews.org/page/journal/pubdates for revised estimates. },
+  doi =      {10.1146/annurev-resource-100517-022948},
+  eprint =   { https://doi.org/10.1146/annurev-resource-100517-022948 },
+  url =      { 
+        https://doi.org/10.1146/annurev-resource-100517-022948
+    
+}
+}
+
+@Misc{fas,
+  Title                    = {Global Agricultural Trade System},
+
+  Author                   = {{USDA - Foreign Agricultural Service}},
+  HowPublished             = {Available at \url{https://apps.fas.usda.gov/Gats/default.aspx}},
+  Year                     = {2018},
+
+  Owner                    = {POULIOT},
+  Timestamp                = {2018.09.24}
+}
+
+@TechReport{Mathews2015,
+  Title                    = {Mandatory Price Reporting, Market Efficiency, and Price Discovery in Livestock Markets},
+  Author                   = {Kenneth H. Mathews Jr. and Wade Brorsen and William F. Hahn and Carlos Arnade and Erik Dohlman},
+  Institution              = {USDA Economic Research Service},
+  Year                     = {2015}
+}
+
+@Misc{mpr,
+  Title                    = {Livestock Mandatory Price Reporting},
+
+  Author                   = {{USDA - Agricultural Marketing Service}},
+  HowPublished             = {Available at \url{https://www.ams.usda.gov/rules-regulations/mmr/lmr}},
+  Year                     = {2018}
+}
+
+@Misc{Nass,
+  Title                    = {Quick Stats},
+
+  Author                   = {{USDA - National Agricultural Statistics Service}},
+  HowPublished             = {Available online at: \url{http://quickstats.nass.usda.gov/}},
+  Year                     = {2018},
+
+  Owner                    = {pouliot},
+  Timestamp                = {2010.09.13}
+}
+
+@Misc{USDA_dom,
+  Title                    = {Livestock \& Meat Domestic Data},
+
+  Author                   = {{USDA - Economic Research Service}},
+  HowPublished             = {Available at \url{https://www.ers.usda.gov/data-products/livestock-meat-domestic-data/}},
+  Year                     = {2018},
+
+  Owner                    = {POULIOT},
+  Timestamp                = {2018.09.25}
+}
+
+@Misc{usda_trade,
+  Title                    = {Livestock and Meat International Trade Data},
+
+  Author                   = {{USDA - Economic Research Service}},
+  HowPublished             = {Available line \url{https://www.ers.usda.gov/data-products/livestock-and-meat-international-trade-data/}},
+  Year                     = {2018},
+
+  Owner                    = {POULIOT},
+  Timestamp                = {2018.09.25}
+}
+
+@Misc{USDAreturn,
+  Title                    = {Commodity Costs and Returns},
+
+  Author                   = {{USDA - Economic Research Service}},
+  HowPublished             = {Available at \url{https://www.ers.usda.gov/data-products/commodity-costs-and-returns/commodity-costs-and-returns/}},
+  Year                     = {2018}
+}
+
+@comment{jabref-meta: selector_author:}
+
+@comment{jabref-meta: selector_journal:}
+
+@comment{jabref-meta: selector_keywords:}
+
+@comment{jabref-meta: selector_publisher:}
+
