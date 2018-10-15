@@ -12,19 +12,20 @@
 }
 
 @Article{CrespiSaitone2018,
-  author =   {Crespi, John M. and Saitone, Tina L.},
-  title =    {Are Cattle Markets the Last Frontier? Vertical Coordination in Animal-Based Procurement Markets},
-  journal =  {Annual Review of Resource Economics},
-  year =     {2018},
-  volume =   {10},
-  number =   {1},
-  pages =    {null},
-  abstract = { Vertical integration and contracting have been documented as important developments in enhancing the efficiency of supply chains in agriculture. Despite the efficiency gains, movement toward greater integration remains controversial. Meanwhile, the diffusion of these alternative procurement mechanisms has been heterogeneous over time and across commodities. In this review we compare and contrast the livestock and poultry industries in the United States to provide insights into the future of integration and coordination throughout the beef cattle supply chain. While similarities exist across livestock and poultry industries, there are significant differences that placed the beef industry on a different trajectory, with a variety of structural and biological factors that have limited the industry’s progression toward greater integration. Expected final online publication date for the Annual Review of Resource Economics Volume 10 is October 5, 2018. Please see http://www.annualreviews.org/page/journal/pubdates for revised estimates. },
-  doi =      {10.1146/annurev-resource-100517-022948},
-  eprint =   { https://doi.org/10.1146/annurev-resource-100517-022948 },
-  url =      { 
-        https://doi.org/10.1146/annurev-resource-100517-022948
-    
+  Title                    = {Are Cattle Markets the Last Frontier? Vertical Coordination in Animal-Based Procurement Markets},
+  Author                   = {Crespi, John M. and Saitone, Tina L.},
+  Journal                  = {Annual Review of Resource Economics},
+  Year                     = {2018},
+  Number                   = {1},
+  Pages                    = {null},
+  Volume                   = {10},
+
+  Abstract                 = { Vertical integration and contracting have been documented as important developments in enhancing the efficiency of supply chains in agriculture. Despite the efficiency gains, movement toward greater integration remains controversial. Meanwhile, the diffusion of these alternative procurement mechanisms has been heterogeneous over time and across commodities. In this review we compare and contrast the livestock and poultry industries in the United States to provide insights into the future of integration and coordination throughout the beef cattle supply chain. While similarities exist across livestock and poultry industries, there are significant differences that placed the beef industry on a different trajectory, with a variety of structural and biological factors that have limited the industry’s progression toward greater integration. Expected final online publication date for the Annual Review of Resource Economics Volume 10 is October 5, 2018. Please see http://www.annualreviews.org/page/journal/pubdates for revised estimates. },
+  Doi                      = {10.1146/annurev-resource-100517-022948},
+  Eprint                   = { https://doi.org/10.1146/annurev-resource-100517-022948 },
+  Url                      = { 
+ https://doi.org/10.1146/annurev-resource-100517-022948
+ 
 }
 }
 
@@ -39,11 +40,11 @@
   Timestamp                = {2018.09.24}
 }
 
-@TechReport{Mathews2015,
-  Title                    = {Mandatory Price Reporting, Market Efficiency, and Price Discovery in Livestock Markets},
-  Author                   = {Kenneth H. Mathews Jr. and Wade Brorsen and William F. Hahn and Carlos Arnade and Erik Dohlman},
-  Institution              = {USDA Economic Research Service},
-  Year                     = {2015}
+@Article{mathews2015,
+  author =  {Mathews, KH and Brorsen, Wade and Hahn, William F and Arnade, Carlos and Dohlman, Erik},
+  title =   {Mandatory price reporting, market efficiency, and price discovery in livestock markets},
+  journal = {USDA Economic Research Service Report LDPM-254-01},
+  year =    {2015}
 }
 
 @Misc{mpr,
@@ -55,14 +56,23 @@
 }
 
 @Misc{Nass,
-  Title                    = {Quick Stats},
+  author =       {{USDA - National Agricultural Statistics Service}},
+  title =        {Quick Stats},
+  howpublished = {Available at \url{http://quickstats.nass.usda.gov/}},
+  year =         {2018},
+  owner =        {pouliot},
+  timestamp =    {2010.09.13}
+}
 
-  Author                   = {{USDA - National Agricultural Statistics Service}},
-  HowPublished             = {Available online at: \url{http://quickstats.nass.usda.gov/}},
+@Misc{Schulz2018,
+  Title                    = {Livestock -- Cost \& Return},
+
+  Author                   = {Schulz, Lee},
+  HowPublished             = {Available at \url{https://www.extension.iastate.edu/agdm/ldcostsreturns.html}},
   Year                     = {2018},
 
-  Owner                    = {pouliot},
-  Timestamp                = {2010.09.13}
+  Owner                    = {POULIOT},
+  Timestamp                = {2018.10.11}
 }
 
 @Misc{USDA_dom,
@@ -80,11 +90,30 @@
   Title                    = {Livestock and Meat International Trade Data},
 
   Author                   = {{USDA - Economic Research Service}},
-  HowPublished             = {Available line \url{https://www.ers.usda.gov/data-products/livestock-and-meat-international-trade-data/}},
+  HowPublished             = {Available at \url{https://www.ers.usda.gov/data-products/livestock-and-meat-international-trade-data/}},
   Year                     = {2018},
 
   Owner                    = {POULIOT},
   Timestamp                = {2018.09.25}
+}
+
+@Misc{USDAAMS2018,
+  Title                    = {Livestock, Poultry, \& Grain},
+
+  Author                   = {{USDA - Agricultural Marketing Service}},
+  HowPublished             = {Available at \url{https://www.marketnews.usda.gov/mnp/ls-home}},
+  Year                     = {2018}
+}
+
+@Misc{USDAERS2018,
+  Title                    = {Foreign Agricultural Trade of the United States (FATUS)},
+
+  Author                   = {{USDA - Economic Research Service}},
+  HowPublished             = {Available at \url{https://www.ers.usda.gov/data-products/foreign-agricultural-trade-of-the-united-states-fatus/}},
+  Year                     = {2018},
+
+  Owner                    = {POULIOT},
+  Timestamp                = {2018.10.14}
 }
 
 @Misc{USDAreturn,

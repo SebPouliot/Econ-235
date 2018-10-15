@@ -932,7 +932,6 @@ Data source: @USDAAMS2018
 - 
 
 
-
 # Transaction costs and asset specificity
 
 ```{r bull, echo=FALSE, out.width = '75%'}

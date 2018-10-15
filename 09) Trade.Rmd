@@ -1,0 +1,852 @@
+---
+title: "Trade"
+shortitle: Trade
+subtitle: Econ 235
+author: "Sebastien Pouliot"
+date: "Fall 2018"
+output:
+  beamer_presentation:
+    citation_package: natbib
+    includes:
+      in_header: mystyle.sty
+    theme: default
+  ioslides_presentation: default
+  slidy_presentation: default
+institute: Iowa State University
+header-includes: 
+  - \widowpenalties 1 150
+classoption:
+  - dvipsnames
+  - table
+urlcolor: blue
+bibliography: References.bib
+biblio-style: apalike
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, fig.keep='high', out.width = '95%', fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
+
+#Load some packages
+library(pacman)
+pacman::p_load(tidyverse)
+pacman::p_load(lubridate)
+pacman::p_load(readxl)
+pacman::p_load(xlsx)
+pacman::p_load(Quandl)
+pacman::p_load(viridis)
+pacman::p_load(Cairo)
+options(kableExtra.latex.load_packages = TRUE)
+pacman::p_load(kableExtra)
+pacman::p_load(ggmap)
+pacman::p_load(sp)
+pacman::p_load(usmap)
+pacman::p_load(maps)
+pacman::p_load(magick)
+
+#Authentification
+#Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
+
+#Basic setup for figures
+source("Figures/Graph parameters.r")
+
+```
+
+# International trade in agriculture
+
+- International trade has a very significant impact on US agriculture.
+- For many commodities, prices are determined on the international market.
+- International agreements about rules of trade have shaped farm policies in the United States and other countries.
+- For firms, entering the international market is costly and risky.
+
+# To read
+
+- For a description of US agricultural trade: [U.S. Agricultural Trade: Trends, Composition, Direction, and Policy](http://www.fas.org/sgp/crs/misc/98-253.pdf).
+- For a brief description of the WTO agreement on agriculture: [Summary of WTO agreement on agriculture](http://www.wto.org/english/docs_e/legal_e/ursum_e.htm).
+- If you want access data about US agricultural trade, look at the [USDA Foreign Agricultural Service website](http://www.fas.usda.gov/psdonline/psdHome.aspx).
+
+
+# Definitions
+
+
+
+
+# US agricultural and total exports
+
+```{r, out.width = '75%'}
+
+if(Sys.time() - file.info("Data/9) CYNONAG.xls")$mtime > months(1, abbreviate = FALSE)){
+  download.file("https://www.ers.usda.gov/webdocs/DataFiles/47818/CYNONAG.xls", destfile = "Data/9) CYNONAG.xls", mode = "wb")
+}
+
+dta <- read_excel("Data/9) CYNONAG.xls", sheet = 1, skip = 8, col_names = FALSE) %>% 
+  dplyr::select(X__1, X__3, X__5, X__7) 
+
+colnames(dta) <- c("Year", "Ag", "Non-ag", "Total")
+
+dta <- dta %>%
+  dplyr::filter(!is.na(Total)) %>%
+  mutate(var = case_when(row_number() <= nrow(.)/3 ~ "Exports",
+                         row_number() > nrow(.)/3 & row_number() <= 2*nrow(.)/3 ~ "Imports",
+                         TRUE ~ "Balance"),
+         Year = as.numeric(Year))
+
+##############
+### Graph ####
+##############
+
+dta_graph <- dta %>%
+  dplyr::select(-Total) %>%
+  dplyr::filter(var == "Exports") %>%
+  gather(var, value, -Year) %>%
+  mutate(Year = as.numeric(Year), value = as.numeric(value)/1000)
+
+agtrade <- ggplot(data = dta_graph, aes(x = Year, y = value, fill = var))  + 
+  geom_area(position = "stack", alpha = 0.75) +
+  geom_line(position = "stack", size = 0.5, color = "black") +
+  scale_fill_manual(values = viridis(3)[c(2,1)]) + 
+  scale_x_continuous(breaks=seq(2000, 2020, by = 5) , minor_breaks=seq(1998, 2020, by = 1), expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  ylab("Billion dollars") + 
+  theme_bw() + mytheme + 
+  theme(legend.position=c(0.25, 0.15), 
+        legend.direction = "horizontal", 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+agtrade
+
+```
+Data source: @USDAERS2018.
+
+# US agricultural and total imports
+
+```{r, out.width = '75%'}
+
+dta_graph <- dta %>%
+  dplyr::select(-Total) %>%
+  dplyr::filter(var == "Imports") %>%
+  gather(var, value, -Year) %>%
+  mutate(Year = as.numeric(Year), value = as.numeric(value)/1000)
+
+agtrade <- ggplot(data = dta_graph, aes(x = Year, y = value, fill = var))  + 
+  geom_area(position = "stack", alpha = 0.75) +
+  geom_line(position = "stack", size = 0.5, color = "black") +
+  scale_fill_manual(values = viridis(3)[c(2,1)]) + 
+  scale_x_continuous(breaks=seq(2000, 2020, by = 5) , minor_breaks=seq(1998, 2020, by = 1), expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  ylab("Billion dollars") + 
+  theme_bw() + mytheme + 
+  theme(legend.position=c(0.15, 0.75), 
+        legend.direction = "horizontal", 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+agtrade
+
+```
+Data source: @USDAERS2018.
+
+
+# US agricultural and total trade balance
+
+```{r, out.width = '75%'}
+
+dta_graph <- dta %>%
+  dplyr::select(-Total) %>%
+  dplyr::filter(var == "Balance") %>%
+  gather(var, value, -Year) %>%
+  mutate(Year = as.numeric(Year), value = as.numeric(value)/1000)
+
+agtrade <- ggplot(data = dta_graph, aes(x = Year, y = value, fill = var))  + 
+  geom_area(position = "stack", alpha = 0.75) +
+  geom_line(position = "stack", size = 0.5, color = "black") +
+  scale_fill_manual(values = viridis(3)[c(2,1)]) + 
+  scale_x_continuous(breaks=seq(2000, 2020, by = 5) , minor_breaks=seq(1998, 2020, by = 1), expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  ylab("Billion dollars") + 
+  theme_bw() + mytheme + 
+  theme(legend.position=c(0.15, 0.15), 
+        legend.direction = "horizontal", 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+agtrade
+
+```
+Data source: @USDAERS2018.
+
+# Monthly US agricultural trade volumes
+
+```{r, out.width = '75%'}
+
+if(Sys.time() - file.info("Data/9) moustrade.xls")$mtime > months(1, abbreviate = FALSE)){
+  download.file("https://www.ers.usda.gov/webdocs/DataFiles/53602/moustrade.xls", destfile = "Data/9) moustrade.xls", mode = "wb")
+}
+
+dta <- read_excel("Data/9) moustrade.xls", sheet = 1, skip = 6, col_names = FALSE) %>% 
+  dplyr::filter(!is.na(X__2)) %>%
+  dplyr::select(-X__6)
+colnames(dta) <- c("Year", "Month", "Exports", "Imports", "Balance")
+
+dta <- dta %>% 
+  mutate(Exports = as.numeric(Exports)/1000000000, Imports = as.numeric(Imports)/1000000000, Balance = as.numeric(Balance)/1000000000, date = seq(as.Date("1975/10/1"), by = "month", length.out = nrow(dta))) %>%
+  dplyr::select(-Year, - Month)
+
+##############
+### Graph ####
+##############
+
+dta_graph <- dta %>% dplyr::select(Exports, Imports, date) %>%
+  mutate(Imports = -Imports) %>%
+  gather(var, value, -date)
+
+agtrade <- ggplot(data = dta_graph, aes(x = date, y = value, fill = var))  + 
+  geom_bar(stat="identity", position = "identity") + 
+  scale_fill_manual(values = viridis(3)[c(2,1)]) + 
+  scale_x_date(date_breaks="5 year", date_minor_breaks="1 year", labels=date_format("%Y"), expand = c(0,0)) +
+  ylab("Billion dollars") + 
+  theme_bw() + mytheme + 
+  theme(legend.position=c(0.25, 0.15), 
+        legend.direction = "horizontal", 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+agtrade
+
+```
+Data source: @USDAERS2018.
+
+# Monthly US agricultural trade balance
+
+```{r, out.width = '75%'}
+
+balancetrade <- ggplot(data = dta, aes(x = date, y = Balance))  + 
+  geom_bar(stat="identity", position = "identity") + 
+  scale_fill_viridis(discrete = TRUE) + 
+  scale_x_date(date_breaks="5 year", date_minor_breaks="1 year", labels=date_format("%Y"), expand = c(0,0)) +
+  ylab("Billion dollars") + 
+  theme_bw() + mytheme + 
+  theme(legend.position=c(0.15, 0.15), 
+        legend.direction = "horizontal", 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+balancetrade
+
+```
+Data source: @USDAERS2018.
+
+# Top 15 US agricultural exports by country
+
+```{r, out.width = '75%'}
+
+if(Sys.time() - file.info("Data/ 9) Xcytop15.xls")$mtime > months(1, abbreviate = FALSE)){
+  download.file("https://www.ers.usda.gov/webdocs/DataFiles/47818/Xcytop15.xls", destfile = "Data/ 9) Xcytop15.xls", mode = "wb")
+}
+
+dta <- read_excel("Data/ 9) Xcytop15.xls", sheet = 1, skip = 4, col_names = FALSE) %>% 
+  dplyr::select(X__2,X__3)
+colnames(dta) <- c("country", "exports")
+
+dta  <- dta %>% 
+  dplyr::filter(!is.na(country)) %>% 
+  mutate(exports = as.numeric(exports)/1000000000,
+         country = ifelse(str_detect(country, "European Union"), "EU", country))
+
+year <- read_excel("Data/ 9) Xcytop15.xls", sheet = 1, skip = 2, col_names = FALSE) %>% 
+  dplyr::select(X__3) %>%
+  dplyr::filter(row_number() == 1) %>%
+  mutate(X__3 = str_extract(X__3, "\\d+")) %>%
+  unlist()
+
+Exportsbycountry <- ggplot(data = dta, aes(x = country, y = exports, fill = country))  + 
+  geom_bar(stat="identity", color = "black") + geom_text(aes(label=round(exports,2)), position=position_dodge(width=0.9), vjust=-0.25, size = 2) + 
+  scale_fill_viridis(discrete = TRUE) + 
+  ylab("Billion dollars") + 
+  ggtitle(paste("Calendar year", year, sep = " ")) +
+  theme_bw() + mytheme + 
+  theme(legend.position="none", 
+        axis.text.x = element_text(size  = 6, angle = 45, hjust = 1, vjust = 1), 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+Exportsbycountry
+
+```
+Data source: @USDAERS2018.
+
+
+# Top 15 US agricultural imports by country
+
+```{r, out.width = '75%'}
+
+if(Sys.time() - file.info("Data/ 9) McyTOP15.xls")$mtime > months(1, abbreviate = FALSE)){
+  download.file("https://www.ers.usda.gov/webdocs/DataFiles/47818/McyTOP15.xls", destfile = "Data/ 9) McyTOP15.xls", mode = "wb")
+}
+
+dta <- read_excel("Data/ 9) McyTOP15.xls", sheet = 1, skip = 4, col_names = FALSE) %>% 
+  dplyr::select(X__2,X__3)
+colnames(dta) <- c("country", "imports")
+
+dta  <- dta %>% 
+  dplyr::filter(!is.na(country)) %>% 
+  mutate(imports = as.numeric(imports)/1000000000,
+         country = ifelse(str_detect(country, "European Union"), "EU", country))
+
+year <- read_excel("Data/ 9) McyTOP15.xls", sheet = 1, skip = 2, col_names = FALSE) %>% 
+  dplyr::select(X__3) %>%
+  dplyr::filter(row_number() == 1) %>%
+  mutate(X__3 = str_extract(X__3, "\\d+")) %>%
+  unlist()
+
+Importsbycountry <- ggplot(data = dta, aes(x = country, y = imports, fill = country))  + 
+  geom_bar(stat="identity", color = "black") + geom_text(aes(label=round(imports,2)), position=position_dodge(width=0.9), vjust=-0.25, size = 2) + 
+  scale_fill_viridis(discrete = TRUE) + 
+  ylab("Billion dollars") + 
+  ggtitle(paste("Calendar year", year, sep = " ")) +
+  theme_bw() + mytheme + 
+  theme(legend.position="none", 
+        axis.text.x = element_text(size  = 6, angle = 45, hjust = 1, vjust = 1), 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+Importsbycountry
+
+```
+Data source: @USDAERS2018.
+
+# Top 15 US agricultural exports by commodities
+
+```{r, out.width = '75%'}
+
+if(Sys.time() - file.info("Data/ 9) cytop25hvpexp.xls")$mtime > months(1, abbreviate = FALSE)){
+  download.file("https://www.ers.usda.gov/webdocs/DataFiles/47818/cytop25hvpexp.xls", destfile = "Data/ 9) cytop25hvpexp.xls", mode = "wb")
+}
+
+dta <- read_excel("Data/ 9) cytop25hvpexp.xls", sheet = 1, skip = 2, col_names = FALSE) %>% 
+  dplyr::select(X__2, X__3, X__4)
+colnames(dta) <- c("product", "process", "exports")
+dta  <- dta %>% dplyr::filter(!is.na(product))
+
+dta <- dta %>% 
+  mutate(exports = as.numeric(exports)/1000000000) %>%
+  arrange(-exports) %>%
+  dplyr::filter(row_number() %in% 1:15)
+
+year <- read_excel("Data/ 9) cytop25hvpexp.xls", sheet = 1, skip = 1, col_names = FALSE) %>% 
+  dplyr::select(X__4) %>%
+  dplyr::filter(row_number() == 1) %>%
+  mutate(X__4 = str_extract(X__4, "\\d+")) %>%
+  unlist()
+
+Exportsbycommodities <- ggplot(data = dta, aes(x = product, y = exports, fill = product)) + 
+  geom_bar(stat="identity", color = "black") + 
+  geom_text(aes(label=round(exports,2)), position=position_dodge(width=0.9), vjust=-0.25, size = 2) + 
+  scale_fill_viridis(discrete = TRUE) + 
+  ylab("Billion dollars") + 
+  ggtitle(paste("Calendar year", year, sep = " ")) +
+  theme_bw() + mytheme + 
+  theme(legend.position="none", 
+        axis.text.x = element_text(size  = 6, angle = 45, hjust = 1, vjust = 1), 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+Exportsbycommodities
+
+
+```
+Data source: @USDAERS2018.
+
+# Top 15 US agricultural imports by commodities
+
+```{r, out.width = '75%'}
+
+if(Sys.time() - file.info("Data/ 9) cytop25hvpimp.xls")$mtime > months(1, abbreviate = FALSE)){
+  download.file("https://www.ers.usda.gov/webdocs/DataFiles/47818/cytop25hvpimp.xls", destfile = "Data/ 9) cytop25hvpimp.xls", mode = "wb")
+}
+
+dta <- read_excel("Data/ 9) cytop25hvpimp.xls", sheet = 1, skip = 2, col_names = FALSE) %>% 
+  dplyr::select(X__2, X__3, X__4)
+colnames(dta) <- c("product", "process", "imports")
+dta  <- dta %>% dplyr::filter(!is.na(product))
+
+dta <- dta %>% 
+  mutate(imports = as.numeric(imports)/1000000000) %>%
+  arrange(-imports) %>%
+  dplyr::filter(row_number() %in% 1:15)
+
+year <- read_excel("Data/ 9) cytop25hvpexp.xls", sheet = 1, skip = 1, col_names = FALSE) %>% 
+  dplyr::select(X__4) %>%
+  dplyr::filter(row_number() == 1) %>%
+  mutate(X__4 = str_extract(X__4, "\\d+")) %>%
+  unlist()
+
+Importsbycommodities <- ggplot(data = dta, aes(x = product, y = imports, fill = product)) + 
+  geom_bar(stat="identity", color = "black") + 
+  geom_text(aes(label=round(imports,2)), position=position_dodge(width=0.9), vjust=-0.25, size = 2) + 
+  scale_fill_viridis(discrete = TRUE) + 
+  ylab("Billion dollars") + 
+  ggtitle(paste("Calendar year", year, sep = " ")) +
+  theme_bw() + mytheme + 
+  theme(legend.position="none", 
+        axis.text.x = element_text(size  = 6, angle = 45, hjust = 1, vjust = 1), 
+        axis.title.x=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+Importsbycommodities
+
+
+```
+Data source: @USDAERS2018.
+
+# Why trade? Comparative vs. absolute advantage
+
+- Why do firms across countries trade? Profits!
+- It is common in economics to refer as countries trading commodities while in fact firms are the one trading. To simplify the discussion, suppose that countries trade between each other.
+- One common explanation for trade is the existence of *comparative advantages*.
+- In the context of international trade, comparative advantage is the concept that a country is relatively more efficient at producing a good compared to another country.
+- The concept of *absolute advantage* is that a country is more efficient at producing all goods than another countries.
+
+
+- Suppose that there is two countries, two goods and one factor of production:
+    - Country A and country B;
+    - Lettuce and spinach;
+    - The only factor of production is labor and each country has a quantity of labor equal to 1.
+- For country A:
+    - If it invests all its labor in the production of spinach, it can produce 5 units of spinach;
+    - If it invests all its labor in the production of lettuce, it can produce 4 units of lettuce;
+    - It can allocate a fraction of its labor to spinach and lettuce. However, for each unit of lettuce that it produces, it must sacrifice $\frac{5}{4}$ unit of spinach.
+    - $\frac{5}{4}$ is the marginal rate of transformation (MRT) between spinach and lettuce in country A.
+ 
+# Comparative advantage vs. absolute advantage
+
+- For country B:
+    - If it invests all its labor in the production of spinach, it can produce 2 units of spinach;
+    - If it invests all its labor in the production of lettuce, it can produce 4 units of lettuce;
+    - It can allocate a fraction of it labor to spinach and lettuce. However, for each unit of lettuce that it produces, it must sacrifice $\frac{2}{4} = \frac{1}{2}$ unit of spinach.
+   - $\frac{1}{2}$ is the marginal rate of transformation (MRT) between spinach and lettuce in country A.
+      
+
+# Absolute advantage
+
+- Country A has an absolute advantage because it is at least as efficient at producing lettuce and spinach than country B:
+    - With one unit of labor, country A can produce 5 units of spinach while country B can produce only 2 units of spinach.
+    - With one unit of labor, country A can produce the same quantity of lettuce (4 units) as country B.
+      
+
+# Comparative advantage
+
+- Country A has a comparative advantage in the production of spinach:
+    - For each unit of spinach that it produces, country A must sacrifice $\frac{4}{5}$ unit of lettuce.
+    - For each unit of spinach that it produces, country B must sacrifice $2$ units of lettuce.
+- Country B has a comparative advantage in the production of lettuce:
+    - For each unit of lettuce that it produces, country A must sacrifice $\frac{5}{4}$ unit of spinach.
+    - For each unit of lettuce that it produces, country B must sacrifice $\frac{1}{2}$ unit of spinach.
+- You can think of the relative quantities as prices.
+
+# Comparative advantage and trade
+
+- Comparative advantages explain trade.
+- Absolute advantage does not explain trade.
+- Suppose that country A is in \emph{autarky} (no trade) and that it allocates half of its labor to spinach and half of its labor to lettuce:
+    - Country A produces 2.5 units of spinach and 2 units of lettuce.
+- Suppose that country B is in autarky (no trade) and that it allocates half of its labor to spinach and half of its labor to lettuce:
+    - Country B produces 1 units of spinach and 2 units of lettuce.
+      
+# Comparative advantage and trade
+
+- Suppose instead that the two countries enter into trade, specialize in the product where they have a comparative advantage and then split the total production.
+- Country A has a comparative advantage in the production of spinach and thus specializes in the production of spinach; it produces 5 units of spinach.
+- Country B has a comparative advantage in the production of lettuce and thus specializes in the production of spinach; it produces 4 units of lettuce.
+- Then, one possible allocation of the two goods is:
+    - Country A receives 3 units of spinach and 2 units of lettuce.
+    - Country B receives 2 units of spinach and 2 units of lettuce.
+- Both countries are better off.
+
+# Comparative advantage and trade
+
+- Thus, by allowing free trade, countries can specialize and increase total production.
+- Both countries improve their situation.
+- In practice, the allocation of goods across countries is done through equilibrium prices. We will not cover this type of solution here.
+- Note that comparative advantages can be seasonal (e.g. fresh fruits and vegetables), which gives rise to two-way trade.
+
+# Free trade in practice
+
+- In practice, free trade almost never occurs even though, as the previous example shows, free trade is welfare improving.
+- This is particularly true in agriculture, a sector for which countries tend to be more protective.
+- Is agriculture a special case?
+
+
+# Motives for trade barriers
+
+- Many motives to limit trade:
+    i. Tax revenues.
+    ii. Food security - assuring sufficient production of food domestically.
+    iii. Protect domestic firms (and workers), pressure from domestic interest groups (rent seeking).
+    iv. Sanitary and phytosanitary (animal and plant diseases, pests and diseases) concerns.
+    v. Retaliation in trade disputes.
+    vi. Prevent dumping.
+    vii. Countervailing duties (taxing imports of a good which production is subsidized in another country).
+- From an economic point of view, policies that limit trade are bad. Trade restrictions usually involve a transfer to a group at the expense of another.
+
+# Efforts toward freeing trade
+
+- In the last few decades, many countries have entered into negotiations with the objective of opening their borders.
+- The Generalized Agreement on Tariffs and Trade (GATT) was ratified by many developed countries in 1948 and remained effective until 1994. The agreement provided rules for [international trade](http://www.wto.org/english/thewto_e/whatis_e/tif_e/fact4_e.htm).
+- The two basic principles of the GATT are:
+    1. **Most-Favored-Nation**: Countries cannot discriminate between their trading partners. Exemptions for regional trade agreements and preferential treatments of developing countries.
+    2. **National treatment**: Imported and locally-produced goods should be treated equally.
+      
+
+# Efforts toward freeing trade
+
+- Many attempts, through several rounds of negotiations, were made to update and expand the GATT agreement.
+- The Uruguay Round of negotiations concluded in 1994 with the creation of the World Trade Organization (WTO).
+    - The agreement became effective in 1995;
+    - GATT became one of the agreement under the WTO, covering the trade of goods;
+    - GATS is the General Agreement on Trade and Services;
+    - TRIPS is the agreement on Trade-Related Aspects of Intellectual Property Rights
+      
+# WTO and agriculture
+
+- In the Uruguay Round of negotiations, agriculture was a major road block:
+    - Difficulty in agreeing on discipline regarding subsidies to agriculture;
+    - Difficulty in agreeing on the reduction of trade barriers.
+    - This contrasts with manufacturing products that receive little protection and are generally openly traded.
+- In the WTO Agreement on Agriculture (AoA), countries agreed to improve market access and reduce trade-distorting domestic support.
+
+# WTO and support to agriculture {.allowframebreaks}
+
+- The AoA called for the reduction of support to agriculture that distort production:
+    - `Over-production` lowers international prices for agricultural commodities, most negatively affecting developing countries that cannot afford to subsidize their agriculture.
+    - This meant the end of agricultural support that is tied to the price.
+\framebreak
+- Under AoA, support to agriculture is classified into three boxes:
+    1. **Amber box**: Policies that directly affect production (e.g. price support). Countries are allowed a maximum of 5\% (10\% for developing countries) of the Aggregate Measure of Support (AMS) to enter the Amber box (\emph{de minimis} - over total agricultural production).
+    2. **Blue box**: Program payments that are based on fixed acreage and yield, fixed number of head of livestock or if they are designed on 85\% or less of base production. These policies are seen as acceptable but it is difficult to tell whether a subsidy program fits into this category and whether programs in the blue box affect production.
+    3. **Green box**: Policies that have little or no effect on production (research programs, domestic food aid, environmental programs, certain crop insurance and income-support programs).
+- The US reformulated its support to agriculture in response to the WTO agreement. The 1996 FAIR Act (farm bill) market price support and deficiency payments were replaced by fixed payments (production flexibility contracts). These payments were calculated by multiplying a farm's payment yield, 85\% of farm's contract acreage and the payment rate.
+
+
+# WTO and export subsidies
+
+- Cap and reduction on the value and volume of export subsidies.
+
+# Dispute settlement
+
+- The WTO provides for a system to resolve trade disputes.
+- In case of dispute a panel of experts is formed to hear the arguments of all parties.
+- The panel makes a decision and if a party is found not to meet its obligations then it is expected to take action to bring its policies into compliance.
+- For example, Canada and Mexico have challenged US Country Of Origin Labeling (COOL) policy as it applies to livestock claiming that it violates the national treatment clause.
+    - Canada and Mexico have repeatedly won but the U.S. has not brought its policies into compliance.
+    - The arbitrator at the WTO authorized in December 2015 Canada and Mexico to retaliate by over \$1 billion.
+    - The same month, the US Congress repealed COOL for red meat and avoided retaliation.
+        
+# WTO and market access
+
+- Countries agreed on replacing their non-tariff import barriers (e.g. import quotas) by bound tariff and to reduce the level of those tariffs.
+- The process of converting non-tariff trade barriers into tariff is call *tariffication*.
+- Import quotas have been converted into Tariff-rate quotas (TRQs).
+- A TRQ has three parts:
+    1. A low tariff rate ($t_0$) that applies to units imported below the quota quantity.
+    2. A quota ($\bar{Q}$).
+    3. A high tariff rate ($t_1$) that applies to units imported above the quota quantity.
+- Often, the high tariff rate $t_1$ is so high that a TRQ acts as a quota. It is in many cases in the order of several hundred percent.
+
+
+# Tariff-rate quotas
+
+- The following figure shows an example of how a TRQ works.
+- Suppose that a country is small such that the import is fixed and given by $W$.
+- The price to the importers is given by $W^d = (1+t)W$, where $t$ is the tariff that applies.
+- Depending on the import demand $D^I$, the tariff that applies is either $t_0$ or $t_1$.
+- If the quantity imported $Q^I$ is greater than the quota $\bar{Q}$, then the owners of the import quota earn a rent (i.e. profit).
+
+
+# Tariff-rate quota (with import tariff in percentage)
+
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){Imports}
+        \put(-25,170){Price}
+        %World price
+        \multiput(0,20)(5,0){48}{\line(1,0){2.5}}%Dashed line
+        \put(-10,17){$W$}
+        %Tariff schedule
+        \multiput(100,0)(0,5){36}{\line(0,1){2.5}}%Dashed line
+        \put(95,-10){$\bar{Q}$}
+        \thicklines
+        %in quota
+        \put(0,40){\line(1,0){100}}
+        %Quota
+        \put(100,40){\line(0,1){80}}
+        %Over quota
+        \put(100,120){\line(1,0){140}}
+        \pause
+        %Demand curve
+        \onslide<2>
+        \put(0,80){\line(1,-1){80}}
+        \put(80,10){$D$}
+        \put(-40,40){$(1+t_0)W$}
+        \thinlines
+        \multiput(40,0)(0,5){8}{\line(0,1){2.5}}%Dashed line
+        \put(40,-10){$Q^I$}
+        \scriptsize
+        \put(5,28){\parbox[c]{1in}{Tariff\\revenue}}
+        \onslide<3>
+        \thicklines
+        \multiput(0,60)(5,0){20}{\line(1,0){2.5}}%Dashed line
+        \put(0,160){\line(1,-1){160}}
+        \put(-15,60){$W^d$}
+        \put(160,10){$D$}
+        \put(40,48){Rent}
+        \put(25,28){Tariff revenue}
+        \onslide<4->
+        \multiput(0,120)(5,0){48}{\line(1,0){2.5}}%Dashed line
+        \put(120,170){\line(1,-1){120}}
+        \put(240,60){$D$}
+        \put(-40,120){$(1+t_1)W$}
+        \put(40,75){Rent}
+        \thinlines
+        \multiput(170,0)(0,5){24}{\line(0,1){2.5}}%Dashed line
+        \put(170,-10){$Q^I$}
+        \put(25,28){Tariff revenue}
+        \put(110,75){Tariff revenue}
+    \end{picture}
+\vspace{0.1in}
+\caption{Market equilibrium} \label{fig.eq}
+\end{center}
+\end{figure}
+
+
+# Sanitary and Phytosanitary agreement
+
+- The [Sanitary and Phytosanitary](http://www.wto.org/english/tratop_e/sps_e/spsagr_e.htm) (SPS) agreement prevents countries from adopting and enforcing arbitrary technical measures that limit trade.
+- Countries have the right to impose sanitary and phytosanitary measures necessary for the protection of human, animal or plant life or health.
+- However, those measures cannot discriminate between countries.
+- A country cannot impose a standard on imports that is stricter than what it imposes on domestic products.
+- Sanitary and phytosanitary measures must have a scientific basis.
+- One controversy is the use of the precautionary principle by some countries (see [Cartagena Protocol on biosafety](http://bch.cbd.int/protocol/)).
+
+
+# Sanitary and Phytosanitary agreement
+
+- One of the most famous trade dispute is regarding the use of hormones in cattle farming.
+- In 1988, the EU banned the imports of meat from Canada and the United States because of the use of hormones in cattle farming in those countries.
+- A [long dispute](http://www.wto.org/english/tratop_e/dispu_e/cases_e/ds26_e.htm) began at the WTO in 1996 regarding the legality of that ban.
+- Canada and the United States `won` and then imposed retaliatory measures against the EU.
+- An [agreement](http://www.reuters.com/article/2012/03/14/eu-trade-beef-idUSL5E8EE50620120314) was reached in 2012.
+
+
+# Doha Development Round of negotiations
+
+- WTO members began negotiation in the [Doha Development Round](http://www.wto.org/english/tratop_e/dda_e/dda_e.htm) in 2001.
+- Negotiations are still `ongoing`, but progress is very slow.
+- The objectives of the Doha Round were to further liberalize trade with a particular emphasis on measures that favor the development of least-developed nations.
+- Agriculture has been the major road block in the negotiations.
+
+
+# Regional trade agreements
+
+- Countries can enter into agreements to further facilitate trade. See regional trade agreements on the WTO [website](http://www.wto.org/english/tratop_e/region_e/region_e.htm).
+- These agreements are also referred to as *preferential trade agreements*.
+- For example, the United States, Canada and Mexico are members of the North American Free Trade Agreement (NAFTA).
+- The US is part of many other regional trade agreements. See the WTO [database](http://www.wto.org/english/tratop_e/region_e/rta_participation_map_e.htm).
+- The Trans-Pacific Partnership ([TPP](https://ustr.gov/tpp/)) is currently a very much debated trade agreement.
+
+
+# Exchange rate
+
+- The exchange rate matters when trading commodities.
+- For example, if \$US 1.00 = \$CA 1.35, it means that it costs 1.35 Canadian dollar to buy one US dollar.
+- Variations in exchange rate will affect trade volumes.
+- Possible to buy futures for the exchange rate and hence hedge.
+
+# Canada-US exchange rate
+<<figure_CAexchangerate,fig.keep='high', echo=FALSE, fig.width=4.2, fig.height=2.8, dev="cairo_pdf">>=
+print(CAexchangerate)
+@
+\scriptsize
+Source: The data are from \href{http://www.federalreserve.gov/econresdata/default.htm}{Federal Reserve}, downloaded from \href{http://www.quandl.com/}{Quandl}.
+
+# Euro-US exchange rate
+<<figure_EUexchangerate,fig.keep='high', echo=FALSE, fig.width=4.2, fig.height=2.8, dev="cairo_pdf">>=
+print(EUexchangerate)
+@
+\scriptsize
+Source: The data are from \href{http://www.federalreserve.gov/econresdata/default.htm}{Federal Reserve}, downloaded from \href{http://www.quandl.com/}{Quandl}.
+
+# China-US exchange rate
+<<figure_Chinaexchangerate,fig.keep='high', echo=FALSE, fig.width=4.2, fig.height=2.8, dev="cairo_pdf">>=
+print(Chinaexchangerate)
+@
+\scriptsize
+Source: The data are from \href{http://www.federalreserve.gov/econresdata/default.htm}{Federal Reserve}, downloaded from \href{http://www.quandl.com/}{Quandl}.
+
+# What determines an exchange rate
+
+- The exchange rate is determined by market forces.
+- The intersection of the demand and supply for a currency determines its exchange rate relative to other currency.
+- For example, Canada is an oil exporter. If the price of oil increases, the demand for \$CA increases because oil buyers must use \$CA to purchase Canada oil causing the value of \$CA to increase relative to \$US.
+
+# Canada-US exchange rate
+
+\begin{figure}[htbp]
+\begin{center}
+    \begin{picture}(240,180)
+        %Axises and labels
+        \scriptsize
+        \put(0,0){\vector(1,0){240}} %x-axis
+        \put(0,0){\vector(0,1){180}} %y-axis
+        \put(225,-10){\$CA}
+        \put(-38,170){\$CA/\$US}
+        %Demand curve
+        \thicklines
+        \put(0,140){\line(1,-1){140}}
+        %Supply curve
+        \put(0,0){\line(1,1){160}}
+        %Text
+        \put(135,10){$D$}
+        \put(150,155){$S$}
+        %Equilibrium
+        \color{black}
+        \multiput(0,70)(5,0){14}{\line(1,0){2.5}}%Dashed line
+        \multiput(70,70)(0,-5){14}{\line(0,-1){2.5}}%Dashed line
+        \put(-10,68){$e^\ast$}
+        \put(68,-10){$Q^\ast$}
+        %Positive shift in demand
+        \onslide<2>
+        \color{blue}
+        \put(0,160){\line(1,-1){160}}
+        \put(40,100){\vector(1,0){20}} %x-axis
+        \put(155,10){$D_0$}
+        \multiput(0,80)(5,0){16}{\line(1,0){2.5}}%Dashed line h
+        \multiput(80,80)(0,-5){16}{\line(0,-1){2.5}}%Dashed line v
+        \put(78,-10){$Q_0$}
+        \put(-10,78){$e_0$}
+        %Negative shift in demand
+        \onslide<3>
+        \color{red}
+        \put(0,120){\line(1,-1){120}}
+        \put(40,100){\vector(-1,0){20}} %x-axis
+        \put(115,10){$D_1$}
+        \multiput(0,60)(5,0){12}{\line(1,0){2.5}}%Dashed line h
+        \multiput(60,60)(0,-5){12}{\line(0,-1){2.5}}%Dashed line v
+        \put(58,-10){$Q_1$}
+        \put(-10,58){$e_1$}
+    \end{picture}
+\end{center}
+\end{figure}
+
+
+# Who trades currencies?
+
+- Those that demand US dollars are:
+    - Buyers of US commodities (e.g. firms that import goods from the United States);
+    - Tourists;
+    - Speculators, hedgers.
+- Those that supply US dollars are:
+    - US importers;
+    - US government;
+    - US tourists visiting other countries;
+    - Speculators, hedgers.
+      
+# Currency value and trade
+
+- Changes in currency values affect relative prices across countries.
+- If the value of Canadian dollar falls, that means it becomes relatively cheaper for Americans to import products from Canada.
+- This means that the depreciation of a country's currency can boost its exports.
+- This is why China has devaluated its currency lately.
+
+# Currency value and trade
+
+- Most exchange rates are free to move.
+- A few countries have been manipulating their currency.
+- China has been manipulating the Renminbi for quite some time in an effort to favor its exports.
+- China has let its currency move more freely in recent years.
+- Many countries oppose China's currency policy and this may bring WTO complaints, but there is no apparent role for the WTO to play in this issue. IMF?
+
+# Exchange rate and agricultural markets
+
+- Of course the exchange rate impacts agricultural markets.
+- The demand for US agricultural commodities increases if the US dollar depreciates.
+- The demand for US agricultural commodities decreases if the US dollar appreciates.
+- US will import more from country which currency depreciates.
+- US will import less from country which currency appreciates.
+
+# Exchange rate and agricultural markets
+
+- Changes in a currency values usually respond to countries relative economic strength.
+- As agriculture is a small share of most economies, agriculture has a marginal effect on exchange rates.
+- Appreciation of a country's currency may boost its demand for a US commodity, thus increasing the price of that commodity in the United States.
+
+# Trends in global agricultural markets
+
+- Agricultural prices were relatively stable between 1990 and 2007.
+- Then, in 2007, the price of food practically doubled and became more volatile.
+- Several competing explanations of the price boom:
+    - Speculation (not credible);
+    - Ethanol policy in the United States (may have contributed);
+    - Contemporaneous supply and demand surprises that coincide with low inventories and macroeconomic shocks (see [Carter, Rausser and Smith, 2011](http://www.annualreviews.org/doi/abs/10.1146/annurev.resource.012809.104220?journalCode=resource)).
+- Note that there was also a price boom of agricultural commodity prices in the 1970s.
+
+
+# FAO World Food Price Index
+<<World_Food, fig.keep='high', echo=FALSE, warning = FALSE, fig.width=4.2, fig.height=2.8, dev="cairo_pdf">>=
+print(WorldFoodindex)
+@
+\scriptsize
+Source: The data are from \href{http://www.fao.org/worldfoodsituation/foodpricesindex/en/}{FAO}. Average nominal price index equals 100 for the period of 2002-2004.
+
+# FAO World Cereals Price Index
+<<World_Cereals, fig.keep='high', echo=FALSE, warning = FALSE, fig.width=4.2, fig.height=2.8, dev="cairo_pdf">>=
+print(WorldCerealsindex)
+@
+\scriptsize
+Source: The data are from \href{http://www.fao.org/worldfoodsituation/wfs-home/foodpricesindex/en/}{FAO}. Average nominal price index equals 100 for the period of 2002-2004.
+
+
+# FAO World Oils Price Index
+<<figure_World_Oils_index,fig.keep='high', echo=FALSE, fig.width=4.2, fig.height=2.8, dev="cairo_pdf">>=
+print(World_Oils_index)
+@
+\scriptsize
+Source: The data are from \href{http://www.fao.org/worldfoodsituation/wfs-home/foodpricesindex/en/}{FAO}. Average nominal price index equals 100 for the period of 2002-2004.
+
+# FAO World Dairy Price Index
+<<figure_Dairy_Oils_index,fig.keep='high', echo=FALSE, fig.width=4.2, fig.height=2.8, dev="cairo_pdf">>=
+print(World_Dairy_index)
+@
+\scriptsize
+Source: The data are from \href{http://www.fao.org/worldfoodsituation/wfs-home/foodpricesindex/en/}{FAO}. Average nominal price index equals 100 for the period of 2002-2004.
+
+# FAO World Meat Price Index
+<<figure_Meat_Oils_index,fig.keep='high', echo=FALSE, fig.width=4.2, fig.height=2.8, dev="cairo_pdf">>=
+print(WorldMeatindex)
+@
+\scriptsize
+Source: The data are from \href{http://www.fao.org/worldfoodsituation/wfs-home/foodpricesindex/en/}{FAO}. Average nominal price index equals 100 for the period of 2002-2004.
+
+# Conclusions
+
+- International markets are becoming more and more important;
+- Increase in income, especially in developing countries, drives new demands for agricultural commodities, especially for luxury food products (e.g. meat);
+- The eventual conclusion of the Doha Round of negotiations and the signing of regional trade agreements should further contribute to free trade for agricultural commodities.
+
+#References
+
+

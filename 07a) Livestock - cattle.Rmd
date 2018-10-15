@@ -38,6 +38,7 @@ pacman::p_load(ggmap)
 pacman::p_load(sp)
 pacman::p_load(usmap)
 pacman::p_load(maps)
+pacman::p_load(magick)
 
 #Authentification
 #Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
@@ -51,15 +52,13 @@ source("Figures/Graph parameters.r")
 
 - The United States is the largest producer of cattle and beef in the world.
 - The supply chain for cattle and beef is more complicated than for grains.
-- Production dynamics is also different than grains and has an important impact on the markets.
+- Production dynamics is also different than grains and has an important impact on cattle and beef markets.
 - Characteristics of cattle are also more difficult to observe than for grains, a more uniform product.
-- I will begin with definitions, review some market data and finally turn to the economics of cattle marketing.
 
 # Resources
 
 -  [Information about livestock farming](https://www.extension.iastate.edu/agdm/ldfirst.html) from ISU extension.
 -  [Cattle Markets and the Livestock Crush](http://mindymallory.com/PriceAnalysis/cattle-markets-and-the-livestock-crush.html) from Mindy Mallory textbook.
-
 
 # Definitions 
 
@@ -73,12 +72,14 @@ source("Figures/Graph parameters.r")
 - Heiffer: young female, before having a first calf;
 - Feeder cattle: cattle ready to be placed on feed in a feedlot;
 - Fed/slaughter cattle: cattle ready for *harvest*;
-- Boxed beef - beef ready to be sold at retail.
+- Boxed beef: beef ready to be sold at retail.
 
-# Supply chain
+# Supply chain {.allowframebreaks}
 
 - Cow-calf operations:
-    - Sell weaned calves (6-7 months of age).
+    - Sell weaned calves (6-7 months of age);
+    - Usually smaller operations;
+    - For example, corn growers diversifying their operation.
 - Stocker (spring) - backgrounding (fall):
     - Stockers use pasture;
     - Backgrounders use feeds;
@@ -86,8 +87,9 @@ source("Figures/Graph parameters.r")
     - Sell feeder cattle (about a year old).
 - Feedlots - finishing:
     - Buy feeder cattle;
-    - Sell fed/slaughter cattle (18 to 24 months old).
+    - Sell fed/slaughter cattle (18 to 24 months old);
     - Can be very large (over 100,000 heads).
+\framebreak
 - Packing/slaughter plant:
     - Buy fed cattle;
     - Sell boxed beef.
@@ -109,20 +111,20 @@ dta <- read_excel("Data/7) Slaughter.xlsx", sheet = "Data sheet (machine readabl
   mutate(Date = as.Date(Date), year = year(Date), Value = Value/1000) %>%
   group_by(year) %>%
   summarize(Value = sum(Value)) %>%
-  dplyr::filter(year < year(Sys.time()))
+  dplyr::filter(year < year(Sys.time()), year >= 1970)
   
  
 plot_slaughter <- ggplot(dta, aes(x = year, y = Value)) +
   geom_line(color = "blue", size = 1) +
   ylab("Cattle slaughter (million head)") +
-  scale_x_continuous(breaks = seq(1905, 2020, by = 10)) +
+  scale_x_continuous(breaks = seq(1970, 2020, by = 5)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
 
 plot_slaughter
 
 ```
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 
 # Annual beef production
@@ -137,7 +139,7 @@ dta <- read_excel("Data/7) Beef.xlsx", sheet = "Data sheet (machine readable)") 
   dplyr::filter(`Statistic type` == "Total production",
                 `Time period` == "Yr Jan-Dec",
                 Commodity == "Beef") %>%
-  dplyr::select(Year, Value)
+  dplyr::select(Year, Value) 
 
 plot_beef <- ggplot(dta, aes(x = Year, y = Value)) +
   geom_line(color = "blue", size = 1) +
@@ -149,7 +151,7 @@ plot_beef <- ggplot(dta, aes(x = Year, y = Value)) +
 plot_beef
 
 ```
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Average live and dressed cattle weight in federally inspected facility
 
@@ -160,19 +162,21 @@ if(Sys.time() - file.info("Data/7) Weight.xlsx")$mtime > months(1, abbreviate = 
 }
 
 dta <- read_excel("Data/7) Weight.xlsx", sheet = "Data sheet (machine readable)") %>%
-  dplyr::filter(`Time period description` == "Month", Commodity == "Cattle") %>%
+  dplyr::filter(`Time period description` == "Month", 
+                Commodity == "Cattle") %>%
   dplyr::select(Date, Value, Unit) %>%
   mutate(Date = as.Date(Date), 
          year = year(Date), 
          Unit = ifelse(Unit == "LB / HEAD, DRESSED BASIS", "Dressed", "Live")) %>% 
   group_by(Date, Unit) %>%
-  summarize(Value = mean(Value))
+  summarize(Value = mean(Value)) %>%
+  dplyr::filter(year(Date) >= 1970)
 
 plot_weight <- ggplot(dta, aes(x = Date, y = Value, color = Unit)) +
   geom_line(size = 1) +
   ylab("Weight in pound") +
   scale_color_manual(values = viridis(3)[c(1,2)]) +
-  scale_x_date(breaks = seq(as.Date("1920-01-01"), as.Date("2020-12-31"), by="10 years"), date_labels = "%Y") +
+  scale_x_date(breaks = seq(as.Date("1970-01-01"), as.Date("2020-12-31"), by="5 years"), date_labels = "%Y") +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
         axis.line = element_line(color='black'),
@@ -181,7 +185,7 @@ plot_weight <- ggplot(dta, aes(x = Date, y = Value, color = Unit)) +
 plot_weight
 
 ```
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Average carcass yield (live weight/dressed weight)
 
@@ -194,7 +198,7 @@ dta <- dta %>%
 plot_yield <- ggplot(dta, aes(x = Date, y = yield)) +
   geom_line(color = "blue", size = 1) +
   ylab("Yield") +
-  scale_x_date(breaks = seq(as.Date("1920-01-01"), as.Date("2020-12-31"), by="10 years"), date_labels = "%Y") +
+  scale_x_date(breaks = seq(as.Date("1970-01-01"), as.Date("2020-12-31"), by="5 years"), date_labels = "%Y") +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
         axis.line = element_line(color='black'),
@@ -203,45 +207,73 @@ plot_yield <- ggplot(dta, aes(x = Date, y = yield)) +
 plot_yield
 
 ```
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
-# Cattle inventory by state (January 1, 2018)
+# Operations with cattle inventory by county (2012 census of agriculture)
 
 ```{r, out.width = '75%'}
 
 # Read data
-dta <- read_csv("Data/7) Cattle inventory by state.csv")
+dta <- read_csv("Data/7) Cattle inventory by county.csv")
 dta <- dta %>%
-  dplyr::select(State, Value) %>%
-  mutate(Value = round(Value/1000)) %>%
-  dplyr::filter(State != "ALASKA" & State != "HAWAII")
+  dplyr::filter(State != "ALASKA" & State != "HAWAII") %>%
+  dplyr::select(State, Value, `Ag District`, County) %>%
+  mutate(Value = str_replace_all(Value, ",", ""), 
+         Value = round(as.numeric(Value)),
+         state_county = paste(tolower(State), tolower(County), sep = "_"),
+         state_county = str_replace(state_county, "_saint", "_st"),
+         state_county = str_replace(state_county, "_st[.]", "_st"),
+         state_county = str_replace(state_county, "le flore", "leflore"),
+         state_county = str_replace(state_county, "oklahoma_leflore", "oklahoma_le flore"),
+         state_county = str_replace(state_county, "suffolk city", "suffolk"),
+         state_county = str_replace(state_county, "o brien", "obrien"),
+         state_county = str_replace(state_county, "virginia beach city", "virginia beach")) %>%
+  dplyr::filter(!is.na(Value), Value>0, 
+                state_county != "arizona_lapaz",
+                state_county != "south dakota_oglala lakota",
+                state_county != "virginia_chesapeake city") %>%
+  group_by(state_county) %>%
+  summarize(Value = sum(Value)) %>%
+  ungroup() %>%
+  mutate(Value = round(Value/25)) %>%
+  dplyr::filter(!is.na(Value), Value>0)
 
-# Get state boundaries
+# Get county and state boundaries
+countyShapes <- map("county", plot = FALSE, fill = TRUE)
+countyShapes <- fortify(countyShapes)
+countyShapes <- countyShapes %>%
+  mutate(state_county = paste(tolower(region), tolower(subregion), sep = "_"))
+
 stateShapes <- map("state", plot = FALSE, fill = TRUE)
 stateShapes <- fortify(stateShapes)
 
-# Get number of point per state
+# Get number of point per county
+
+rm(p_dta, p_dta0)
 
 for (i in 1:nrow(dta)){
-  stateShapeFrame <- stateShapes[stateShapes$region == tolower(dta$State[i]), ]
+  countyShapeFrame <- countyShapes[countyShapes$state_county == dta$state_county[i], ]
 
-  statePoly <- Polygons(lapply(split(stateShapeFrame[, c("long", "lat")], stateShapeFrame$group), Polygon), ID = "b")
+  countyPoly <- Polygons(lapply(split(countyShapeFrame[, c("long", "lat")], countyShapeFrame$group), Polygon), ID = "b")
 
-  p_dta0 <- spsample(statePoly, n = dta$Value[i], "random") %>%
+  p_dta0 <- spsample(countyPoly, n = dta$Value[i], "random") %>%
     as.data.frame() %>%
     rename(longitude = x, latitude = y) %>%
-    mutate(state = tolower(dta$State[i]))
+    mutate(state_county = dta$state_county[i])
 
   if(!exists("p_dta")){p_dta <- p_dta0}
   if(exists("p_dta")){p_dta <- rbind(p_dta,p_dta0)}
 
 }
 
+us_county_map <- map_data('county')
 us_state_map <- map_data('state')
 
 d_inv <- ggplot() +
+  geom_polygon(data=us_county_map, aes(x=long, y=lat, group = group), fill = NA, color = "gray") +
+  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=16, alpha = 0.50, color = "blue", size = 0.25) + 
+  scale_size_continuous(range = c(0.1, 1)) +
   geom_polygon(data=us_state_map, aes(x=long, y=lat, group = group), fill = NA, color = "black") +
-  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, size = 0.25, alpha = 0.5, color = "blue") +
   coord_map( "polyconic" ) +
   theme_bw() +
   mytheme +
@@ -257,64 +289,74 @@ d_inv <- ggplot() +
         legend.text=element_text(size=8),
         legend.key.width = unit(0.4, "cm"),
         legend.key.height = unit(0.4, "cm"))
-
-
 d_inv
 
 ```
 \scriptsize
-This is a density dot map. A dot does not represent the specific location of cattle. Rather, the number of dots within a state that represents the relative cattle inventory by state. Source: @NASS.
+This is a density dot map where each dot represents about 25 operations, randomly located within a county. Data source: @NASS.
 
-
-# Cattle on feed by state (January 1, 2018)
+# Operations with cattle on feed by county (2012 census of agriculture)
 
 ```{r, out.width = '75%'}
 
 # Read data
-dta <- read_csv("Data/7) Cattle on feed by state.csv")
+dta <- read_csv("Data/7) Cattle on feed by county.csv")
 dta <- dta %>%
-  dplyr::select(State, Value) %>%
-  dplyr::filter(State != "ALASKA" & State != "HAWAII")
+  dplyr::filter(State != "ALASKA" & State != "HAWAII") %>%
+  dplyr::select(State, Value, `Ag District`, County) %>%
+  mutate(Value = str_replace_all(Value, ",", ""), 
+         Value = round(as.numeric(Value)),
+         state_county = paste(tolower(State), tolower(County), sep = "_"),
+         state_county = str_replace(state_county, "_saint", "_st"),
+         state_county = str_replace(state_county, "_st[.]", "_st"),
+         state_county = str_replace(state_county, "le flore", "leflore"),
+         state_county = str_replace(state_county, "oklahoma_leflore", "oklahoma_le flore"),
+         state_county = str_replace(state_county, "suffolk city", "suffolk"),
+         state_county = str_replace(state_county, "o brien", "obrien"),
+         state_county = str_replace(state_county, "virginia beach city", "virginia beach")) %>%
+  dplyr::filter(!is.na(Value), Value>0, 
+                state_county != "arizona_lapaz",
+                state_county != "south dakota_oglala lakota",
+                state_county != "virginia_chesapeake city") %>%
+  group_by(state_county) %>%
+  summarize(Value = sum(Value)) %>%
+  ungroup() %>%
+  mutate(Value = round(Value/10)) %>%
+  dplyr::filter(!is.na(Value), Value>0)
 
-other <- dta[dta$State == "OTHER STATES", ]
+# Get county and state boundaries
+countyShapes <- map("county", plot = FALSE, fill = TRUE)
+countyShapes <- fortify(countyShapes)
+countyShapes <- countyShapes %>%
+  mutate(state_county = paste(tolower(region), tolower(subregion), sep = "_"))
 
-dta <- dta %>%
-  dplyr::filter(State != "OTHER STATES") %>%
-  mutate(State = tolower(State))
-
-# Get state boundaries
 stateShapes <- map("state", plot = FALSE, fill = TRUE)
 stateShapes <- fortify(stateShapes)
 
-# Add missing states
-dta2 <- cbind(State = unique(stateShapes$region)[!(unique(stateShapes$region) %in% c(dta$State, "district of columbia"))], Value = round(other$Value/(48 - nrow(dta)))) %>%
-  as.tibble()
-
-dta <- rbind(dta, dta2) %>%
-  mutate(Value = as.numeric(Value)) %>% 
-  mutate(Value = round(Value/1000))
-
-# Get random of point per state
+# Get number of point per county
 rm(p_dta, p_dta0)
-
 for (i in 1:nrow(dta)){
-  stateShapeFrame <- stateShapes[stateShapes$region == dta$State[i], ]
+  countyShapeFrame <- countyShapes[countyShapes$state_county == dta$state_county[i], ]
 
-  statePoly <- Polygons(lapply(split(stateShapeFrame[, c("long", "lat")], stateShapeFrame$group), Polygon), ID = "b")
+  countyPoly <- Polygons(lapply(split(countyShapeFrame[, c("long", "lat")], countyShapeFrame$group), Polygon), ID = "b")
 
-  p_dta0 <- spsample(statePoly, n = dta$Value[i], "random") %>%
+  p_dta0 <- spsample(countyPoly, n = dta$Value[i], "random") %>%
     as.data.frame() %>%
     rename(longitude = x, latitude = y) %>%
-    mutate(state = tolower(dta$State[i]))
+    mutate(state_county = dta$state_county[i])
 
   if(!exists("p_dta")){p_dta <- p_dta0}
   if(exists("p_dta")){p_dta <- rbind(p_dta,p_dta0)}
 
 }
 
-d_feed <- ggplot() +
+us_county_map <- map_data('county')
+us_state_map <- map_data('state')
+
+d_inv <- ggplot() +
+  geom_polygon(data=us_county_map, aes(x=long, y=lat, group = group), fill = NA, color = "gray") +
+  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=16, size = 0.50, alpha = 0.5, color = "blue", size = 0.15) +
   geom_polygon(data=us_state_map, aes(x=long, y=lat, group = group), fill = NA, color = "black") +
-  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, size = 0.25, alpha = 0.5, color = "blue") +
   coord_map( "polyconic" ) +
   theme_bw() +
   mytheme +
@@ -330,13 +372,11 @@ d_feed <- ggplot() +
         legend.text=element_text(size=8),
         legend.key.width = unit(0.4, "cm"),
         legend.key.height = unit(0.4, "cm"))
-
-
-d_feed
+d_inv
 
 ```
 \scriptsize
-This is a density dot map. A dot does not represent the specific location of cattle. Rather, the number of dots within a state that represents the relative number of cattle on feed by state. Source: @NASS.
+This is a density dot map where each dot represents about 10 operations, randomly located within a county. Data source: @NASS.
 
 
 # Cattle slaughter (500 lb and more) by state (2017)
@@ -349,7 +389,7 @@ dta <- dta %>%
   dplyr::select(State, Value) %>%
   dplyr::filter(State != "ALASKA" & State != "HAWAII") %>%
   mutate(Value = str_replace_all(Value, ",", ""), 
-         Value = as.numeric(Value)/1000)  %>%
+         Value = as.numeric(Value)/5000)  %>%
   dplyr::filter(!is.na(Value))
 
 # Get state boundaries
@@ -376,7 +416,7 @@ for (i in 1:nrow(dta)){
 
 d_slaughter <- ggplot() +
   geom_polygon(data=us_state_map, aes(x=long, y=lat, group = group), fill = NA, color = "black") +
-  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, size = 0.25, alpha = 0.5, color = "blue") +
+  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=16, size = 0.50, alpha = 0.5, color = "blue") +
   coord_map( "polyconic" ) +
   theme_bw() +
   mytheme +
@@ -394,11 +434,11 @@ d_slaughter <- ggplot() +
         legend.key.height = unit(0.4, "cm"))
 
 
-d_feed
+d_slaughter
 
 ```
 \scriptsize
-This is a density dot map. A dot does not represent the specific location of cattle. Rather, the number of dots within a state that represents the relative cattle slaughter by state. Source: @NASS.
+This is a density dot map where each dot represents about 5,000 heads, randomly located within a state. Date source: @NASS.
 
 # Annual imports of cattle over 700 lb
 
@@ -439,8 +479,8 @@ plot_import
 
 
 ```
+\scriptsize
 Most are fed cattle for slaughter. Source: @usda_trade.
-
 
 # Annual imports of feeder cattle (400 to 700 lb)
 
@@ -464,7 +504,7 @@ plot_import <- ggplot(dta, aes(x = year, y = value,  fill = Country)) +
   geom_area(position = "stack", alpha = 0.75) +
   geom_line(position = "stack", size = 0.5, color = "black", alpha = 0.75) +
   scale_fill_manual(values = viridis(3)[c(1,2)]) +
-  ylab("Imports of cattle over 700 lb") +
+  ylab("Imports of feeder cattle (400 to 700 lb)") +
   scale_x_continuous(breaks = seq(1990, 2015, by = 5), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
@@ -477,7 +517,7 @@ plot_import
 
 ```
 \scriptsize
-Most are feeder cattle for placement. Source: @usda_trade.
+Most are feeder cattle for placement. Data source: @usda_trade.
 
 # Annual exports of cattle (all weight)
 
@@ -508,8 +548,8 @@ plot_export <- ggplot(dta, aes(x = year, y = value, fill = Country)) +
   geom_area(position = "stack") +
   geom_line(position = "stack", size = 0.5, color = "black") +
   scale_fill_manual(values = viridis(4)[c(1,2,3)]) +
-  ylab("Imports of cattle over 700 lb") +
-  scale_x_continuous(breaks = seq(1990, 2015, by = 5), expand = c(0,0)) + 
+  ylab("Imports of cattle (head)") +
+  scale_x_continuous(breaks = seq(1990, 2020, by = 2), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
@@ -521,7 +561,7 @@ plot_export
 
 ```
 \scriptsize
-Source: @usda_trade.
+Data source: @usda_trade.
 
 # Beef and veal imports (carcass weight, 1,000 pounds)
 
@@ -562,7 +602,7 @@ beef_import <- ggplot(dta, aes(x = year, y = value, color = Country, fill = Coun
   scale_color_viridis(discrete = TRUE) + 
   scale_fill_viridis(discrete = TRUE) +
   ylab("Imports of beef and veal (carcass weight, 1,000 pounds)") +
-  scale_x_continuous(breaks = seq(1990, 2015, by = 5), expand = c(0,0)) + 
+  scale_x_continuous(breaks = seq(1990, 2020, by = 2), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
   guides(col = guide_legend(ncol = 2)) +
@@ -576,7 +616,7 @@ beef_import
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Beef and veal exports (carcass weight, 1,000 pounds)
 
@@ -614,7 +654,7 @@ beef_export <- ggplot(dta, aes(x = year, y = value, color = Country, fill = Coun
   scale_color_viridis(discrete = TRUE) + 
   scale_fill_viridis(discrete = TRUE) +
   ylab("Imports of beef and veal (carcass weight, 1,000 pounds)") +
-  scale_x_continuous(breaks = seq(1990, 2015, by = 5), expand = c(0,0)) + 
+  scale_x_continuous(breaks = seq(1990, 2020, by = 2), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
   guides(col = guide_legend(ncol = 2)) +
@@ -628,7 +668,7 @@ beef_export
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Live cattle price and boxed beef prices
 
@@ -675,7 +715,7 @@ plot_price
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Beginning stocks of beef (Million lbs, CWE)
 
@@ -702,10 +742,10 @@ plot_stock
 
 ```
 \scriptsize
-CWE means Carcass Weight Equivalent. Source: @USDA_dom.
+CWE means Carcass Weight Equivalent. Data source: @USDA_dom.
 
 # Cattle cycles 
-- Cattle cycles are expansion and contraction of cattle inventories at regular intervals (see cattle inventory figure below).
+- Cattle cycles are expansions and contractions of cattle inventories at regular intervals (see cattle inventory figure below).
 - A cycle lasts on average about ten years. 
 - Cycles occur because of biological nature of cattle production:
     - A heiffer can be bred for the first time at about 15 months.
@@ -714,10 +754,9 @@ CWE means Carcass Weight Equivalent. Source: @USDA_dom.
 
 # Cattle cycles
 
-- Biological lags cause a delayed response between an increase in the price and an increase in production.
+- Biological lags cause a delayed response between a market shock and a change in production.
     - For example, if the price of feeder cattle increase, cow-calf producers increase the size of their breeding herd.
     - During the time it takes to increase the breeding herd, the price continues to increase because fewer cattle are sent to slaughter.
-    - It takes at least three and a half years from the time a cow-calf operation decides to expand and the time its production actually increases.
     - Expansion continues until the prices for feeder cattle, fed cattle and beef begins declining from the increased production.
     - Cows are productive for about 10 years and producers usually do not cull cows that are still productive.
     - Cow-calf producers reduce the size of their herd by not replacing all of their old cows.
@@ -727,8 +766,7 @@ CWE means Carcass Weight Equivalent. Source: @USDA_dom.
 # Cattle cycles
 
 - Cycles contribute to periods of prosperity followed by periods of losses to cattle farmers.
--  See for example historial returns in the cattle sector at <http://www2.econ.iastate.edu/estimated-returns/> or at 
-<https://www.ers.usda.gov/data-products/commodity-costs-and-returns/commodity-costs-and-returns/>
+-  See for example historial returns in the cattle sector from [ISU extension](http://www2.econ.iastate.edu/estimated-returns/) or [USDA ERS](https://www.ers.usda.gov/data-products/commodity-costs-and-returns/commodity-costs-and-returns/).
 
 
 # US January cattle inventory (including calves)
@@ -741,73 +779,46 @@ dta = read_csv("Data/7) Cattle inventory.csv")
 dta <- dta %>% 
   dplyr::filter(Period == "FIRST OF JAN") %>% 
   dplyr::select(Year, Value) %>% 
-  mutate(Value = Value / 1000000)
+  mutate(Value = Value/1000000)
 
 plot_inventory <- ggplot(dta, aes(x = Year, y = Value)) +
   geom_line(color = "blue", size = 1) +
   ylab("January inventory (million head)") +
-  scale_x_continuous(breaks = seq(1870, 2020, by = 10)) +
+  scale_x_continuous(breaks = seq(1860, 2020, by = 10)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
 
 plot_inventory
 
 ```
-Source: @NASS.
+\scriptsize
+Data source: @NASS.
 
 # Return to a cow-calf operation in the Heartland
 
-```{r, out.width = '75%'}
+```{r, out.width = '50%'}
 
-if(Sys.time() - file.info("Data/7) Cow-calf return.xls")$mtime > months(1, abbreviate = FALSE)){
-  download.file("https://www.ers.usda.gov/webdocs/DataFiles/47913/RHLCowc.xls", "Data/7) Cow-calf return.xls", method = "curl")
+if(Sys.time() - file.info("Figures/7)_Return_finishing_steer.png")$mtime > months(1, abbreviate = FALSE)){
+  fig <- image_read("https://www.extension.iastate.edu/agdm/livestock/html/images/b1-36tbl1.gif")
+  image_write(fig, path = "Figures/7)_Return_finishing_steer.png", format = "png")
 }
 
-dta1 <- read_excel("Data/7) Cow-calf return.xls", sheet = 1, skip = 1)
-
-dta1 <- dta1[43,] %>%
-  gather(date, value, -Item) %>%
-  dplyr::select(-Item) %>%
-  mutate(value = as.numeric(value)) %>%
-  dplyr::filter(!is.na(value))
-  
-
-dta2 <- read_excel("Data/7) Cow-calf return.xls", sheet = 2, skip = 1)
-
-dta2 <- dta2[38,] %>%
-  gather(date, value, -Item) %>%
-  dplyr::select(-Item) %>%
-  mutate(value = as.numeric(value)) %>%
-  dplyr::filter(!is.na(value))
-
-dta <- rbind(dta1, dta2) %>%
-  mutate(sign = ifelse(value <= 0, "Negative", "Positive"))
-
-plot_return <- ggplot(dta, aes(x = date, y = value, fill = sign)) +
-  geom_bar(stat = "identity", color = "white") +
-  scale_fill_manual(values = viridis(3)[c(1,2)]) +
-  ylab("Value of production less operating costs ($/cow)") +
-  scale_x_discrete(breaks = seq(1996, 2020, by = 2)) +
-  theme_bw() + mytheme +
-  theme(axis.title.x=element_blank(), 
-        axis.text.x=element_text(size = 10),
-        axis.line = element_line(color='black'),
-        legend.position="none")
-
-plot_return
-
+knitr::include_graphics("Figures/7)_Return_finishing_steer.png")
 
 ```
-Source: @USDAreturn.
+\scriptsize
+Source: @Schulz2018.
 
-# Selling methods
+# Cattle marketing (i.e. selling cattle)
 
-- It is possible to use different methods to sell feeder cattle and fed cattle.
-- Quality must be observed or controlled for in the pricing method through contract arrangement.
+- Farmers can use different methods to market feeder cattle and fed cattle.
 - Each method has its advantages and disadvantages.
-- Underneath all selling method, the futures market helps with price discovery.
+- Methods that we will cover are:
+    - Public markets;
+    - Direct sales;
+    - Hybrid markets.
 
-# Selling methods: public markets
+# Cattle marketing: public markets
 
 - Public markets include terminal markets and auction markets.
 - Both fed and feeder cattle are sold in public markets.
@@ -818,7 +829,7 @@ Source: @USDAreturn.
     - Sale occurs through a commission agent;
     - Seller receives the sale price minus charges for the stockyard and the agent.
 
-# Selling methods: public markets
+# Cattle marketing: public markets
 
 - Auction markets:
     - Common sale method with many auction facilities around the country;
@@ -828,16 +839,18 @@ Source: @USDAreturn.
     - Auction can occur live or electronically (video);
     - Buyer receives the price minus a fixed or percentage charge.
 
-# Selling methods: direct sales
+# Cattle marketing: direct sales
 
-- In direct sales producers sell directly to downstream buyers.
+- Producers sell directly to downstream buyers.
 - Both fed and feeder cattle are sold in direct sales.
 - Seller is more involved in the sale of cattle.
 - No need to move cattle to an intermediate location.
 - Can build long run relationship.
-- Predetermined pricing method (see below).
+- Predetermined pricing method:
+    - Price can be based on live weight or carcass weight.
+    - A based price can be determined using a formula or negotiated.
 
-# Selling methods: hybrid markets
+# Cattle marketing: hybrid markets
 
 - Growing marketing method.
 - Cattle are videod at the farm.
@@ -853,21 +866,20 @@ Source: @USDAreturn.
     - Feeding costs at feedlots (e.g. cost and other feeds);
     - Costs at packing plants (e.g. labor costs);
     - Domestic consumer demand (e.g. income, price of substitute products);
-    - International consumer demand (e.g. trade agreements, competition from other countries, exchange rate, tariffs).
+    - International consumer demand (e.g. trade agreements. competition from other countries, exchange rate, tariffs).
 - Characteristics of a feeder cattle (e.g. breed, weight, color) explain difference in prices across cattle.
-
 
 # Price of fed cattle
 
 - The price of fed cattle is determined at the intersection of demand and supply.
 - Costs of feedlots affect the supply of fed cattle:
     - Includes the cost of feeder cattle;
-    - Cost of feed (e.g. corn);
+    - Cost of feed (e.g. corn).
 - Many factors affect the demand for fed cattle:
     - Costs at packing plants (e.g. labor costs);
     - Domestic consumer demand (e.g. income, price of substitute products);
     - International consumer demand (e.g. trade agreements, competition from other countries, exchange rate, tariffs).
-- Characteristics of a feeder cattle (e.g. breed, weight, color) explain difference in prices across cattle.
+- Characteristics of a fed cattle (e.g. breed, weight, color) explain difference in prices across cattle.
 
 # Cattle prices
 
@@ -882,50 +894,50 @@ Source: @USDAreturn.
 
 # Pricing fed cattle in direct sales
 
-- Visual inspection of a live cattle can give an idea of meat quality but is not always accurate.
+- Visual inspection of a live cattle can give an idea of meat quality but is not always accurate. 
 - Direct sales can include provisions to take into account the quality of the beef output.
 - The final price is not determined at the sale of live cattle but rather after grading of the carcass.
 - Three options possible:
     1. Live weight pricing;
     2. Carcass or dressed weight pricing considers carcass weight;
     3. Dressed weight and grade or grade and yield pricing considers both the yield and quality of the meat.
-- Sales other than direct sales are live weight.
+- Sales of fed cattle other than direct sales are live weight.
 
 # Pricing fed cattle in direct sales
 
 1. Live weight:
-   - Only considers live weight (on the hoof);
-   - Price negotiated before delivery;
-   - Weighing conditions matter;
-   - Potential yield and quality are estimated by observing live cattle;
-   - Seller does not have to wait for grading before knowing the final price;
-   - Buyer (packer) assumes yield and quality risk (discount compared to other selling methods?).
+    - Only considers live weight (on the hoof);
+    - Price determined using a formula (e.g. using an average price or the futures prices) or negotiated before delivery;
+    - Weighing conditions matter;
+    - Potential yield and quality are estimated by observing live cattle;
+    - Seller does not have to wait for grading before knowing the final price;
+    - Buyer (packer) assumes yield and quality risk.
+        - Moral hazard may cause a discounted price compared to other selling methods.
 
 # Pricing fed cattle in direct sales
 
 2. Carcass weight
-   - The price is based on carcass weight;
-   - Price negotiated before delivery;
-   - Seller assumes yield risk;
-   - Buyer (packer) assumes quality risk.
+    - The price is based on carcass weight;
+    - Price determined using a formula (e.g. using an average price or the futures prices) or negotiated before delivery;
+    - Seller assumes yield risk;
+    - Buyer (packer) assumes quality risk.
 
 # Pricing fed cattle in direct sales
    
 3. Dressed weight and grade
-   - The price is based on carcass weight and quality;
-   - Each carcass is evaluated and priced individually;
-   - Premia and discounts are negotiated before delivery;
-   - Base price is either negotiated or based on a formula;
-      - Formula pricing can set the base price considering the average cattle price in the prior week, market reports, boxed beef cutout value, futures market prices or negotiated prices.
-   - Seller assumes yield and quality risk;
-   - Buyer (packer) assumes quality risk.
+    - The price is based on carcass weight and quality;
+    - Each carcass is evaluated and priced individually;
+    - Premia and discounts are negotiated before delivery;
+    - Base price is either negotiated or based on a formula;
+        - Formula pricing can set the base price considering the average cattle price in the prior week, market reports, boxed beef cutout value or futures market prices.
+    - Seller assumes yield and quality risk.
 
 # Moral hazard in live versus carcass pricing {.allowframebreaks}
 
 - If you are a cattle producer and know that your cattle are of lower quality, you will try to hide that from the buyer.
-    - Sell lower quality cattle as live.
+    - Sell lower quality cattle priced based on live weight.
 - If you have high quality cattle you will try to show the high value of your cattle.
-    - More likely to have high quality cattle prices based on carcass weight or dressed weight and grade.
+    - More likely to have high quality cattle priced based on carcass weight or dressed weight and grade.
 - Buyers are well aware of that.
     - Buyers will discount the price of live cattle because they expect them to be lower quality.
     - Live cattle pricing more often used in the south because they grow lower quality breeds.
@@ -934,7 +946,7 @@ Source: @USDAreturn.
 - This is an example of moral hazard where buyers discount the price of a good for which they cannot observe the quality.
     - The classic example is the market for lemons (i.e. low quality cars).
 
-# 5 area markets - live versus dressed weight
+# 5 area markets - live vs. dressed weight (all fed cattle sales)
 
 - The 5 markets are 1) Texas, Oklahoma & New Mexico, 2) Kansas, 3) Nebraska, 4) Colorado and 5) Iowa & Minnesota.
 
@@ -978,7 +990,8 @@ dta <- rbind(dta1, dta2, dta3, dta4) %>%
 plot_cat <- ggplot(dta, aes(x = year, y = value, fill = var)) +
   geom_area(position='fill', alpha = 0.75) +
   ylab("Share") +
-  scale_x_continuous(breaks = seq(2000, 2020, by = 2)) +
+  scale_x_continuous(breaks = seq(2000, 2020, by = 2), expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
   scale_fill_manual(values = viridis(5)[c(1,4)]) + 
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
@@ -1021,6 +1034,8 @@ plot_cat <- ggplot(dta, aes(x = date, y = value, fill = var)) +
   geom_area(position='fill', alpha = 0.75) +
   facet_wrap(~cat) + 
   ylab("Share") +
+  scale_x_date(date_breaks = "1 year", date_minor_breaks = "6 months", date_labels = "%Y", expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
   scale_fill_manual(values = viridis(5)[c(1,4)]) + 
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(),
@@ -1068,7 +1083,7 @@ plot_cat
 # Mandatory price reporting (MPR)
 
 - Negotiated prices have become much less common.
-- Congress passed a law in 1999 to adress concern about lack of public disclosure of transaction prices.
+- Congress passed a law in 1999 to adress concerns about lack of public disclosure of transaction prices.
 - Price discovery becomes difficult if there is no public data about prices.
 - Secrecy also favors abuse of market power, which is a real concern in a concentrated market such as beef packing.
 - See rulemaking for MPR at @mpr.

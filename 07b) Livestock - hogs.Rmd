@@ -115,7 +115,7 @@ dta <- read_excel("Data/7) Slaughter.xlsx", sheet = "Data sheet (machine readabl
   mutate(Date = as.Date(Date), year = year(Date), Value = Value/1000) %>%
   group_by(year) %>%
   summarize(Value = sum(Value)) %>%
-  dplyr::filter(year < year(Sys.time()))
+  dplyr::filter(year < year(Sys.time()), year >= 1970)
   
 
 plot_slaughter <- ggplot(dta, aes(x = year, y = Value)) +
@@ -129,7 +129,7 @@ plot_slaughter
 
 ```
 \scriptsize
-Note: I suspect that the jump in the early 1940s is because of modification in the data recording method. Source: @USDA_dom.
+Data source: @USDA_dom.
 
 
 # Pork production
@@ -157,7 +157,7 @@ plot_pork
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Average live and dressed cattle weight in federally inspected facility
 
@@ -174,7 +174,9 @@ dta <- read_excel("Data/7) Weight.xlsx", sheet = "Data sheet (machine readable)"
          year = year(Date), 
          Unit = ifelse(Unit == "LB / HEAD, DRESSED BASIS", "Dressed", "Live")) %>% 
   group_by(Date, Unit) %>%
-  summarize(Value = mean(Value))
+  summarize(Value = mean(Value)) %>%
+  dplyr::filter(Date >= as.Date("1970-01-01"))
+
 
 plot_weight <- ggplot(dta, aes(x = Date, y = Value, color = Unit)) +
   geom_line(size = 1) +
@@ -190,7 +192,7 @@ plot_weight
 
 ```
 \scriptsize
-Note: I suspect that the drop in carcass weight at the end of the 1970s is because of modifcation in the way to measure carcass weight. Source: @USDA_dom.
+Note: I suspect that the drop in carcass weight in the 1970s is from a modifcation in the way to measure carcass weight. Data source: @USDA_dom.
 
 # Average carcass yield (live weight/dressed weight)
 
@@ -213,57 +215,79 @@ plot_yield
 
 ```
 \scriptsize
-Note: I suspect that the drop in yield at the end of the 1970s is because of modifcation in the way to measure carcass weight. Source: @USDA_dom.
+Note: I suspect that the drop in carcass weight in the 1970s is from a modifcation in the way to measure carcass weight. Data source: @USDA_dom.
 
-# Hog inventory by state (March 1, 2018)
+# Operations with hog inventory by county (2012 census of agriculture)
 
 ```{r, out.width = '75%'}
 
 # Read data
-dta <- read_csv("Data/7) Hog inventory by state.csv")
+dta <- read_csv("Data/7) Hog inventory by county.csv")
 dta <- dta %>%
-  dplyr::filter(State != "ALASKA" & State != "HAWAII", Period == "FIRST OF MAR") %>%
-  dplyr::select(State, Value) 
+  dplyr::filter(State != "ALASKA" & State != "HAWAII") %>%
+  dplyr::select(State, Value, County, `Domain Category`) %>%
+  mutate(Value = str_replace_all(Value, ",", ""), 
+         Value = round(as.numeric(Value)),
+         state_county = paste(tolower(State), tolower(County), sep = "_"),
+         state_county = str_replace(state_county, "_saint", "_st"),
+         state_county = str_replace(state_county, "_st[.]", "_st"),
+         state_county = str_replace(state_county, "le flore", "leflore"),
+         state_county = str_replace(state_county, "oklahoma_leflore", "oklahoma_le flore"),
+         state_county = str_replace(state_county, "suffolk city", "suffolk"),
+         state_county = str_replace(state_county, "o brien", "obrien"),
+         state_county = str_replace(state_county, "virginia beach city", "virginia beach")) %>%
+  dplyr::filter(!is.na(Value), Value>0, 
+                state_county != "arizona_lapaz",
+                state_county != "south dakota_oglala lakota",
+                state_county != "virginia_chesapeake city") %>%
+  mutate(size = case_when(`Domain Category` == "INVENTORY OF HOGS: (1,000 OR MORE HEAD)" ~ 1,
+                          `Domain Category` == "INVENTORY OF HOGS: (500 TO 999 HEAD)" ~ 0.5,
+                          `Domain Category` == "INVENTORY OF HOGS: (200 TO 499 HEAD)" ~ 0.35,
+                          `Domain Category` == "INVENTORY OF HOGS: (100 TO 199 HEAD)" ~ 0.05,
+                          TRUE ~ 0.05))%>%
+  group_by(state_county, size) %>%
+  summarize(Value = sum(Value)) %>%
+  ungroup() %>%
+  mutate(Value = round(Value)/5) %>%
+  dplyr::filter(!is.na(Value), Value>0)
 
-other <- dta[dta$State == "OTHER STATES", ]
+# Get county and state boundaries
+countyShapes <- map("county", plot = FALSE, fill = TRUE)
+countyShapes <- fortify(countyShapes)
+countyShapes <- countyShapes %>%
+  mutate(state_county = paste(tolower(region), tolower(subregion), sep = "_"))
 
-dta <- dta %>%
-  dplyr::filter(State != "OTHER STATES") %>%
-  mutate(State = tolower(State))
-
-# Get state boundaries
 stateShapes <- map("state", plot = FALSE, fill = TRUE)
 stateShapes <- fortify(stateShapes)
 
-# Add missing states
-dta2 <- cbind(State = unique(stateShapes$region)[!(unique(stateShapes$region) %in% c(dta$State, "district of columbia"))], Value = round(other$Value/(48 - nrow(dta)))) %>%
-  as.tibble()
+# Get number of point per county
 
-dta <- rbind(dta, dta2) %>%
-  mutate(Value = as.numeric(Value), Value = 10*round(Value/min(Value)))
-
-# Get number of point per state
+rm(p_dta, p_dta0)
 
 for (i in 1:nrow(dta)){
-  stateShapeFrame <- stateShapes[stateShapes$region == tolower(dta$State[i]), ]
+  countyShapeFrame <- countyShapes[countyShapes$state_county == dta$state_county[i], ]
 
-  statePoly <- Polygons(lapply(split(stateShapeFrame[, c("long", "lat")], stateShapeFrame$group), Polygon), ID = "b")
+  countyPoly <- Polygons(lapply(split(countyShapeFrame[, c("long", "lat")], countyShapeFrame$group), Polygon), ID = "b")
 
-  p_dta0 <- spsample(statePoly, n = dta$Value[i], "random") %>%
+  p_dta0 <- spsample(countyPoly, n = dta$Value[i], "random") %>%
     as.data.frame() %>%
     rename(longitude = x, latitude = y) %>%
-    mutate(state = tolower(dta$State[i]))
+    mutate(state_county = dta$state_county[i],
+           size = dta$size[i])
 
   if(!exists("p_dta")){p_dta <- p_dta0}
   if(exists("p_dta")){p_dta <- rbind(p_dta,p_dta0)}
 
 }
 
+us_county_map <- map_data('county')
 us_state_map <- map_data('state')
 
 d_inv <- ggplot() +
+  geom_polygon(data=us_county_map, aes(x=long, y=lat, group = group), fill = NA, color = "gray") +
+  geom_point(data = p_dta, mapping = aes(longitude, latitude, alpha = size), shape=20, color = "blue") + 
+  scale_size_continuous(range = c(0.1, 1)) +
   geom_polygon(data=us_state_map, aes(x=long, y=lat, group = group), fill = NA, color = "black") +
-  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, size = 0.25, alpha = 0.5, color = "blue") +
   coord_map( "polyconic" ) +
   theme_bw() +
   mytheme +
@@ -276,14 +300,12 @@ d_inv <- ggplot() +
         panel.spacing.x=unit(-2, "lines"),
         panel.spacing.y=unit(0,"lines"),
         plot.margin=unit(c(0,-1,0,-1),"lines"),
-        legend.text=element_text(size=8),
-        legend.key.width = unit(0.4, "cm"),
-        legend.key.height = unit(0.4, "cm"))
+        legend.position="none")
 d_inv
 
 ```
 \scriptsize
-This is a density dot map. A dot does not represent the specific location of hogs. Rather, the number of dots within a state that represents the relative hog inventory by state. Source: @NASS.
+This is a density dot map where each dot represents about 5 operations, with darker dots representing larger operations. Data source: @NASS.
 
 # Hog inventory by state (March 1, 2018)
 
@@ -313,44 +335,73 @@ kable(dta, booktabs = T) %>%
   footnote(general = "Inventory is measured in million heads")
 
 ```
-Source: @NASS.
+Data source: @NASS.
 
-# Market hogs by state (March 1, 2018)
+# Operations with market hog inventory by county (2012 census of agriculture)
 
 ```{r, out.width = '75%'}
 
 # Read data
-dta <- read_csv("Data/7) Market hogs by state.csv")
+dta <- read_csv("Data/7) Market hog inventory by county.csv")
 dta <- dta %>%
-  dplyr::select(State, Value) %>%
-  dplyr::filter(State != "ALASKA" & State != "HAWAII" & State != "OTHER STATES") %>%
-  mutate(State = tolower(State), Value = 10*round(Value/min(Value)))
+  dplyr::filter(State != "ALASKA" & State != "HAWAII") %>%
+  dplyr::select(State, Value, County, `Domain Category`) %>%
+  mutate(Value = str_replace_all(Value, ",", ""), 
+         Value = round(as.numeric(Value)),
+         state_county = paste(tolower(State), tolower(County), sep = "_"),
+         state_county = str_replace(state_county, "_saint", "_st"),
+         state_county = str_replace(state_county, "_st[.]", "_st"),
+         state_county = str_replace(state_county, "le flore", "leflore"),
+         state_county = str_replace(state_county, "oklahoma_leflore", "oklahoma_le flore"),
+         state_county = str_replace(state_county, "suffolk city", "suffolk"),
+         state_county = str_replace(state_county, "o brien", "obrien"),
+         state_county = str_replace(state_county, "virginia beach city", "virginia beach")) %>%
+  dplyr::filter(!is.na(Value), Value>0, 
+                state_county != "arizona_lapaz",
+                state_county != "south dakota_oglala lakota",
+                state_county != "virginia_chesapeake city") %>%
+  group_by(state_county) %>%
+  summarize(Value = sum(Value)) %>%
+  ungroup() %>%
+  mutate(Value = round(Value/10)) %>%
+  dplyr::filter(!is.na(Value), Value>0)
 
-# Get state boundaries
+# Get county and state boundaries
+countyShapes <- map("county", plot = FALSE, fill = TRUE)
+countyShapes <- fortify(countyShapes)
+countyShapes <- countyShapes %>%
+  mutate(state_county = paste(tolower(region), tolower(subregion), sep = "_"))
+
 stateShapes <- map("state", plot = FALSE, fill = TRUE)
 stateShapes <- fortify(stateShapes)
 
-# Get random of point per state
+# Get number of point per county
+
 rm(p_dta, p_dta0)
 
 for (i in 1:nrow(dta)){
-  stateShapeFrame <- stateShapes[stateShapes$region == dta$State[i], ]
+  countyShapeFrame <- countyShapes[countyShapes$state_county == dta$state_county[i], ]
 
-  statePoly <- Polygons(lapply(split(stateShapeFrame[, c("long", "lat")], stateShapeFrame$group), Polygon), ID = "b")
+  countyPoly <- Polygons(lapply(split(countyShapeFrame[, c("long", "lat")], countyShapeFrame$group), Polygon), ID = "b")
 
-  p_dta0 <- spsample(statePoly, n = dta$Value[i], "random") %>%
+  p_dta0 <- spsample(countyPoly, n = dta$Value[i], "random") %>%
     as.data.frame() %>%
     rename(longitude = x, latitude = y) %>%
-    mutate(state = tolower(dta$State[i]))
+    mutate(state_county = dta$state_county[i])
 
   if(!exists("p_dta")){p_dta <- p_dta0}
   if(exists("p_dta")){p_dta <- rbind(p_dta,p_dta0)}
 
 }
 
-d_feed <- ggplot() +
+us_county_map <- map_data('county')
+us_state_map <- map_data('state')
+
+d_inv <- ggplot() +
+  geom_polygon(data=us_county_map, aes(x=long, y=lat, group = group), fill = NA, color = "gray") +
+  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, color = "blue", alpha = 0.5, size = 0.25) + 
+  scale_size_continuous(range = c(0.1, 1)) +
   geom_polygon(data=us_state_map, aes(x=long, y=lat, group = group), fill = NA, color = "black") +
-  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, size = 0.25, alpha = 0.5, color = "blue") +
   coord_map( "polyconic" ) +
   theme_bw() +
   mytheme +
@@ -363,15 +414,12 @@ d_feed <- ggplot() +
         panel.spacing.x=unit(-2, "lines"),
         panel.spacing.y=unit(0,"lines"),
         plot.margin=unit(c(0,-1,0,-1),"lines"),
-        legend.text=element_text(size=8),
-        legend.key.width = unit(0.4, "cm"),
-        legend.key.height = unit(0.4, "cm"))
-
-d_feed
+        legend.position="none")
+d_inv
 
 ```
 \scriptsize
-This is a density dot map. A dot does not represent the specific location of hogs. Rather, the number of dots within a state that represents the relative number of market hogs by state. Source: @NASS.
+This is a density dot map where each dot represents about 10 operations, irrespective of their sizes. Data source: @NASS.
 
 # Market hogs by state (March 1, 2018)
 
@@ -401,7 +449,8 @@ kable(dta, booktabs = T) %>%
   footnote(general = "The number of market hogs is measured in million heads")
 
 ```
-Source: @NASS.
+Data source: @NASS.
+
 
 # Hog slaughter by state (2017)
 
@@ -464,7 +513,7 @@ d_slaughter
 
 ```
 \scriptsize
-This is a density dot map. A dot does not represent the specific location of cattle. Rather, the number of dots within a state that represents the relative cattle slaughter by state. Source: @NASS.
+This is a density dot map. A dot does not represent the specific location of cattle. Rather, the number of dots within a state that represents the relative cattle slaughter by state. Data source: @NASS.
 
 # Hog slaughter by state (2017)
 
@@ -497,7 +546,7 @@ kable(dta, booktabs = T) %>%
   footnote(general = "Hog slaughter is measured in million heads")
 
 ```
-Source: @NASS.
+Data source: @NASS.
 
 # Annual imports of hogs
 
@@ -540,7 +589,7 @@ plot_import
 
 ```
 \scriptsize
-Source: @usda_trade.
+Data source: @usda_trade.
 
 # Hog imports
 
@@ -590,7 +639,7 @@ plot_export
 
 ```
 \scriptsize
-Source: @usda_trade.
+Data source: @usda_trade.
 
 
 # Pork imports (carcass weight, million pounds)
@@ -644,7 +693,7 @@ pork_import
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Pork exports (carcass weight, million pounds)
 
@@ -696,7 +745,7 @@ pork_export
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Live hog price and pork cutout prices
 
@@ -744,7 +793,7 @@ plot_price
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Beginning stocks of pork (Million lbs, CWE)
 
@@ -771,14 +820,14 @@ plot_stock
 
 ```
 \scriptsize
-Note: CWE means Carcass Weight Equivalent. Source: @USDA_dom.
+Note: CWE means Carcass Weight Equivalent. Data source: @USDA_dom.
 
 # Hog cycles 
 
 - Hog cycles are just like cattle cycles but they occur at a shorter interval because of a faster production dynamics in hogs.
 - Hog cycles are expansion and contraction of hog inventories at regular intervals (see hog inventory figure below).
 - A cycle lasts from three to five years. 
-- Cycles occur because of biological nature of cattle production:
+- Cycles occur because of biological nature of hog production:
     - A sow can be bred for the first time at around 5 to 6 months old.
     - A sow will have its first litter about 113 days later (3 months, 3 weeks and 3 days).
     - It takes between 24 to 29 weeks to attain a target slaughter weight.
@@ -830,17 +879,17 @@ Note: I suspect that the shocks in the 1930s and 1940s have to do with how the d
 # Return to a farrow-to-finish operation in Iowa ($/head)
 
 
-```{r, echo=FALSE, out.width = '75%'}
+```{r, echo=FALSE, out.width = '50%'}
 
-if(Sys.time() - file.info("Figures/7) Return farrow to finish.png")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Figures/7)_Return_farrow_to_finish.png")$mtime > months(1, abbreviate = FALSE)){
   fig <- image_read("https://www.extension.iastate.edu/agdm/livestock/html/images/b1-31tbl1.gif")
-  image_write(fig, path = "Figures/7) Return farrow to finish.png", format = "png")
+  image_write(fig, path = "Figures/7)_Return_farrow_to_finish.png", format = "png")
 }
 
-knitr::include_graphics("Figures/7) Return farrow to finish.png")
+knitr::include_graphics("Figures/7)_Return_farrow_to_finish.png")
 ```
 \scriptsize
-Note: If considering value of production less total costs the returns are negative for several years. Source: @USDAreturn.
+Source: @Schulz2018.
 
 # Marketing methods for hogs
 
@@ -852,6 +901,16 @@ Note: If considering value of production less total costs the returns are negati
 - It is not possible to tell how much of the hog production is under vertical control.
 - It is also very difficult to tell whether there is a trend toward more vertical integration and more full integration.
 - See some explanations at this link: <http://porkgateway.org/resource/producing-and-marketing-hogs-under-contract/>.
+
+# Marketing and production contracts
+
+- See definitions in <https://www.ers.usda.gov/webdocs/publications/40764/18614_aer747a_1_.pdf?v=41063>.
+- Marketing contracts refer to verbal or written agreements between a contractor and a grower that sets a price (or pricing mechanism) and an outlet for the commodity before harvest or before the commodity is ready to be marketed. 
+- Production contracts specify in detail the production inputs supplied by the contractor (processor, feed mill, other farm operation or business), the quality and quantity of a particular commodity, and the type of compensation to the grower (contractee) for services rendered.
+- Marketing contracts are common in grains and cattle industries.
+- Marketing contracts are also common in the hog industry.
+- There are also production contracts in the hig industry.
+
 
 # Why are there contracts in the hog industry?
 
@@ -885,9 +944,11 @@ Note: If considering value of production less total costs the returns are negati
 - If transaction costs are low and assets are not specific, the spot market minimizes costs.
     - This is the example for corn.
 - As transaction costs increase and assets are more specific, then contracts minimize costs.
-    - This is the example for a major part of the hog production.
+    - Some marketing contracts 
+    - This is the case for a major part of the hog production.
 - In the case where transaction costs are high and assets are very specific, then full integration becomes the cost minimizing method.
-    - This is the example of the poultry industry where some packers control the supply chain from feeds up to packing.
+    - Production contracts are an example of full integration.
+    - This is the example of some of the hog production and almost all of the poultry and egg industry where packers control the supply chain from feeds up to packing.
 
 # Transaction costs and asset specificity
 
