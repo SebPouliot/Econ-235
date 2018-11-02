@@ -1,0 +1,276 @@
+---
+title: "Farm Bill"
+shortitle: Farm Bill
+subtitle: Econ 235
+author: "Sebastien Pouliot"
+date: "Fall 2018"
+output:
+  beamer_presentation:
+    citation_package: natbib
+    includes:
+      in_header: mystyle.sty
+    theme: default
+  ioslides_presentation: default
+  slidy_presentation: default
+institute: Iowa State University
+header-includes: 
+  - \widowpenalties 1 150
+classoption:
+  - dvipsnames
+  - table
+urlcolor: blue
+bibliography: References.bib
+biblio-style: apalike
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, fig.keep='high', out.width = '95%', fig.align = 'center', dev='cairo_pdf', warning = FALSE, message = FALSE)
+
+#Load some packages
+library(pacman)
+pacman::p_load(tidyverse)
+pacman::p_load(lubridate)
+pacman::p_load(readxl)
+pacman::p_load(xlsx)
+pacman::p_load(Quandl)
+pacman::p_load(viridis)
+pacman::p_load(Cairo)
+options(kableExtra.latex.load_packages = TRUE)
+pacman::p_load(kableExtra)
+pacman::p_load(ggmap)
+pacman::p_load(sp)
+pacman::p_load(usmap)
+pacman::p_load(maps)
+pacman::p_load(magick)
+
+#Authentification
+Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
+
+#Basic setup for figures
+source("Figures/Graph parameters.r")
+
+```
+
+# What is the farm bill?
+
+- The farm bill is the main legal instruments through which agricultural laws are adopted in the United States. 
+- The farm bill contains provisions for commodity price, income support, agricultural trade, rural development, domestic food assistance, foreign food aid, conservation, crop insurance, farm credit, forestry and agricultural research.
+- A farm bill is an omnibus bill, meaning that it consists of a collection of laws. The farm bill contains new laws and amendments to existing laws that are valid for a specified number of years.
+- If a farm bill is not adopted before the expiration of the current farm bill, some old permanent statutes (outdated) would come back into effect or provisions of the previous farm bill would be terminated.
+
+
+# When is a farm adopted?
+
+- Typically, a new farm bill is adopted every 4 to 6 years.
+- There have been seventeen farm bills adopted: 1933, 1938, 1948, 1949, 1954, 1956, 1965, 1970, 1973, 1977, 1981, 1985, 1990, 1996, 2002, 2008 and 2014.
+- Farm bills have become omnibus bills with the inclusion of nutrition program in 1973. Some argue that it would be more accurate to call the farm bill a food bill as most expenditures are now about nutrition.
+- The 2008 farm bill (Food, Conservation, and Energy Act of 2008) was set to expire in 2012. That farm bill was however extended twice.
+    - The first extension was from October through December 2012.
+    - A second extension on January 2, 2013 (fiscal cliff bill) extended the 2008 farm through FY2013 or for the 2013 crop year.
+- The next farm bill is due this year but that will probably not happen.
+        
+
+# Resources to understand the farm bill
+
+- [What Is the Farm Bill?](https://www.fas.org/sgp/crs/misc/RS22131.pdf), a Congressional Research Service report.
+- Resources about the new farm bill:
+    - The [2014 farm bill](http://docs.house.gov/billsthisweek/20140127/CRPT-113hrpt-HR2642.pdf) itself is 959 pages long.
+      - The farm bill in one [chart](http://www.washingtonpost.com/blogs/wonkblog/wp/2014/01/28/the-950-billion-farm-bill-in-one-chart/).
+      - [What's in the farm bill](http://www.washingtonpost.com/blogs/the-fix/wp/2014/01/27/hemp-farm-raised-fish-food-labels-and-food-stamps-whats-in-the-farm-bill/).
+      - Farmdocdaily, [2014 Farm Bill Farm Safety Net: Summary and Brief Thoughts](http://farmdocdaily.illinois.edu/2014/01/2013-farm-bill-farm-safety-net.html).
+      - Farmdocdaily, [Evaluating Commodity Program Choices in the New Farm Bill](http://farmdocdaily.illinois.edu/2014/02/evaluating-commodity-program-choices-in-new-farm-bill.html).
+        
+
+
+
+# Agricultural Act of 2014
+
+- The Agricultural Act of 2014 was adopted after many delays and much controversies.
+- Its provisions authorize agricultural, nutrition, and other programs over the 2014-2018 period.
+
+
+# Agricultural Act of 2014
+\begin{table}
+\caption{Projected spending outlays by title (Millions of dollars)}
+\scriptsize
+\begin{tabular}{l r r}
+  \toprule
+  Title & 2014-2018 & 2014-2023\\
+  \midrule
+I - Commodities & 23,556 & 44,458\\
+II - Conservation & 28,165 & 57,600\\
+III - Trade & 1,782 & 3,574\\
+IV - Nutrition & 390,650 & 756,433\\
+V - Credit & -1,011 & -2,240\\
+VI - Rural Development & 218 & 241\\
+VII - Research, Extensions, ... & 800 & 1,256\\
+VIII - Forestry & 8 & 13\\
+IX - Energy & 625 & 1,122\\
+X - Horticulture & 874 & 1,755\\
+XI - Crop Insurance & 41,420 & 89,827\\
+XII - Miscellaneous & 1,544 & 2,363\\
+\midrule
+Total outlays & 488,631 & 956,401\\
+\bottomrule
+\end{tabular}
+\end{table}
+Source: [Congressional Budget Office](http://cbo.gov/sites/default/files/cbofiles/attachments/hr2642LucasLtr.pdf).
+
+
+# Agricultural Act of 2014 projected main spending outlays - 2014-2023
+
+```{r, out.width = '75%'}
+
+spendings <- c(44458, 57600, 756433, 89827, 6828)
+
+lbls <- c("Commodities", "Conservation", "Nutrition", "Crop Insurance", "Everything else")
+
+lbls <- paste(paste(lbls, round(spendings/1000,1), sep=", $"), "B.")
+
+dta <- cbind(lbls, spendings) %>% 
+  tbl_df() %>%
+  mutate(spendings = as.numeric(spendings)/1000)
+
+
+ggplot(dta, aes(x=lbls, y=spendings, fill = lbls)) +
+  geom_bar(stat='identity') +
+  coord_flip() + 
+  scale_fill_manual(values = viridis(6)[1:5]) + 
+  scale_x_discrete(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  ylab("Billion dollars") + 
+  theme_bw() + mytheme + 
+  theme(legend.position="none", 
+        legend.direction = "horizontal", 
+        axis.title.y=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+
+```
+    
+Source: [Congressional Budget](http://cbo.gov/sites/default/files/cbofiles/attachments/hr2642LucasLtr.pdf).
+
+
+# Agricultural Act of 2014 projected main spending outlays - 2014-2018
+
+```{r, out.width = '75%'}
+
+spendings <- c(23556, 28165, 390650, 41420, 4840)
+
+lbls <- c("Commodities", "Conservation", "Nutrition", "Crop Insurance", "Everything else")
+
+lbls <- paste(paste(lbls, round(spendings/1000,1), sep=", $"), "B.")
+
+dta <- cbind(lbls, spendings) %>% 
+  tbl_df() %>%
+  mutate(spendings = as.numeric(spendings)/1000)
+
+
+ggplot(dta, aes(x=lbls, y=spendings, fill = lbls)) +
+  geom_bar(stat='identity') +
+  coord_flip() + 
+  scale_fill_manual(values = viridis(6)[1:5]) + 
+  scale_x_discrete(expand = c(0,0)) +
+  scale_y_continuous(expand = c(0,0)) +
+  ylab("Billion dollars") + 
+  theme_bw() + mytheme + 
+  theme(legend.position="none", 
+        legend.direction = "horizontal", 
+        axis.title.y=element_blank(), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+
+```
+    
+Source: [Congressional Budget](http://cbo.gov/sites/default/files/cbofiles/attachments/hr2642LucasLtr.pdf).
+
+
+# Title I - Repealed commodity programs 
+
+- **Direct (fixed) payment**: Payment based on producers' historical program payment acres, yields and payment rates.
+- **Counter-cyclical payments (CCP)**: Payments available to producers when the market price falls below an established target price (price floor).  Available only to producers with an established base acres of certain commodities. Replaced marketing loss assistance in the 2002 Farm Act.  Not available to producers who elect to participate in ACRE.
+- **Average Crop Revenue Election (ACRE)**: Alternative to counter-cyclical payments introduced in the 2008 Farm Act. Provides a revenue guarantee each year based on market prices and average yields for the respective commodities. Participation in ACRE reduces direct payments and lowers marketing assistance loan rates.
+
+
+# Title I - New commodity programs {.allowframebreaks}
+
+- **Price loss coverage (PLC)**: Payments to farms if the average market price for a crop year is less than the reference (minimum) price: \$5.50/bu for wheat, \$3.70/bu for corn and \$8.40/bu for soybeans. Works like CCP.
+- **Agricultural Risk Coverage (ARC)**: Farmers make a 1-time decision for a crop insurance for an individual coverage or a county coverage (if data available). If individual coverage is taken, it applies to all commodities on the farm. Payment is based either on benchmark farm revenue in a county or on benchmark county revenue. Choose either PLC or ARC on a commodity basis.
+
+
+# Title I - Remaining programs
+
+
+- **Supplemental Agricultural Disaster Assistance**: Supplemental Agricultural Disaster Assistance provides disaster assistance payments to producers of eligible commodities (crops, farm-raised fish, honey, and livestock) in counties declared by the Secretary of Agriculture to be *disaster counties*, including counties contiguous to disaster counties and any farms with losses in normal production of more than 50 percent.
+- **Marketing assistance loans and loan deficiency payments**: Marketing loan program allows producers to receive a loan from the Government and use production as a collateral. Loan deficiency payments allow producers to receive the benefits of the marketing loan program without having to take out and later repay a commodity loan.
+
+# Title II - Conservation 
+
+- **Conservation Reserve Program (CRP)**: Removes land out of farming and plant species that will improve health and quality in exchange of a yearly rental payment.
+- **Conservation Stewardship Program**: Encourages producers to undertake conservation activities.  Assistance to conserve and enhance soil, water, air, plants, animals and related natural resources.
+- **Agricultural Conservation Easement Program**: Voluntary legal restriction to maintain agricultural land in active production by removing development pressure.
+- **Repeal of Wildlife Habitat Incentives Program**: Voluntary program for landowners who wanted to develop and maintain wildlife habitat on agricultural land.
+
+
+# Title IV - Nutrition
+
+- The main expenses of the nutrition title is the Supplemental Nutrition Assistance Program (SNAP).
+    - Previously called *Food Stamps*, and many still refer to this program as food stamps.
+    - SNAP offers nutrition assistance to eligible low-income individuals and families and provides economic benefits to communities.
+    - Largest US hunger safety net.
+- The standard utility program is a fixed dollar amount for a household's heating and utility expenses used in the calculation of shelter expenses for SNAP benefits.
+- Under the emergency food assistance program, USDA purchases food and ships it to States depending on their population of low-income and unemployed population.
+- Food insecurity nutrition incentive program subsidizes the purchase of food at local farmers markets.
+
+
+# Title IV - Nutrition
+
+- Title IV also includes school lunch.
+- Participation in SNAP is quite significant with about 15 percent of the population receiving benefits (Spring 2013).
+- See how many people receive SNAP per county at [Food Research \& Action Center](http://www.frac.org/snap-county-map/snap-counties.html).
+
+
+# Title XI - Crop Insurance
+
+- Insurance policies are sold through private insurance companies but USDA subsidizes the insurance premium. Most farmers pay around 40 to 50 percent of the premiums.
+- Insurance policies can cover yield losses due to natural causes or revenue losses.
+- **Supplemental Coverage Option (SCO)**: New policy to cover ``shallow losses,'' which are the amounts not covered by crop insurance policy. It is like insuring your deductible on your car insurance! Not available if enrolled in ARC.
+- **Stacked Income Protection for Cotton**: Similar to SCO but applies to cotton.
+
+
+# Controversies
+
+- Farm subsidies have long been a subject of controversies.
+- Trade negotiations at the World Trade Organization (WTO) have long been stalled because of disagreement over farm subsidies.
+- New programs like PLC and SCO may bring challenges at WTO.
+- The United States pays Brazil millions of dollars to compensate Brazil's farmers against US subsidies (see article on [NPR](http://www.npr.org/blogs/money/2014/01/17/263101422/why-u-s-taxpayers-started-and-stopped-paying-brazilian-cotton-farmers)).
+- Sugar program is just as controversial.
+
+
+# Controversies
+
+- Like many other government programs, the farm programs take money from someone's pocket and put it into someone else's pocket.
+- One of the problem is that farms programs favor a few commodities and are given to wealthy farmers:
+    - See subsidies by crop from the Environmental working Group [database](http://farm.ewg.org/region.php?fips=00000).
+    - Median household income for commercial farmers is much superior to median US household income (see [NPR](http://www.npr.org/blogs/thesalt/2013/05/30/187346726/Congress-Poised-To-Make-Crop-Insurance-Subsidies-More-Generous) and [the Economist](http://www.economist.com/news/united-states/21595953-congress-passes-bill-gives-bipartisanship-bad-name-trillion-trough)). Farmers are also wealthier (more assets).
+        
+
+# Controversies
+
+- Cuts to SNAPS have been met with much concerns by economists.
+- The US offers very few support program to poor people. Nutrition programs can have long lasting positive impacts on a child's development.
+- Malnutrition at youth can lead to all sorts of issues:
+    - Difficulties in succeeding at school;
+    - Dropping out of school;
+    - Higher crime rate in adulthood.
+- One controversy of the 2014 farm bill was that subsidies to farms were kept while cuts to SNAP were made.
+
+# Why farm programs?
+
+- Most farmers love farm programs because they directly benefit from them.
+- That is quite understandable as subsidies make them better off.
+- But when considering the United States as whole, farm programs are costly to the economy.
+- What are the reasons for farm subsidies? Are there convincing economic arguments when considering welfare of the general population?
+- The response is quite simple: lobbies!

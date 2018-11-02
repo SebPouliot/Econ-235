@@ -41,6 +41,11 @@ pacman::p_load(sp)
 pacman::p_load(usmap)
 pacman::p_load(maps)
 pacman::p_load(magick)
+pacman::p_load(pingr)
+
+#Turn off warnings
+options(warn=-1)
+
 
 #Authentification
 #Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
@@ -55,8 +60,8 @@ source("Figures/Graph parameters.r")
 - The United States is the third largest producer of hogs in the world, behind China and the EU.
 - The supply chain for hogs and pork operates differently than the supply chain for cattle and beef.
 - Production cycles in hogs are shorter than in cattle but nonetheless important.
-- Like cattle, the characteristics of hogs are difficult to observe on a live animal and the market has come up with solutions for the moral hazard problem it can create.
-- I will begin with definitions, review some market data and finally turn to the economics of cattle marketing.
+- Like cattle, the characteristics of hogs are difficult to observe on a live animal and the market has come up with solutions for the adverse selection problem it can create.
+- I will begin with definitions, review some market data and finally turn to the economics of hog marketing.
 
 # Resources
 
@@ -85,7 +90,7 @@ source("Figures/Graph parameters.r")
 - Farrow-to-wean: Production of hogs from birth to weaning;
 - Farrow-to-feeder: Production of hogs from farrow to feeder pigs;
 - Wean-to-finish: Production of hogs from weaned pigs to finishing (market hogs);
-- Feeder-to-finish: Female hog that has had a litter;
+- Feeder-to-finish: Production of hogs from feeder pigs to finishing (market hogs).
 
 # Supply chain (example)
 
@@ -105,7 +110,7 @@ source("Figures/Graph parameters.r")
 
 ```{r slaughter, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Slaughter.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Slaughter.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/SlaughterCounts%20Pivot.xlsx", "Data/7) Slaughter.xlsx", method = "curl")  
 }
 
@@ -120,8 +125,8 @@ dta <- read_excel("Data/7) Slaughter.xlsx", sheet = "Data sheet (machine readabl
 
 plot_slaughter <- ggplot(dta, aes(x = year, y = Value)) +
   geom_line(color = "blue", size = 1) +
-  ylab("Cattle slaughter (million head)") +
-  scale_x_continuous(breaks = seq(1905, 2020, by = 10)) +
+  ylab("Hog slaughter (million head)") +
+  scale_x_continuous(breaks = seq(1970, 2020, by = 5)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
 
@@ -136,7 +141,7 @@ Data source: @USDA_dom.
 
 ```{r beef, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Pork.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Pork.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/Pork%20Pivot.xlsx", "Data/7) Pork.xlsx", method = "curl")  
 }
 
@@ -159,11 +164,11 @@ plot_pork
 \scriptsize
 Data source: @USDA_dom.
 
-# Average live and dressed cattle weight in federally inspected facility
+# Average live and dressed hog weight in federally inspected facility
 
 ```{r weight, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Weight.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Weight.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/SlaughterWeights%20Pivot.xlsx", "Data/7) Weight.xlsx", method = "curl")
 }
 
@@ -182,7 +187,7 @@ plot_weight <- ggplot(dta, aes(x = Date, y = Value, color = Unit)) +
   geom_line(size = 1) +
   ylab("Weight in pound") +
   scale_color_manual(values = viridis(3)[c(1,2)]) +
-  scale_x_date(breaks = seq(as.Date("1920-01-01"), as.Date("2020-12-31"), by="10 years"), date_labels = "%Y") +
+  scale_x_date(breaks = seq(as.Date("1970-01-01"), as.Date("2020-12-31"), by="5 years"), date_labels = "%Y") +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
         axis.line = element_line(color='black'),
@@ -205,7 +210,7 @@ dta <- dta %>%
 plot_yield <- ggplot(dta, aes(x = Date, y = yield)) +
   geom_line(color = "blue", size = 1) +
   ylab("Yield") +
-  scale_x_date(breaks = seq(as.Date("1920-01-01"), as.Date("2020-12-31"), by="10 years"), date_labels = "%Y") +
+  scale_x_date(breaks = seq(as.Date("1970-01-01"), as.Date("2020-12-31"), by="5 years"), date_labels = "%Y") +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
         axis.line = element_line(color='black'),
@@ -244,7 +249,7 @@ dta <- dta %>%
                           `Domain Category` == "INVENTORY OF HOGS: (500 TO 999 HEAD)" ~ 0.5,
                           `Domain Category` == "INVENTORY OF HOGS: (200 TO 499 HEAD)" ~ 0.35,
                           `Domain Category` == "INVENTORY OF HOGS: (100 TO 199 HEAD)" ~ 0.05,
-                          TRUE ~ 0.05))%>%
+                          TRUE ~ 0.01))%>%
   group_by(state_county, size) %>%
   summarize(Value = sum(Value)) %>%
   ungroup() %>%
@@ -285,8 +290,8 @@ us_state_map <- map_data('state')
 
 d_inv <- ggplot() +
   geom_polygon(data=us_county_map, aes(x=long, y=lat, group = group), fill = NA, color = "gray") +
-  geom_point(data = p_dta, mapping = aes(longitude, latitude, alpha = size), shape=20, color = "blue") + 
-  scale_size_continuous(range = c(0.1, 1)) +
+  geom_point(data = p_dta, mapping = aes(longitude, latitude, size = size), alpha = 0.25, shape=20, color = "blue", fill = "blue") + 
+  scale_size_continuous(range = c(0.01, 2)) +
   geom_polygon(data=us_state_map, aes(x=long, y=lat, group = group), fill = NA, color = "black") +
   coord_map( "polyconic" ) +
   theme_bw() +
@@ -305,7 +310,7 @@ d_inv
 
 ```
 \scriptsize
-This is a density dot map where each dot represents about 5 operations, with darker dots representing larger operations. Data source: @NASS.
+This is a density dot map where each dot represents about 5 operations, with larger dots representing groups of larger operations. Data source: @NASS.
 
 # Hog inventory by state (March 1, 2018)
 
@@ -399,8 +404,7 @@ us_state_map <- map_data('state')
 
 d_inv <- ggplot() +
   geom_polygon(data=us_county_map, aes(x=long, y=lat, group = group), fill = NA, color = "gray") +
-  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, color = "blue", alpha = 0.5, size = 0.25) + 
-  scale_size_continuous(range = c(0.1, 1)) +
+  geom_point(data = p_dta, mapping = aes(longitude, latitude), shape=20, color = "blue", alpha = 0.5, size = 1) + 
   geom_polygon(data=us_state_map, aes(x=long, y=lat, group = group), fill = NA, color = "black") +
   coord_map( "polyconic" ) +
   theme_bw() +
@@ -513,7 +517,7 @@ d_slaughter
 
 ```
 \scriptsize
-This is a density dot map. A dot does not represent the specific location of cattle. Rather, the number of dots within a state that represents the relative cattle slaughter by state. Data source: @NASS.
+This is a density dot map. A dot does not represent the specific location of hog. Rather, the number of dots within a state that represents the relative hog slaughter by state. Data source: @NASS.
 
 # Hog slaughter by state (2017)
 
@@ -552,7 +556,7 @@ Data source: @NASS.
 
 ```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Hog trade.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Hog trade.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/81475/Hog_YearlyFull.xls", "Data/7) Hog trade.xls", method = "curl")
 }
 
@@ -645,7 +649,7 @@ Data source: @usda_trade.
 # Pork imports (carcass weight, million pounds)
 
 ```{r, out.width = '75%'}
-if(Sys.time() - file.info("Data/7) Pork trade.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Pork trade.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/81475/Pork_YearlyFull.xls", "Data/7) Pork trade.xls", method = "curl")
 }
 
@@ -751,11 +755,11 @@ Data source: @USDA_dom.
 
 ```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Livestock prices.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Livestock prices.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/51875/Livestock%20and%20hay%20prices%20Pivot.xlsx", "Data/7) Livestock prices.xlsx", method = "curl")
 }
 
-if(Sys.time() - file.info("Data/7) Meat prices.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Meat prices.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/51875/WholesalePrices.xls", "Data/7) Meat prices.xls", method = "curl")
 }
 
@@ -834,7 +838,7 @@ Note: CWE means Carcass Weight Equivalent. Data source: @USDA_dom.
 
 # Hog cycles
 
-- Biological lags cause a delayed response between an increase in the price and an increase in production.
+- Biological lags cause a delayed response between a shock and a responde in production.
     - For example, if the price of feeder hogs increase, farrowing operations increase the size of their breeding herd.
     - During the time it takes to increase the breeding herd, the price continues to increase.
     - It takes about a year and a quarter from the time a farrowing operation decides to expand and the time its production actually increases.
@@ -849,7 +853,6 @@ Note: CWE means Carcass Weight Equivalent. Data source: @USDA_dom.
 - Cycles contribute to periods of prosperity followed by periods of losses to hog farmers.
 -  See for example historial returns in the hog sector at <http://www2.econ.iastate.edu/estimated-returns/> or at 
 <https://www.ers.usda.gov/data-products/commodity-costs-and-returns/commodity-costs-and-returns/>
-
 
 # US December hog inventory
 
@@ -866,7 +869,7 @@ dta <- dta %>%
 plot_inventory <- ggplot(dta, aes(x = Year, y = Value)) +
   geom_line(color = "blue", size = 1) +
   ylab("January inventory (million head)") +
-  scale_x_continuous(breaks = seq(1870, 2020, by = 10)) +
+  scale_x_continuous(breaks = seq(1860, 2020, by = 10)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
 
@@ -874,14 +877,14 @@ plot_inventory
 
 ```
 \scriptsize
-Note: I suspect that the shocks in the 1930s and 1940s have to do with how the data were collected. Source: @NASS.
+Note: I suspect that the shocks in the 1930s and 1940s have to do with how the data were collected. Data source: @NASS.
 
 # Return to a farrow-to-finish operation in Iowa ($/head)
 
 
 ```{r, echo=FALSE, out.width = '50%'}
 
-if(Sys.time() - file.info("Figures/7)_Return_farrow_to_finish.png")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Figures/7)_Return_farrow_to_finish.png")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   fig <- image_read("https://www.extension.iastate.edu/agdm/livestock/html/images/b1-31tbl1.gif")
   image_write(fig, path = "Figures/7)_Return_farrow_to_finish.png", format = "png")
 }
@@ -904,23 +907,25 @@ Source: @Schulz2018.
 
 # Marketing and production contracts
 
-- See definitions in <https://www.ers.usda.gov/webdocs/publications/40764/18614_aer747a_1_.pdf?v=41063>.
-- Marketing contracts refer to verbal or written agreements between a contractor and a grower that sets a price (or pricing mechanism) and an outlet for the commodity before harvest or before the commodity is ready to be marketed. 
-- Production contracts specify in detail the production inputs supplied by the contractor (processor, feed mill, other farm operation or business), the quality and quantity of a particular commodity, and the type of compensation to the grower (contractee) for services rendered.
+<!-- - http://nationalaglawcenter.org/research-by-topic/production-contracts/ -->
+
+- See definitions in [this ERS publication](https://www.ers.usda.gov/webdocs/publications/40764/18614_aer747a_1_.pdf?v=41063).
+- *Marketing contracts* refer to verbal or written agreements between a contractor and a grower that sets a price (or pricing mechanism) and an outlet for the commodity before harvest or before the commodity is ready to be marketed. 
+- *Production contracts* specify in detail the production inputs supplied by the contractor (processor, feed mill, other farm operation or business), the quality and quantity of a particular commodity, and the type of compensation to the grower (contractee) for services rendered.
 - Marketing contracts are common in grains and cattle industries.
 - Marketing contracts are also common in the hog industry.
-- There are also production contracts in the hig industry.
+- There are also production contracts in the hog industry.
 
 
 # Why are there contracts in the hog industry?
 
 - There are contracts in the grain and cattle industry.
     - The objective of these contracts is usually to manage price risk.
-    - The contracts are typically for a relatively short period of time (a few months).
+    - The contracts are typically for a relatively short period of time (i.e. a few months).
 - Contracts in hog and poultry, as well as for specialty crops, are different:
     - They address issues regarding price risk.
     - They also include provisions regarding the characteristics of a product and farming methods.
-    - The contracts cover longer time period (years).
+    - The contracts cover longer time periods (several years).
 - The extent of vertical integration depends on transaction costs and asset specificity.
 
 # Transaction costs and asset specificity
@@ -963,7 +968,7 @@ Note: On the horizontal axis is the degree of asset specificity. Source: @Crespi
     - Spot market is not very common anymore.
     - Most of the production of hogs is under contract.
     - There is a good share of the production that is under full integration but that is difficult to evaluate how much. 
-- That is, most of the hog production is under some form of vertical integration (contracts are full integration).
+- Most of the hog production is under some form of vertical integration (production contracts mean full integration).
 
 # Advantages to vertical integration in the hog industry
 
@@ -981,7 +986,7 @@ Note: On the horizontal axis is the degree of asset specificity. Source: @Crespi
 - There are some disadvantages to vertical integration in the hog industry.
     - Growers partly loose control of their operation;
     - Growers may have limited ability to negotiate the terms of production contracts;
-    - Growers retains production risk.
+    - Growers retain production risk.
     - There might be a hold up problem where growers invest in specific assets and at the end of a contract they do not have any other option than to contract again with the same integrator.
     
 # Vertical integration
@@ -1024,10 +1029,10 @@ Note: On the horizontal axis is the degree of asset specificity. Source: @Crespi
 
 - Throughout the supply chain, the characteristics of hogs affect their prices.
 - Quality is difficult to observe but hogs tend to be more homogenous than cattle.
-    - There are more breed variety in cattle (southern versus northern breeds, dairy).
+    - There is more breed variety in cattle (southern versus northern breeds, dairy).
 - The methods to price hogs in direct sales or contracts are very similar to those for direct sales for cattle.
     - For that reason they are not covered here.
-- The number of hogs sold live is small.
+- The number of hogs sold on a live weight basis is small.
 - There are hogs that are sold between packers:
     - A packer might have more hog produced in an area than it can processed nearby;
     - Temporary slow down in packing operations.
@@ -1037,7 +1042,7 @@ Note: On the horizontal axis is the degree of asset specificity. Source: @Crespi
 ```{r, out.width = '75%'}
 #You might need a password to download this file
 
-if(Sys.time() - file.info("Data/7) Prior day hog slaughter.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Prior day hog slaughter.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("http://lmic.info/sites/default/files/lmic_private_fs/memberonlyfiles/spreadsheets/hogs/PriorDaySlaughterNational.xls", "Data/7) Prior day hog slaughter.xls", method = "curl")
 }
 

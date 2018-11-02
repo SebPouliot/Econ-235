@@ -34,6 +34,9 @@ suppressMessages(pacman::p_load(lubridate))
 pacman::p_load(viridis)
 pacman::p_load(Cairo)
 
+#Turn off warnings
+options(warn=-1)
+
 #Authentification
 Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
 

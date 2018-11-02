@@ -39,6 +39,11 @@ pacman::p_load(sp)
 pacman::p_load(usmap)
 pacman::p_load(maps)
 pacman::p_load(magick)
+pacman::p_load(pingr)
+
+#Turn off warnings
+options(warn=-1)
+
 
 #Authentification
 #Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
@@ -101,7 +106,7 @@ source("Figures/Graph parameters.r")
 
 ```{r slaughter, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Slaughter.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Slaughter.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/SlaughterCounts%20Pivot.xlsx", "Data/7) Slaughter.xlsx", method = "curl")  
 }
 
@@ -131,7 +136,7 @@ Data source: @USDA_dom.
 
 ```{r beef, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Beef.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Beef.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/Beef%20Pivot.xlsx", "Data/7) Beef.xlsx", method = "curl")  
 }
 
@@ -157,7 +162,7 @@ Data source: @USDA_dom.
 
 ```{r weight, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Weight.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Weight.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/SlaughterWeights%20Pivot.xlsx", "Data/7) Weight.xlsx", method = "curl")
 }
 
@@ -444,7 +449,7 @@ This is a density dot map where each dot represents about 5,000 heads, randomly 
 
 ```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Cattle trade.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Cattle trade.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/81475/Cattle_YearlyFull.xls", "Data/7) Cattle trade.xls", method = "curl")
 }
 
@@ -566,7 +571,7 @@ Data source: @usda_trade.
 # Beef and veal imports (carcass weight, 1,000 pounds)
 
 ```{r, out.width = '75%'}
-if(Sys.time() - file.info("Data/7) Beef and veal trade.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Beef and veal trade.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/81475/BeefVeal_YearlyFull.xls", "Data/7) Beef and veal trade.xls", method = "curl")
 }
 
@@ -674,11 +679,11 @@ Data source: @USDA_dom.
 
 ```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Livestock prices.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Livestock prices.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/51875/Livestock%20and%20hay%20prices%20Pivot.xlsx", "Data/7) Livestock prices.xlsx.xlsx", method = "curl")
 }
 
-if(Sys.time() - file.info("Data/7) Meat prices.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Meat prices.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/51875/WholesalePrices.xls", "Data/7) Meat prices.xls", method = "curl")
 }
 
@@ -798,7 +803,7 @@ Data source: @NASS.
 
 ```{r, out.width = '50%'}
 
-if(Sys.time() - file.info("Figures/7)_Return_finishing_steer.png")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Figures/7)_Return_finishing_steer.png")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   fig <- image_read("https://www.extension.iastate.edu/agdm/livestock/html/images/b1-36tbl1.gif")
   image_write(fig, path = "Figures/7)_Return_finishing_steer.png", format = "png")
 }
@@ -912,7 +917,7 @@ Source: @Schulz2018.
     - Potential yield and quality are estimated by observing live cattle;
     - Seller does not have to wait for grading before knowing the final price;
     - Buyer (packer) assumes yield and quality risk.
-        - Moral hazard may cause a discounted price compared to other selling methods.
+        - Adverse selection may cause a discounted price compared to other selling methods.
 
 # Pricing fed cattle in direct sales
 
@@ -932,7 +937,7 @@ Source: @Schulz2018.
         - Formula pricing can set the base price considering the average cattle price in the prior week, market reports, boxed beef cutout value or futures market prices.
     - Seller assumes yield and quality risk.
 
-# Moral hazard in live versus carcass pricing {.allowframebreaks}
+# Adverse selection in live versus carcass pricing {.allowframebreaks}
 
 - If you are a cattle producer and know that your cattle are of lower quality, you will try to hide that from the buyer.
     - Sell lower quality cattle priced based on live weight.
@@ -943,7 +948,7 @@ Source: @Schulz2018.
     - Live cattle pricing more often used in the south because they grow lower quality breeds.
     - Long horn in the south versus angus in the north.
     - Some cattle imported from Mexico have zebu in them.
-- This is an example of moral hazard where buyers discount the price of a good for which they cannot observe the quality.
+- This is an example of adverse selection where buyers discount the price of a good for which they cannot observe the quality.
     - The classic example is the market for lemons (i.e. low quality cars).
 
 # 5 area markets - live vs. dressed weight (all fed cattle sales)
@@ -953,7 +958,7 @@ Source: @Schulz2018.
 ```{r, out.width = '75%'}
 #You might need a password to download this file
 
-if(Sys.time() - file.info("Data/7) Live versus dressed.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Live versus dressed.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("http://lmic.info/sites/default/files/lmic_private_fs/memberonlyfiles/spreadsheets/catle/Annual170-5MktAvgFats.xls", "Data/7) Live versus dressed.xls", method = "curl")
 }
 
@@ -1007,11 +1012,11 @@ plot_cat
 ```{r, out.width = '75%'}
 #You might need a password to download these files
 
-if(Sys.time() - file.info("Data/7) Cattle - formula.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Cattle - formula.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("http://lmic.info/sites/default/files/lmic_private_fs/memberonlyfiles/spreadsheets/cattle/wkly145-5AreaFormulatedSlaCat.xls", "Data/7) Cattle - formula.xls", method = "curl")
 }
 
-if(Sys.time() - file.info("Data/7) Cattle - negotiated.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Cattle - negotiated.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("http://lmic.info/sites/default/files/lmic_private_fs/memberonlyfiles/spreadsheets//wkly145-5AreaNegotiatedGridSlaCat.xls", "Data/7) Cattle - negotiated.xls", method = "curl")
 }
 

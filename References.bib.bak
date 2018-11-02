@@ -1,4 +1,5 @@
-% Encoding: windows-1252
+% This file was created with JabRef 2.10.
+% Encoding: Cp1252
 
 
 @Book{Carter2003,
@@ -29,39 +30,33 @@
 }
 }
 
-@Misc{fas,
-  Title                    = {Global Agricultural Trade System},
+@Misc{Fred2018,
+  Title                    = {{Federal Reserve Economic Data}},
 
-  Author                   = {{USDA - Foreign Agricultural Service}},
-  HowPublished             = {Available at \url{https://apps.fas.usda.gov/Gats/default.aspx}},
+  Author                   = {{Federal Researce Bank of St. Louis}},
+  HowPublished             = {Available online at \url{https://fred.stlouisfed.org/}},
   Year                     = {2018},
 
   Owner                    = {POULIOT},
-  Timestamp                = {2018.09.24}
+  Timestamp                = {2018.10.15}
+}
+
+@Misc{FAO2018,
+  Title                    = {World Food Situation},
+
+  Author                   = {{Food and Agricultural Organization of the United Nations}},
+  HowPublished             = {Available online at \url{http://www.fao.org/worldfoodsituation/foodpricesindex/en/}},
+  Year                     = {2018},
+
+  Owner                    = {POULIOT},
+  Timestamp                = {2018.10.15}
 }
 
 @Article{mathews2015,
-  author =  {Mathews, KH and Brorsen, Wade and Hahn, William F and Arnade, Carlos and Dohlman, Erik},
-  title =   {Mandatory price reporting, market efficiency, and price discovery in livestock markets},
-  journal = {USDA Economic Research Service Report LDPM-254-01},
-  year =    {2015}
-}
-
-@Misc{mpr,
-  Title                    = {Livestock Mandatory Price Reporting},
-
-  Author                   = {{USDA - Agricultural Marketing Service}},
-  HowPublished             = {Available at \url{https://www.ams.usda.gov/rules-regulations/mmr/lmr}},
-  Year                     = {2018}
-}
-
-@Misc{Nass,
-  author =       {{USDA - National Agricultural Statistics Service}},
-  title =        {Quick Stats},
-  howpublished = {Available at \url{http://quickstats.nass.usda.gov/}},
-  year =         {2018},
-  owner =        {pouliot},
-  timestamp =    {2010.09.13}
+  Title                    = {Mandatory price reporting, market efficiency, and price discovery in livestock markets},
+  Author                   = {Mathews, KH and Brorsen, Wade and Hahn, William F and Arnade, Carlos and Dohlman, Erik},
+  Journal                  = {USDA Economic Research Service Report LDPM-254-01},
+  Year                     = {2015}
 }
 
 @Misc{Schulz2018,
@@ -73,6 +68,22 @@
 
   Owner                    = {POULIOT},
   Timestamp                = {2018.10.11}
+}
+
+@Misc{mpr,
+  Title                    = {Livestock Mandatory Price Reporting},
+
+  Author                   = {{USDA - Agricultural Marketing Service}},
+  HowPublished             = {Available at \url{https://www.ams.usda.gov/rules-regulations/mmr/lmr}},
+  Year                     = {2018}
+}
+
+@Misc{USDAAMS2018,
+  Title                    = {Livestock, Poultry, \& Grain},
+
+  Author                   = {{USDA - Agricultural Marketing Service}},
+  HowPublished             = {Available at \url{https://www.marketnews.usda.gov/mnp/ls-home}},
+  Year                     = {2018}
 }
 
 @Misc{USDA_dom,
@@ -97,14 +108,6 @@
   Timestamp                = {2018.09.25}
 }
 
-@Misc{USDAAMS2018,
-  Title                    = {Livestock, Poultry, \& Grain},
-
-  Author                   = {{USDA - Agricultural Marketing Service}},
-  HowPublished             = {Available at \url{https://www.marketnews.usda.gov/mnp/ls-home}},
-  Year                     = {2018}
-}
-
 @Misc{USDAERS2018,
   Title                    = {Foreign Agricultural Trade of the United States (FATUS)},
 
@@ -124,11 +127,33 @@
   Year                     = {2018}
 }
 
-@comment{jabref-meta: selector_author:}
+@Misc{fas,
+  Title                    = {Global Agricultural Trade System},
 
-@comment{jabref-meta: selector_journal:}
+  Author                   = {{USDA - Foreign Agricultural Service}},
+  HowPublished             = {Available at \url{https://apps.fas.usda.gov/Gats/default.aspx}},
+  Year                     = {2018},
+
+  Owner                    = {POULIOT},
+  Timestamp                = {2018.09.24}
+}
+
+@Misc{Nass,
+  Title                    = {Quick Stats},
+
+  Author                   = {{USDA - National Agricultural Statistics Service}},
+  HowPublished             = {Available at \url{http://quickstats.nass.usda.gov/}},
+  Year                     = {2018},
+
+  Owner                    = {pouliot},
+  Timestamp                = {2010.09.13}
+}
 
 @comment{jabref-meta: selector_keywords:}
 
+@comment{jabref-meta: selector_journal:}
+
 @comment{jabref-meta: selector_publisher:}
+
+@comment{jabref-meta: selector_author:}
 

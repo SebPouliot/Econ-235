@@ -1,6 +1,6 @@
 ---
-title: "Poultry"
-shortitle: Poultry
+title: "Poultry and eggs"
+shortitle: Poultry and eggs
 subtitle: Econ 235
 author: "Sebastien Pouliot"
 date: "Fall 2018"
@@ -42,6 +42,10 @@ pacman::p_load(sp)
 pacman::p_load(usmap)
 pacman::p_load(maps)
 pacman::p_load(magick)
+pacman::p_load(pingr)
+
+#Turn off warnings
+options(warn=-1)
 
 #Authentification
 #Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
@@ -54,28 +58,25 @@ source("Figures/Graph parameters.r")
 # Introduction
 
 - The United States is the largest producer of poultry and the second largest exporter of poultry.
-- The 2012 Census of Agriculture reports that there are 233,770 poultry farms in the United States;
+- The 2012 Census of Agriculture reports that there are 233,770 poultry farms in the United States.
 - The U.S. poultry industry produced in 2014:
     - 8.54 billion broilers;
     - 99.8 billion eggs;
     - 238 million turkeys.
 - Sales of chickens were worth \$48.3 billion in 2014.
 - The poultry industry is very much vertically integrated.
-- Production cycles in hogs are very short in the poultry industry but are essentially eliminated.
+- Production cycles in poultry are very short and essentially inexistent. However, seasonality used to be a problem.
 
 # Introduction
 
-- I will focus on the poultry and the egg industries.
-- I will begin with definitions, review some market data and finally turn to the economics of the poultry industry.
+- We will focus on the chicken industry and briefly look into the egg industry.
+- We will begin with definitions, review some market data and look into how contracts in the poultry industry work.
 
 # Resources
 
-<!-- https://www.nass.usda.gov/Publications/AgCensus/2012/Online_Resources/Ag_Atlas_Maps/ -->
-
-
 - [Fact Sheet about the US poultry industry.](https://www.usda.gov/sites/default/files/documents/nass-poultry-stats-factsheet.pdf)
 - [Egg Industry Center](https://www.eggindustrycenter.org/) at Iowa State University.
-- [Poultry & eggs](https://www.ers.usda.gov/topics/animal-products/poultry-eggs/) from the Economic Research Service at the USDA.
+- [Poultry & Eggs](https://www.ers.usda.gov/topics/animal-products/poultry-eggs/) from the Economic Research Service at the USDA.
 
 
 # Definitions 
@@ -90,21 +91,21 @@ source("Figures/Graph parameters.r")
 - Chick: A young chicken.
 - Broiler: Chicken raised for meat production.
 - Table eggs: Eggs grown for sale to consumers. 
-- Breaker eggs: Eggs grown for breaking, sold in liquid form and used in the food industry. They can be sold liquid, dried or frozen. 
+- Breaker eggs: Eggs grown for breaking and used in the food industry. They can be sold liquid, dried or frozen. 
 
 # Supply chain
 
 - Poultry industry:
     - Primary breefer farms: Produce fertilized eggs that are hatched to become breeders.
     - Breeder farms: Raise hens and roosters to producer fertilized eggs.
-    - Hatcheries: hatch fertilized eggs into chicks. 
-    - Chicken farms: Grown chicks into broilers.
+    - Hatcheries: Hatch fertilized eggs into chicks. 
+    - Chicken farms: Grow chicks into broilers.
     - Poultry processing plant: Take live bird and turn them into meat.
 
 # Supply chain
 
 - Egg industry:
-    - Breeder farms raise hens and roosters to producer fertilized eggs.
+    - Breeder farms raise hens and roosters to produce fertilized eggs.
     - Hatcheries: Hatch the eggs and select the hens.
     - Egg farms: Harvest eggs from egg-laying hens.
 
@@ -112,7 +113,7 @@ source("Figures/Graph parameters.r")
 # Annual commercial broiler chicken slaughter
 ```{r slaughter, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/7) Slaughter.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/7) Slaughter.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/SlaughterCounts%20Pivot.xlsx", "Data/7) Slaughter.xlsx", method = "curl")  
 }
 
@@ -126,8 +127,8 @@ dta <- read_excel("Data/7) Slaughter.xlsx", sheet = "Data sheet (machine readabl
   
 plot_slaughter <- ggplot(dta, aes(x = year, y = Value)) +
   geom_line(color = "blue", size = 1) +
-  ylab("Cattle slaughter (million head)") +
-  scale_x_continuous(breaks = seq(1905, 2020, by = 10)) +
+  ylab("Broiler chicken (million head)") +
+  scale_x_continuous(breaks = seq(1960, 2020, by=5), minor_breaks = seq(1960, 2020, by=1), expand = c(0,0)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
 
@@ -135,14 +136,14 @@ plot_slaughter
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 
 # Annual poultry production
 
 ```{r beef, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/8) Poultry.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/8) Poultry.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/Red%20Meat%20Poultry%20Production%20Pivot.xlsx", "Data/8) Poultry.xlsx", method = "curl") 
 }
 
@@ -155,7 +156,7 @@ dta <- read_excel("Data/8) Poultry.xlsx", sheet = "Data sheet (machine readable)
 plot_poultry <- ggplot(dta, aes(x = Year, y = Value)) +
   geom_line(color = "blue", size = 1) +
   ylab("Poultry production (million pounds)") +
-  scale_x_continuous(breaks = seq(1970, 2020, by = 5)) +
+  scale_x_continuous(breaks = seq(1960, 2020, by=5), minor_breaks = seq(1960, 2020, by=1), expand = c(0,0)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), axis.line = element_line(color='black'))
 
@@ -163,16 +164,14 @@ plot_poultry
 
 ```
 \scriptsize
-Source: @USDA_dom.
-
-
+Note: Total poultry includes chicken and turkey. Data source: @USDA_dom.
 
 
 # Table eggs and egg breakers annual production
 
 ```{r weight, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/8) Egg production.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/8) Egg production.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/Eggs%20and%20Egg%20Products%20Pivot.xlsx", "Data/8) Egg production.xlsx", method = "curl")
 }
 
@@ -188,7 +187,7 @@ plot_eggs <- ggplot(dta, aes(x = Year, y = Value, color = var)) +
   geom_line(size = 1) +
   ylab("Million dozen, shell-egg equivalent") +
   scale_color_manual(values = viridis(3)[c(1,2)]) +
-  scale_x_continuous(breaks = seq(2000, 2020, by=2)) +
+  scale_x_continuous(breaks = seq(2000, 2018, by = 2), minor_breaks = seq(2000, 2018, by = 1), expand = c(0,0)) + 
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
         axis.line = element_line(color='black'),
@@ -198,13 +197,13 @@ plot_eggs
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Broilers weight (live basis)
 
 ```{r yield, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/8) Poultry weight.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/8) Poultry weight.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/SlaughterWeights%20Pivot.xlsx", "Data/8) Poultry weight.xlsx", method = "curl")
 }
 
@@ -216,7 +215,7 @@ dta <- read_excel("Data/8) Poultry weight.xlsx", sheet = "Data sheet (machine re
 plot_weight <- ggplot(dta, aes(x = Year, y = Value)) +
   geom_line(size = 1) +
   ylab("Lb per head, live basis") +
-  scale_x_continuous(breaks = seq(1960, 2020, by=5)) +
+  scale_x_continuous(breaks = seq(1960, 2020, by=5), minor_breaks = seq(1960, 2020, by=1), expand = c(0,0)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
         axis.line = element_line(color='black'),
@@ -226,7 +225,7 @@ plot_weight
 
 ```
 \scriptsize
-Source: @USDA_dom.
+Data source: @USDA_dom.
 
 # Chicken broiler production by state (2017)
 
@@ -250,7 +249,7 @@ kable(dta, booktabs = T) %>%
 
 ```
 \scriptsize
-Source: @NASS.
+Data source: @NASS.
 
 # Operation with broilers inventory by county (2012 census of agriculture)
 
@@ -475,6 +474,7 @@ d_inv <- ggplot() +
 d_inv
 
 ```
+\scriptsize
 This is a density dot map where each dot represents about 1 operation, randomly located within a county. Data source: @NASS.
 
 
@@ -482,7 +482,7 @@ This is a density dot map where each dot represents about 1 operation, randomly 
 
 ```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/8) Chicken and egg trade.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/8) Chicken and egg trade.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/81475/BroilerTurkey_YearlyFull.xls", "Data/8) Chicken and egg trade.xls", method = "curl")
 }
 
@@ -512,8 +512,8 @@ plot_import <- ggplot(dta, aes(x = year, y = value, fill = country)) +
   geom_area(position = "stack", alpha = 0.75) +
   geom_line(position = "stack", size = 0.5, color = "black") +
   scale_fill_manual(values = viridis(4)[c(1:3)]) +
-  ylab("Imports of broilers (million heads)") +
-  scale_x_continuous(breaks = seq(2000, 2018, by = 2), expand = c(0,0)) + 
+  ylab("Imports of broilers (million pounds)") +
+  scale_x_continuous(breaks = seq(2000, 2018, by = 2), minor_breaks = seq(2000, 2018, by = 1), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
@@ -532,7 +532,7 @@ Data source: @usda_trade.
 
 ```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/8) Chicken and egg trade.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/8) Chicken and egg trade.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/81475/BroilerTurkey_YearlyFull.xls", "Data/8) Chicken and egg trade.xls", method = "curl")
 }
 
@@ -566,8 +566,8 @@ plot_exports <- ggplot(dta, aes(x = year, y = value, fill = country)) +
   geom_area(position = "stack", alpha = 0.75) +
   geom_line(position = "stack", size = 0.5, color = "black") +
   scale_fill_manual(values = viridis(8)[c(1:7)]) +
-  ylab("Exports of broilers (million heads)") +
-  scale_x_continuous(breaks = seq(2000, 2018, by = 2), expand = c(0,0)) + 
+  ylab("Exports of broilers (million pounds)") +
+  scale_x_continuous(breaks = seq(2000, 2018, by = 2), minor_breaks = seq(2000, 2018, by = 1), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
   guides(fill = guide_legend(ncol = 2)) +
@@ -587,7 +587,8 @@ Data source: @usda_trade.
 # Broiler trade
 
 - Note that the United States typically does not trade whole broilers.
-- Americans have a preference for white chicken meat while consumers in many other countries prefer dark meat.
+- Americans have a preference for white chicken meat (breasts) while consumers in many other countries prefer dark meat (legs).
+- White meat is more expensive than brown meat in the United States (see graph of wholesale prices below).
 - The less valuable dark meat cuts are exported.
 - In particular, the United States exports a lot of chicken leg quarters.
 
@@ -596,7 +597,7 @@ Data source: @usda_trade.
 
 ```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/8) Chicken and egg trade.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/8) Chicken and egg trade.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/81475/BroilerTurkey_YearlyFull.xls", "Data/8) Chicken and egg trade.xls", method = "curl")
 }
 
@@ -628,7 +629,7 @@ plot_imports <- ggplot(dta, aes(x = year, y = value, fill = country)) +
   geom_line(position = "stack", size = 0.5, color = "black") +
   scale_fill_manual(values = viridis(5)[c(1:4)]) +
   ylab("Imports of eggs (Shell egg equivalent, million dozen)") +
-  scale_x_continuous(breaks = seq(2000, 2018, by = 2), expand = c(0,0)) + 
+  scale_x_continuous(breaks = seq(2000, 2018, by = 2), minor_breaks = seq(2000, 2018, by = 1), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
@@ -648,7 +649,7 @@ Data source: @usda_trade.
 
 ```{r, out.width = '75%'}
 
-if(Sys.time() - file.info("Data/8) Chicken and egg trade.xls")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/8) Chicken and egg trade.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   source("R code/8) Egg prices.R")
 }
 
@@ -681,7 +682,7 @@ plot_exports <- ggplot(dta, aes(x = year, y = value, fill = country)) +
   geom_line(position = "stack", size = 0.5, color = "black") +
   scale_fill_manual(values = viridis(6)[c(1:5)]) +
   ylab("Exports of eggs (Shell egg equivalent, million dozen)") +
-  scale_x_continuous(breaks = seq(2000, 2018, by = 2), expand = c(0,0)) + 
+  scale_x_continuous(breaks = seq(2000, 2018, by = 2), minor_breaks = seq(2000, 2018, by = 1), expand = c(0,0)) + 
   scale_y_continuous(expand = c(0,0)) +
   theme_bw() + mytheme +
   theme(axis.title.x=element_blank(), 
@@ -699,8 +700,8 @@ Data source: @usda_trade.
 
 # Prices of eggs and chicken
 
-- Most chicken and egg production is under contracts or full integration.
-- It makes it impossible to find farm prices for chicken and for eggs.
+- Most chicken and egg production is under contract or full integration.
+- It makes it impossible to find farm prices for chicken and eggs.
 
 # Retail chicken prices (U.S. city average)
 
@@ -732,7 +733,7 @@ dta <- rbind(dta1, dta2)
 plot <- ggplot(data=dta, aes(x=date, y=Value, color=var)) + 
   geom_line(size=1) + 
   ylab("Price ($/lb)") + 
-  scale_x_date(date_breaks="2 year", date_minor_breaks="6 months", labels=date_format("%Y")) + 
+  scale_x_date(date_breaks="1 year", date_minor_breaks="1 month", labels=date_format("%Y"), expand = c(0,0)) + 
   scale_color_manual(values = viridis(3)[c(1:2)]) +
   theme_bw()+ mytheme + 
   theme(axis.title.x=element_blank(), 
@@ -750,26 +751,26 @@ plot
 ```{r, out.width = '75%'}
 
 
-if(Sys.time() - file.info("Data/8) Wholesale chicken prices.xlsx")$mtime > months(1, abbreviate = FALSE)){
+if(Sys.time() - file.info("Data/8) Wholesale chicken prices.xlsx")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
   download.file("https://www.ers.usda.gov/webdocs/DataFiles/90207/WholesaleMeatPrices%20Pivot.xlsx", "Data/8) Wholesale chicken prices.xlsx", method = "curl")
 }
 
 dta <- read_excel("Data/8) Wholesale chicken prices.xlsx", sheet = "Data sheet (machine readable)")
 
 dta <- dta %>% 
-  filter(Commodity %in% c("Chickens, Breast with ribs", "Chickens, Leg quarters")) %>% 
+  dplyr::filter(Commodity %in% c("Chickens, Breast with ribs", "Chickens, Leg quarters")) %>% 
   dplyr::select(Date, Commodity, Value) %>% 
   mutate(Value = as.numeric(Value)/100,
          Date = as.Date(Date))
 
 plot <- ggplot(data=dta, aes(x=Date, y=Value, color=Commodity)) + 
   geom_line(size=1) + 
-  ylab("Price") + 
-  scale_x_date(date_breaks="1 year", date_minor_breaks="1 months", labels=date_format("%Y")) + 
+  ylab("Price ($/lb)") + 
+  scale_x_date(date_breaks="1 year", date_minor_breaks="1 months", labels=date_format("%Y"), expand = c(0,0)) + 
   scale_color_manual(values = viridis(3)[c(1:2)]) +
   theme_bw()+ mytheme + 
   theme(axis.title.x=element_blank(), 
-        legend.position=c(0.20,0.90), 
+        legend.position=c(0.15,0.95), 
         axis.line.x = element_line(color='black'), 
         axis.line.y = element_line(color='black'))
 
@@ -813,8 +814,8 @@ dta_r <- rbind(dta_shell, dta_liquid) %>%
   
 plot <- ggplot(data=dta_r, aes(x=date, y=price, color=var)) + 
   geom_point(aes(shape=var), size=1.25) + 
-  ylab("Price") + 
-  scale_x_date(date_breaks="1 year", date_minor_breaks="1 months", labels=date_format("%Y")) + 
+  ylab("Price ($/lb)") + 
+  scale_x_date(date_breaks="1 year", date_minor_breaks="1 month", labels=date_format("%Y"), expand = c(0,0)) + 
   scale_color_manual(values = viridis(3)[c(1:2)]) +
   theme_bw()+ mytheme + 
   theme(axis.title.x=element_blank(), 
@@ -846,7 +847,7 @@ dta_w <- dta %>%
 plot <- ggplot(data=dta_w, aes(x=date, y=avg_price)) + 
   geom_point(size=1.25) + 
   ylab("Price ($/dozen)") + 
-  scale_x_date(date_breaks="1 year", date_minor_breaks="1 months", labels=date_format("%Y")) + 
+  scale_x_date(date_breaks="1 year", date_minor_breaks="1 month", labels=date_format("%Y"), expand = c(0,0)) + 
   theme_bw()+ mytheme + 
   theme(axis.title.x=element_blank(), 
         legend.position=c(0.20,0.90), 
@@ -867,7 +868,7 @@ Data source: @USDAAMS2018
 ```{r, out.width = '75%'}
 
 dta_r <- dta_r %>%
-  dplyr::filter(var == "White A large shell egg ($/doz)")
+  dplyr::filter(var == "Retail white A large shell egg ($/doz)")
 
 dta_w <- dta_w %>%
   mutate(var = "Price paid to producers ($/doz)") %>%
@@ -879,7 +880,7 @@ dta <- rbind(dta_r, dta_w)
 plot <- ggplot(data=dta, aes(x=date, y=price, color = var)) + 
   geom_point(size=1.25) + 
   ylab("Price ($/dozen)") + 
-  scale_x_date(date_breaks="1 year", date_minor_breaks="1 months", labels=date_format("%Y")) + 
+  scale_x_date(date_breaks="1 year", date_minor_breaks="1 month", labels=date_format("%Y"), expand = c(0,0)) + 
   scale_color_manual(values = viridis(3)[c(1:2)]) +
   theme_bw()+ mytheme + 
   theme(axis.title.x=element_blank(), 
@@ -911,7 +912,7 @@ dta <- dta %>%
 plot <- ggplot(data=dta, aes(x=date, y=volume)) + 
   geom_point(size=0.5) + 
   ylab("Stock (million pound)") + 
-  scale_x_date(date_breaks="1 year", date_minor_breaks="1 months", labels=date_format("%Y")) + 
+  scale_x_date(date_breaks="1 year", date_minor_breaks="1 month", labels=date_format("%Y"), expand = c(0,0)) + 
   theme_bw()+ mytheme  + 
   theme(axis.title.x=element_blank(), 
         legend.position=c(0.20,0.90), 
@@ -929,8 +930,8 @@ Data source: @USDAAMS2018
 # Vertical integration in the chicken industry
 
 - Almost all chicken and egg production are under some form of vertical integration.
-- 
-
+- Remember that integration happens when it minimizes transaction costs, which increase with respect to asset specificity.
+- Vertical integration in the poultry and egg industry allowed to improve genetics, grow birds uniform in size, remove seasonality and remove production cycles.
 
 # Transaction costs and asset specificity
 
@@ -939,134 +940,120 @@ knitr::include_graphics("Figures/Contract_cost.png")
 ```
 Note: On the horizontal axis is the degree of asset specificity. Source: @CrespiSaitone2018.
 
-# Contracts for chicken and egg production
+# Contracts for chicken and egg production {.allowframebreaks}
 
+- See a description of production contract from the [National Chicken Council](https://www.chickencheck.in/faq/chicken-contract-growers/).
 - In a typical contract (some hog production contracts also work this way):
-    - The integrator provides the chickens, the feed, veterinarian care and technical assistance. 
-    - The integrator remains the owner of the chicks throughout.
+    - The integrator provides the chicks, the feed, veterinarian care and technical assistance. 
+    - The integrator remains the owner of the birds throughout.
     - The integrator delivers the chicks and later picks up the chicken.
     - The farmer provides the day to day care of the birds, land and housing on which they’re raised, and utilities/maintenance of the housing.
     - The farmer must follow certain directive about how to care for the chicks.
 - Payment for the services offered by the farmers uses a `tournament` system.
     - Calling it a tournament is not exactly correct but that is an expression commonly used.
-
-# Contracts for chicken and egg production
-
 - To outsiders, it is difficult to know what these contracts specifically contain.
 - The specifics of the contracts are private.
+- The Farm Security and Rural Investment Act of 2002 allows farmers to discuss production contracts with certain people (e.g. federal and state agencies, lenders, accountants...)
 - The structure of the contracts is similar across integrators.
 - Integrators include provisions so they obtain the type of chicken they want.
-- Payment is based on the relative performance of grower, hence the expression `tournament`.
+- Payment is based on the relative performance of growers, hence the expression `tournament`.
 
-# Payment system: tournament
+# Payment system in tournaments {.allowframebreaks}
 
-- 
-
-
-- http://nationalaglawcenter.org/research-by-topic/production-contracts/
-- http://nationalaglawcenter.org/overview/production-contracts/.
-- https://www.chickencheck.in/faq/chicken-contract-growers/.
-- https://www.npr.org/sections/thesalt/2014/02/20/279040721/the-system-that-supplies-our-chickens-pits-farmer-against-farmer.
-
-
-# Return to a farrow-to-finish operation in the Heartland
-
-```{r, out.width = '75%'}
-
-if(Sys.time() - file.info("Data/7) Farrow-finish return.xls")$mtime > months(1, abbreviate = FALSE)){
-  download.file("https://www.ers.usda.gov/webdocs/DataFiles/47913/RHLFfin.xls", "Data/7) Farrow-finish return.xls", method = "curl")
-}
-
-dta1 <- read_excel("Data/7) Farrow-finish return.xls", sheet = 1, skip = 2)
-
-dta1 <- dta1[43,] %>%
-  gather(date, value, -Item) %>%
-  dplyr::select(-Item) %>%
-  mutate(value = as.numeric(value)) %>%
-  dplyr::filter(!is.na(value))
-  
-
-dta2 <- read_excel("Data/7) Farrow-finish return.xls", sheet = 2, skip = 2)
-
-dta2 <- dta2[42,] %>%
-  gather(date, value, -Item) %>%
-  dplyr::select(-Item) %>%
-  mutate(value = as.numeric(value)) %>%
-  dplyr::filter(!is.na(value))
-
-dta3 <- read_excel("Data/7) Farrow-finish return.xls", sheet = 3, skip = 1)
-
-dta3 <- dta3[41,] %>%
-  gather(date, value, -Item) %>%
-  dplyr::select(-Item) %>%
-  mutate(value = as.numeric(value)) %>%
-  dplyr::filter(!is.na(value))
-
-dta4 <- read_excel("Data/7) Farrow-finish return.xls", sheet = 4, skip = 1)
-
-dta4 <- dta4[41,] %>%
-  gather(date, value, -Item) %>%
-  dplyr::select(-Item) %>%
-  mutate(value = as.numeric(value)) %>%
-  dplyr::filter(!is.na(value))
-
-dta <- rbind(dta1, dta2, dta3, dta4) %>%
-  mutate(sign = ifelse(value <= 0, "Negative", "Positive"))
-
-plot_return <- ggplot(dta, aes(x = date, y = value, fill = sign)) +
-  geom_bar(stat = "identity", color = "white") +
-  scale_fill_manual(values = viridis(3)[c(1,2)]) +
-  ylab("Value of production less operating costs ($/hundredweight gain)") +
-  scale_x_discrete(breaks = seq(1996, 2020, by = 2)) +
-  theme_bw() + mytheme +
-  theme(axis.title.x=element_blank(), 
-        axis.text.x=element_text(size = 10),
-        axis.line = element_line(color='black'),
-        legend.position="none")
-
-plot_return
+- Contracts specify the payment structure and integrators tend to use similar systems.
+- The following describes an example of payment system for poultry but it works very similarly for eggs (and for hogs).
+- The contracts specify a base pay for the services offered by a grower.
+- The average cost of growing at a farm is then compared to the average cost of growing chicken for all farms delivering chicken during the same week. 
+    - The average cost per pound of growing chicken at a farm is calculated as the total cost divided by the total weight produced.
+    - The costs are those from the inputs provided by the integrator;
+    - They include the costs of chicks, feeds, medication, etc.
+    - The average cost for all farms is the average cost over all farms delivering chicken during that week.
+    - This is usually an olympic average where the growers with the highest costs (say 10\% more or less than the average), are removed.
+- Growers who raised chicken at a lower cost than the average get a premium on top of their base pay, up to a maximum.
+- Growers who raised chicken at a higher cost than the average get a penalty on their base pay, down to a minimum.
+- Some contracts use a point system that determines premia and penalties based on growing costs.
+- The contract specify how chicken are weighed and how to consider condemned birds.
 
 
-```
-\scriptsize
-Note: If considering value of production less total costs the returns are negative for several years. Source: @USDAreturn.
+# Tournaments: controversies
 
-# Marketing methods for hogs
+- Economists typically like tournaments because they promote efficiency in a way similar to how competition promotes efficiency.
+    - In pefect competition, in the short run, the most efficient firms make a profit and the least efficient firms make a loss.
+    - The tournament system yields a similar outcome.
+    - The tournament system gives an incentive to firms to operate efficiently.
+- The most efficient growers love the tournament system because they make a lot of money from it.
+- The least efficient growers hate it because it drives them out of business.
+- NPR prepared an [article](https://www.npr.org/sections/thesalt/2014/02/20/279040721/the-system-that-supplies-our-chickens-pits-farmer-against-farmer) on that issue.
 
-- The same marketing methods for cattle are used in the hog industry.
-- However, an important difference is that in addition to the traditional marketing methods, a major part of hog production is under contract.
-- Vertical integration means that *integrators*, or *contractors*, contract production for their hogs to independent growers.
-- Integrators are packing plants.
-- *Full integration* means that a packing plants own facilities for growing hogs and thus control the entire supply chain.
-- It is not possible to tell how much of the hog production is under vertical control.
-- It is also very difficult to tell whether there is a trend toward more vertical integration and more full integration.
-- See some explanations at this link: <http://porkgateway.org/resource/producing-and-marketing-hogs-under-contract/>.
+# Return to growing chickens or eggs
 
-# Advantages to vertical integration in the hog industry
+- Because production contracts are so prevalent, it is nearly impossible to know returns in farming chicken or eggs.
 
-- There are some advantages to vertical integration in the hog industry.
+# Advantages to vertical integration in the poultry and egg industry {.allowframebreaks}
+
+<!-- - http://nationalaglawcenter.org/overview/production-contracts/. -->
+
+- There are some advantages to vertical integration in the chicken industry.
     - Smooths out production cycles, especially seasonal production cycles;
     - This allows to maintain a more uniform production volume throughout the year, reducing packing costs;
     - Reduces price risks;
     - Better control of genetics;
-    - Allows for a better control of hog characteristics (e.g. size), reducing packing costs;
-    - Facilitates widespread adoption of latest practices and technologies, hence reducing production costs.
+    - Allows for a better control of chicken characteristics (e.g. size), reducing packing costs;
+    - Facilitates widespread adoption of latest practices and technologies, hence reducing production costs;
+    - Secure a constant supply to packers, makes it easier to plan production.
+- Vertical integration has contributed to reduce production and packing costs and to make poultry the most important source of protein in the United States:
+    - Per capita consumption of poultry exceeds per capita consumption for beef and for pork.
+- Production contracts limit liability to integrator compared to them producing chicken and eggs.
+    
 
-# Disadvantages to vertical integration in the hog industry
+# Per capita consumption of red meat and chicken
 
-- There are some disadvantages to vertical integration in the hog industry.
+```{r, out.width = '75%'}
+
+if(Sys.time() - file.info("Data/8) Per capita consumption.xls")$mtime > months(1, abbreviate = FALSE) & pingr::is_online()){
+  download.file("https://www.ers.usda.gov/webdocs/DataFiles/50472/mtpcc.xls", "Data/8) Per capita consumption.xls", method = "curl")
+}
+
+dta <- read_excel("Data/8) Per capita consumption.xls", sheet = "Retail", skip = 2)
+
+dta <- dta %>% 
+  dplyr::select(X__1, Beef, Pork, Total4__1) %>%
+  rename(Date = X__1, Chicken = Total4__1) %>%
+  mutate(Date = as.numeric(Date), Beef = as.numeric(Beef), Pork = as.numeric(Pork), Chicken = as.numeric(Chicken)) %>% 
+  dplyr::filter(!is.na(Date)) 
+
+dta <- dta %>% gather(var, value, -Date)
+
+plot <- ggplot(data=dta, aes(x=Date, y=value, color=var)) + 
+  geom_line(size=1) + 
+  ylab("Pounds per capita") + 
+  scale_x_continuous(breaks=seq(1910, 2020, by = 5), minor_breaks=seq(1909, 2020, by = 1), expand = c(0,0)) + 
+  scale_color_manual(values = viridis(4)[c(1:3)]) +
+  theme_bw()+ mytheme + 
+  theme(axis.title.x=element_blank(), 
+        legend.position=c(0.15,0.90), 
+        axis.line.x = element_line(color='black'), 
+        axis.line.y = element_line(color='black'))
+
+plot
+
+```
+\scriptsize
+Data source: @USDAfoodpercapita.
+
+
+# Disadvantages to vertical integration in the poultry and egg industry
+
+- There are some disadvantages to vertical integration in the chicken industry.
     - Growers partly loose control of their operation;
     - Growers may have limited ability to negotiate the terms of production contracts;
-    - Grower retains production risk.
+    - Growers retain some of the production risk;
+    - Not all contingencies are specified in the production contracts which may lead to litigation.
     
 # Vertical integration
 
-- For vertical integration to work, it requires that both the integrators and the growers gain from it.
-- Intergators must offer contracts such that some growers will be willing to accept.
-- Price for hogs under contract are either negotiated (fixed base price) or determined by formula.
-    - Some contracts will also specify premia for grade and yields.
-
-
+- Remember that contracts are between parties that agree to their terms.
+- Although there are some disadvantages, there must be enough advantages because many farms enter into these contracts.
 
 # References
 
