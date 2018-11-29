@@ -44,7 +44,6 @@ pacman::p_load(pingr)
 #Turn off warnings
 options(warn=-1)
 
-
 #Authentification
 #Quandl.api_key("2xcmYFJoJKuEDwawuV7J")
 

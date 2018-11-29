@@ -90,14 +90,15 @@ source("Figures/Graph parameters.r")
 - Pullet: A young hen.
 - Chick: A young chicken.
 - Broiler: Chicken raised for meat production.
-- Table eggs: Eggs grown for sale to consumers. 
+- Table eggs: Eggs grown for sale to consumers (as opposed to fertilized eggs).
+- Shell eggs: Eggs sold in cartons.
 - Breaker eggs: Eggs grown for breaking and used in the food industry. They can be sold liquid, dried or frozen. 
 
 # Supply chain
 
 - Poultry industry:
     - Primary breefer farms: Produce fertilized eggs that are hatched to become breeders.
-    - Breeder farms: Raise hens and roosters to producer fertilized eggs.
+    - Breeder farms: Raise hens and roosters to produce fertilized eggs.
     - Hatcheries: Hatch fertilized eggs into chicks. 
     - Chicken farms: Grow chicks into broilers.
     - Poultry processing plant: Take live bird and turn them into meat.
@@ -323,8 +324,7 @@ d_inv
 \scriptsize
 This is a density dot map where each dot represents about 10 operations, randomly located within a county. Data source: @NASS.
 
-
-# Egg farms with production contracts (2012 census of agriculture)
+# All egg farms with production contracts (2012 census of agriculture)
 
 ```{r, out.width = '75%'}
 
@@ -395,10 +395,10 @@ d_inv <- ggplot() +
 d_inv
 
 ```
-\scriptsize
-This is a density dot map where each dot represents about 1 operation, randomly located within a county. Data source: @NASS.
+\tiny
+This includes farms that produce table eggs and fertilized eggs. This is a density dot map where each dot represents about 1 operation, randomly located within a county. Data source: @NASS.
 
-# Farms with more than 10,000 layers (2012 census of agriculture)
+# All egg farms with more than 10,000 layers (2012 census of agriculture)
 
 ```{r, echo=FALSE, out.width = '75%'}
 
@@ -474,9 +474,35 @@ d_inv <- ggplot() +
 d_inv
 
 ```
-\scriptsize
-This is a density dot map where each dot represents about 1 operation, randomly located within a county. Data source: @NASS.
+\tiny
+This includes farms that produce table eggs and fertilized eggs. This is a density dot map where each dot represents about 1 operation, randomly located within a county. Data source: @NASS.
 
+
+# Table eggs production by state (2017)
+
+```{r, out.width = '75%'}
+
+# Read data
+dta <- read_csv("Data/8) Table egg production by state.csv")
+dta <- dta %>%
+  dplyr::filter(State != "ALASKA" & State != "HAWAII") %>%
+  dplyr::select(State, Value, Period) %>%
+  dplyr::filter(Period == "MARKETING YEAR") %>%
+  mutate(State = stringr::str_to_title(State),
+         State = ifelse(State %in% c("Iowa", "Indiana", "Pennsylvania", "Minnesota"), State, "Other states"),
+         Value = str_replace_all(Value, ",", ""),
+         Value = as.numeric(Value)/1000000) %>%
+  group_by(State) %>%
+  summarize(Value = round(sum(Value, na.rm = TRUE),1)) %>%
+  ungroup()
+
+kable(dta, booktabs = T) %>%
+  kable_styling(latex_options = "striped") %>%
+  footnote(general = "Million dozens")
+
+```
+\scriptsize
+Data source: @NASS.
 
 # Annual broiler imports
 
@@ -528,7 +554,7 @@ plot_import
 \scriptsize
 Data source: @usda_trade.
 
-# Annual broiler imports
+# Annual broiler exports
 
 ```{r, out.width = '75%'}
 
@@ -800,7 +826,7 @@ dta_shell <- dta %>%
   filter(region == "NATIONAL", type == "CONVENTIONAL", form == "SHELL", description %in% c("WHITE, A, LARGE, DOZ.")) %>% 
   dplyr::select(-region, -type, -form, -low_price, -high_price, -description, -stores) %>% 
   rename(price = avg_price) %>%
-  mutate(var = "White A large shell egg ($/doz)")
+  mutate(var = "White A, large shell egg ($/doz)")
   
 dta_liquid <- dta %>% 
   filter(region == "NATIONAL", type == "CONVENTIONAL", form == "LIQUID", description %in% c("LIQUID EGG, SMALL CARTON")) %>% 
@@ -868,7 +894,8 @@ Data source: @USDAAMS2018
 ```{r, out.width = '75%'}
 
 dta_r <- dta_r %>%
-  dplyr::filter(var == "Retail white A large shell egg ($/doz)")
+  dplyr::filter(var == "White A, large shell egg ($/doz)") %>%
+  mutate(var = "Retail, white A, large shell egg ($/doz)")
 
 dta_w <- dta_w %>%
   mutate(var = "Price paid to producers ($/doz)") %>%
@@ -929,7 +956,10 @@ Data source: @USDAAMS2018
 
 # Vertical integration in the chicken industry
 
-- Almost all chicken and egg production are under some form of vertical integration.
+- Almost all chicken production is under some form of vertical integration.
+- Almost all egg production is under full vertical integration.
+    - In the table egg production, farms control the whole supply chain.
+    - No need for contracts, except perhaps for feeds, as production is fully integrated.
 - Remember that integration happens when it minimizes transaction costs, which increase with respect to asset specificity.
 - Vertical integration in the poultry and egg industry allowed to improve genetics, grow birds uniform in size, remove seasonality and remove production cycles.
 
@@ -940,7 +970,7 @@ knitr::include_graphics("Figures/Contract_cost.png")
 ```
 Note: On the horizontal axis is the degree of asset specificity. Source: @CrespiSaitone2018.
 
-# Contracts for chicken and egg production {.allowframebreaks}
+# Contracts for chicken production {.allowframebreaks}
 
 - See a description of production contract from the [National Chicken Council](https://www.chickencheck.in/faq/chicken-contract-growers/).
 - In a typical contract (some hog production contracts also work this way):
@@ -985,11 +1015,11 @@ Note: On the horizontal axis is the degree of asset specificity. Source: @Crespi
 - The least efficient growers hate it because it drives them out of business.
 - NPR prepared an [article](https://www.npr.org/sections/thesalt/2014/02/20/279040721/the-system-that-supplies-our-chickens-pits-farmer-against-farmer) on that issue.
 
-# Return to growing chickens or eggs
+# Return to growing chickens
 
 - Because production contracts are so prevalent, it is nearly impossible to know returns in farming chicken or eggs.
 
-# Advantages to vertical integration in the poultry and egg industry {.allowframebreaks}
+# Advantages to vertical integration in the poultry industry {.allowframebreaks}
 
 <!-- - http://nationalaglawcenter.org/overview/production-contracts/. -->
 
@@ -1004,7 +1034,6 @@ Note: On the horizontal axis is the degree of asset specificity. Source: @Crespi
 - Vertical integration has contributed to reduce production and packing costs and to make poultry the most important source of protein in the United States:
     - Per capita consumption of poultry exceeds per capita consumption for beef and for pork.
 - Production contracts limit liability to integrator compared to them producing chicken and eggs.
-    
 
 # Per capita consumption of red meat and chicken
 
@@ -1042,7 +1071,7 @@ plot
 Data source: @USDAfoodpercapita.
 
 
-# Disadvantages to vertical integration in the poultry and egg industry
+# Disadvantages to vertical integration in the poultry industry
 
 - There are some disadvantages to vertical integration in the chicken industry.
     - Growers partly loose control of their operation;

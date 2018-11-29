@@ -74,7 +74,7 @@ source("Figures/Graph parameters.r")
 - **Export**: goods or services that are sent from a country to another country.
 - **Trade balance**: the difference between the monetary value of exports and imports. Also called net exports or commercial balance.
 
-# US agricultural and total exports
+# US exports
 
 ```{r, out.width = '75%'}
 
@@ -123,7 +123,7 @@ agtrade
 ```
 Data source: @USDAERS2018.
 
-# US agricultural and total imports
+# US imports
 
 ```{r, out.width = '75%'}
 
@@ -152,7 +152,7 @@ agtrade
 ```
 Data source: @USDAERS2018.
 
-# US agricultural and total trade balance
+# US trade balance
 
 ```{r, out.width = '75%'}
 
@@ -209,7 +209,7 @@ dta_graph <- dta %>% dplyr::select(Exports, Imports, date) %>%
 agtrade <- ggplot(data = dta_graph, aes(x = date, y = value, fill = var))  + 
   geom_bar(stat="identity", position = "identity") + 
   scale_fill_manual(values = viridis(3)[c(2,1)]) + 
-  scale_x_date(date_breaks="5 year", date_minor_breaks="1 year", labels=date_format("%Y"), expand = c(0,0)) +
+  scale_x_date(date_breaks="2 years", date_minor_breaks="1 year", labels=date_format("%Y"), expand = c(0,0)) +
   ylab("Billion dollars") + 
   theme_bw() + mytheme + 
   theme(legend.position=c(0.25, 0.15), 
@@ -230,7 +230,7 @@ Data source: @USDAERS2018.
 balancetrade <- ggplot(data = dta, aes(x = date, y = Balance))  + 
   geom_bar(stat="identity", position = "identity") + 
   scale_fill_viridis(discrete = TRUE) + 
-  scale_x_date(date_breaks="5 year", date_minor_breaks="1 year", labels=date_format("%Y"), expand = c(0,0)) +
+  scale_x_date(date_breaks="5 year", date_minor_breaks="2 years", labels=date_format("%Y"), expand = c(0,0)) +
   ylab("Billion dollars") + 
   theme_bw() + mytheme + 
   theme(legend.position=c(0.15, 0.15), 
@@ -244,7 +244,7 @@ balancetrade
 ```
 Data source: @USDAERS2018.
 
-# Top 15 US agricultural exports by country
+# Top 15 importers of US agricultural products
 
 ```{r, out.width = '75%'}
 
@@ -284,7 +284,7 @@ Exportsbycountry
 ```
 Data source: @USDAERS2018.
 
-# Top 15 US agricultural imports by country
+# Top 15 exporters of agricultural products to the United States
 
 ```{r, out.width = '75%'}
 
@@ -437,7 +437,7 @@ Data source: @USDAERS2018.
     - If it invests all its labor in the production of spinach, it can produce 2 units of spinach;
     - If it invests all its labor in the production of lettuce, it can produce 4 units of lettuce;
     - It can allocate a fraction of it labor to spinach and lettuce. However, for each unit of lettuce that it produces, it must sacrifice $\frac{2}{4} = \frac{1}{2}$ unit of spinach.
-   - $\frac{1}{2}$ is the marginal rate of transformation (MRT) between spinach and lettuce in country A.
+    - $\frac{1}{2}$ is the marginal rate of transformation (MRT) between spinach and lettuce in country B.
       
 # Absolute advantage
 
@@ -556,7 +556,7 @@ Data source: @USDAERS2018.
     2. **Blue box**: Program payments that are based on fixed acreage and yield, fixed number of head of livestock or if they are designed on 85\% or less of base production. These policies are seen as acceptable but it is difficult to tell whether a subsidy program fits into this category and whether programs in the blue box affect production.
     3. **Green box**: Policies that have little or no effect on production (research programs, domestic food aid, environmental programs, certain crop insurance and income-support programs).
 - The US reformulated its support to agriculture in response to the WTO agreement. 
-    - The 1996 FAIR Act (farm bill) market price support and deficiency payments were replaced by fixed payments (production flexibility contracts). These payments were calculated by multiplying a farm's payment yield, 85\% of farm's contract acreage and the payment rate.
+    - In the 1996 FAIR Act (farm bill), market price support and deficiency payments were replaced by fixed payments (production flexibility contracts). These payments were calculated by multiplying a farm's payment yield, 85\% of farm's contract acreage and the payment rate.
     - Still today, farm support is based on 85\% of a farm's acreage. For example, for Price Loss Coverage (PLC) and Agricultural Risk Coverage (ARC), payments acres are equal to 85 percent the base acres for a covered commodity.
 
 
@@ -655,11 +655,11 @@ Data source: @USDAERS2018.
 
 # Dispute settlement {.allowframebreaks}
 
-- The WTO is not an enforcement organization. It cannot tell countries what and it cannot penalize countries for not meeting their obligations.
+- The WTO is not an enforcement organization. It cannot tell countries what to do and it cannot penalize countries for not meeting their obligations.
 - For the WTO to work, it requires *good behavior* by the member countries.
-- Dispute occur and the WTO provides for a dispute resolution system.
+- Disputes occur and the WTO provides for a dispute resolution system.
 - Countries must first try to resolve a dispute by themselves.
-- If countries cannot solve their disgreement by themselves, a dispute resolution panel made of trade experts is formed to hear the arguments of all parties.
+- If countries cannot solve their disgreements by themselves, a dispute resolution panel made of trade experts is formed to hear the arguments of all parties.
 - The panel makes a decision and if a party is found not to meet its obligations then it is expected to take action to bring its policies into compliance.
 - For example, Canada and Mexico have challenged US Country Of Origin Labeling (COOL) policy as it applies to livestock claiming that it violates the national treatment clause.
     - Canada and Mexico have repeatedly won but the U.S. did not bring its policies into compliance.
@@ -675,7 +675,7 @@ Data source: @USDAERS2018.
 - Antidumping and countervailing duties can be imposed if US a business petitions the US International Trade Commission about dumping or foreign subsidies.
 \framebreak
 - **Antidumping duty**: A country can impose import duties on a product from a country that is sold at an unfairly low price.
-    - The Department of Commerce conducts an investigation where it compares the price received for exporting their product to the price they receive for sale of their product into their own country.
+    - The Department of Commerce conducts an investigation where it compares the price received for exporting their product to the price they receive for sale of their product into their home country.
     - If the export price is lower than the domestic price, then the Department of Commerce concludes that there is dumping and recommends duties to cover the difference in the two prices.
     - Duties are imposed by the US Customs and Border Protection if the U.S. International Trade Commission finds that there is *material injury* to firms in the United States.
     - There is no point in imposing duties without injury as consumers benefit from purchasing goods at a lower price.
@@ -691,7 +691,7 @@ Data source: @USDAERS2018.
 
 - The other case where a country can impose import duties on a good coming from a specific country is the case of safeguard measures.
 - Safeguard measures are meant to be temporary to protect a domestic industry against surge in imports that can possibility cause serious injury to the domestic industry.
-    - For example, suppose that Mexico gets a huge crop of tomatoes and starts shipping larger amounts than usual tomatoes to the United States.
+    - For example, suppose that Mexico gets a huge crop of tomatoes and starts shipping very large quantities of tomatoes to the United States.
     - This surge in imports causes the price of US tomatoes to drop.
     - Because the US tomatoe price is low, some tomatoe farmers may go out of business.
     - Under the safeguard measure, an import duty on Mexican tomatoes could be imposed to limit imports of Mexican tomatoes to temporarily protect the US tomatoe industry.
@@ -726,9 +726,9 @@ Data source: @USDAERS2018.
 
 - Countries can enter into agreements to further facilitate trade. See regional trade agreements on the WTO [website](http://www.wto.org/english/tratop_e/region_e/region_e.htm).
 - These agreements are also referred to as *preferential trade agreements*.
-- For example, the United States, Canada and Mexico are members of the North American Free Trade Agreement (NAFTA), which might be renames the USMCA.
+- For example, the United States, Canada and Mexico are members of the North American Free Trade Agreement (NAFTA), which might be renamed the USMCA.
 - The US is part of many other regional trade agreements. See the WTO [database](http://www.wto.org/english/tratop_e/region_e/rta_participation_map_e.htm).
-- President Trump dropped out of the Trans-Pacific Partnership ([TPP](https://ustr.gov/tpp/) seems to have some regrets about it.
+- President Trump dropped out of the Trans-Pacific Partnership ([TPP](https://ustr.gov/tpp/)) but seems to have some regrets about it.
 
 # North American Free Trade Agreement (NAFTA)
 
@@ -764,7 +764,7 @@ Data source: @USDAERS2018.
         - Note that the United States would have gained a similar access under the TPP.
     - The United States also gained additional access to the Canadian poultry and egg markets.
     - The United States conceded market access to Canada for dairy, peanut products, sugar and sugar products.
-- Little seem to have changed in the agreement between the United States and Mexico.
+- Little seems to have changed in the agreement between the United States and Mexico.
     
 
 # Exchange rate
@@ -855,7 +855,7 @@ dta <- read_excel("Data/9) exg_MX_US.xlsx") %>%
 exg <- ggplot(data = dta, aes(x = Date, y = Value)) + 
   geom_line(color = "blue") + 
   scale_x_date(labels = date_format("%Y"), breaks = date_breaks("year")) + 
-  ylab("Renminbi/$US") + 
+  ylab("Pesos/$US") + 
   theme_bw() + mytheme + 
 theme(axis.title.x=element_blank(), 
       axis.line.x = element_line(color='black'), 
@@ -1164,6 +1164,7 @@ Data source: @FAO2018. Average nominal price index equals 100 for the period of 
     - For example, a US firm trying to establish itself in China might have to give its technology to the Chinese government. 
 - Subsidized loan to Chinese firms:
     - Such loan helps chinese firms compete on the international market.
+\framebreak
 - State-own firms:
     - It is sometimes unclear whether a firm is private or own by the Chinese government.
     - A state-own enterprise may not behave competitively but rather try to achieve the goals of its government.
@@ -1178,6 +1179,7 @@ Data source: @FAO2018. Average nominal price index equals 100 for the period of 
     - In return for the goods, the store obtains some money from you.
     - Both you and the store gain from the exchange.
     - The same is true in trade.
+\framebreak
 - Many of the policies implemented by the President increase the trade deficit:
     - Giving tax breaks increases consumer spending and hence the demand for foreign products, which increases the trade deficit.
     - Increased consumer spending can create inflation, which the Federal Reserve will try to control by increasing the interest rates, which will cause an increase in the value of the US dollar, and hence increasing the US import demand.
@@ -1206,6 +1208,6 @@ Data source: @FAO2018. Average nominal price index equals 100 for the period of 
 - Under the Trump administration, it is not clear what could happened with US.
     - Hopefully, Trump never pulls out of the WTO.
 
-#References
+# References
 
 
