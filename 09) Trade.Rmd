@@ -737,7 +737,7 @@ Data source: @USDAERS2018.
 - NAFTA superseded the CUSTA with the addition of Mexico in 1994.
 - Under NAFTA, trade for most goods between the three countries can move free of tariffs.
 - Labor mobility is restricted under NAFTA.
-- The consensus among economists is that NAFTA has been good for the economies of the three countries. 
+- The consensus amongst economists is that NAFTA has been good for the economies of the three countries. 
 - You can find the text of the agreement at <https://www.nafta-sec-alena.org/>
 
 # NAFTA and agriculture {.allowframebreaks}
@@ -745,7 +745,7 @@ Data source: @USDAERS2018.
 - Agriculture is a special case and NAFTA includes three separate agreements between country pairs.
 - Agricultural trade volumes between the United States and Canada and between the United States and Mexico are large. Agricultural trade volumes are small between Mexico and Canada.
     - Here is a [short paper](https://www.card.iastate.edu/ag_policy_review/article/?a=73) I wrote about NAFTA and trade volumes.
-    - Note that trade data do not allow to all Iowa exports to Canada or Mexico because they transit through other states.
+    - Note that trade data do not allow to observe all Iowa exports to Canada or Mexico because they transit through other states.
     - For example, a unit-train full of corn from Iowa will transit through Texas and the export will be recorded out of Texas.
 - The agricultural agreements protect certain sectors and these protections are specifically written into the agreements:
     - Canada protects goods under supply management products (dairy, eggs and poultry);
@@ -771,7 +771,7 @@ Data source: @USDAERS2018.
 
 - The exchange rate matters when trading commodities.
 - For example, if \$US 1.00 = \$CA 1.30, it means that it costs 1.30 Canadian dollar to buy one US dollar.
-- Variations in exchange rate will affect trade volumes.
+- Variations in exchange rates will affect trade volumes.
 - Possible to buy futures for the exchange rate and hence hedge.
 
 # Canada-US exchange rate
@@ -1157,7 +1157,7 @@ Data source: @FAO2018. Average nominal price index equals 100 for the period of 
 
 - The Trump administration has decided to start a trade war with China.
     - If you have not been following, the United States began imposing tariffs on Chinese imports with the stated goal of reducing the trade deficit with China.
-- There several issues to address with China regarding trade and this [CRS](https://www.everycrsreport.com/reports/RL33536.html) report covers them in detail.
+- There are several issues to address with China regarding trade and this [CRS](https://www.everycrsreport.com/reports/RL33536.html) report covers them in detail.
 - China has a poor track of protecting intellectual property rights.
     - Counterfeiting of US brands is common (even for ag. products).
 - China has forced technology transfer:
@@ -1185,7 +1185,7 @@ Data source: @FAO2018. Average nominal price index equals 100 for the period of 
     - Increased consumer spending can create inflation, which the Federal Reserve will try to control by increasing the interest rates, which will cause an increase in the value of the US dollar, and hence increasing the US import demand.
     - See a discussion in this [New York Times](https://www.nytimes.com/2018/10/05/business/surprising-truths-about-trade-deficits.html) point of view.
 \framebreak
-- China is not going to let be bullied by the United States and it will find ways to minimize the impact of US tariffs.
+- China is not going to let itself be bullied by the United States and it will find ways to minimize the impact of US tariffs.
 - China has many assets that will help it deal with US tariffs:
     - China is the second largest economy and trades with many other countries.
     - The Chinese economy has been growing at a fast pace and a trade war with the US will not have a huge impact on that growth.
@@ -1195,7 +1195,7 @@ Data source: @FAO2018. Average nominal price index equals 100 for the period of 
 \framebreak
 - The trade war is very costly to China but also to the United States:
 - US tariffs cause an increase in the price of goods in the United States. Tariffs are in fact taxes.
-- Tariff retaliation by China has caused declines in prices for US agricultural commodities such as soybens and hogs.
+- Tariff retaliation by China has caused declines in prices for US agricultural commodities such as soybeans and hogs.
 - To compensate farmers, the federal will be spending billion of dollars.
 - Even if the trade war ends soon, it may take time for US exports to China to recover: 
     - Business relationships have been broken because of the tariffs;
@@ -1205,7 +1205,7 @@ Data source: @FAO2018. Average nominal price index equals 100 for the period of 
 
 - International markets are becoming more and more important;
 - Increase in income, especially in developing countries, drives new demands for agricultural commodities, especially for *luxury* food products (e.g. meat);
-- Under the Trump administration, it is not clear what could happened with US.
+- Under the Trump administration, it is not clear what could happened with US trade.
     - Hopefully, Trump never pulls out of the WTO.
 
 # References
